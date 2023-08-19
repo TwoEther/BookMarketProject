@@ -18,10 +18,7 @@ configurations {
 }
 
 repositories {
-	maven {
-		url "https://maven.google.com"
-	}
-	jcenter()
+	mavenCentral()
 }
 
 dependencies {
@@ -30,7 +27,7 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	implementation 'mysql:mysql-connector-java'
+	runtimeOnly 'com.mysql:mysql-connector-j'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 }
 
