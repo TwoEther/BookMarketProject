@@ -1,6 +1,7 @@
 package org.project.shop.repository;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.project.shop.Repository.MemberRepository;
@@ -22,27 +23,56 @@ public class MemberRepositoryTest {
     private MemberRepository memberRepository;
 
     @BeforeEach
-    void cleanup(){
+    void setUp(){
         memberRepository.deleteAll();
     }
 
     @Test
-    void memberInsertTest() {
+    void memberFindTest() {
         //given
-        Member newMember1 = new Member(1L, "kim");
-        Member newMember2 = new Member(2L, "lee");
+        Member newMember1 = new Member("kim");
+        Member newMember2 = new Member("lee");
         
         memberRepository.save(newMember1);
         memberRepository.save(newMember2);
 
         //when
         List<Member> members = memberRepository.findAll();
-        
+        Optional<Member> findMember = memberRepository.findById(1L);
 
         //then
-        Assertions.assertThat(members.size()).isEqualTo(2);
+        System.out.println("--------- findAllMember ---------");
+        assertThat(members.size()).isEqualTo(2);
         for (Member member : members) {
             System.out.println("member.toString() = " + member.toString());
         }
+        System.out.println("--------- findAllMember ---------\n");
+
+        System.out.println("--------- findMember ---------");
+        assertThat(findMember.get().getName()).isEqualTo(newMember1.getName());
+        System.out.println(findMember.toString());
+        System.out.println("--------- findMember ---------");
     }
+
+    @Test
+    void memberDeleteTest() {
+        //given
+        Member newMember1 = new Member("kim");
+        Member newMember2 = new Member("lee");
+
+        memberRepository.save(newMember1);
+        memberRepository.save(newMember2);
+
+        //when
+        memberRepository.deleteById(3L);
+        List<Member> allMember = memberRepository.findAll();
+        for (Member member : allMember) {
+            System.out.println("member = " + member);
+        }
+        //then
+        assertThat(memberRepository.findAll().size()).isEqualTo(1);
+        assertThat(memberRepository.findById(3L)).isEmpty();
+    }
+
+
 }

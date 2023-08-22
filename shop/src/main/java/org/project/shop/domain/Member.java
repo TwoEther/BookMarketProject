@@ -14,8 +14,7 @@ public class Member {
     @Column(name = "MEMBER_NUM")
     private Long id;
 
-    public Member(Long id, String name) {
-        this.id = id;
+    public Member(String name) {
         this.name = name;
     }
 
