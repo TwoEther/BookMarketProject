@@ -1,5 +1,6 @@
 package org.project.shop.Service;
 
+import lombok.RequiredArgsConstructor;
 import org.project.shop.Repository.MemberRepository;
 import org.project.shop.domain.Member;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +11,12 @@ import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
+//@RequiredArgsConstructor
 public class MemberService{
-    @Autowired
-    MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
+    public MemberService(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
 
     @Transactional
     public Long join(Member member) {
