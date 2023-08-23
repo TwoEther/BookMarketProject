@@ -1,9 +1,6 @@
 package org.project.shop.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
@@ -15,6 +12,9 @@ public class Member {
     @Column(name = "MEMBER_NUM")
     private Long id;
     private String name;
+
+    @Embedded
+    private Address address;
 
     public Member(Long id, String name) {
         this.id = id;

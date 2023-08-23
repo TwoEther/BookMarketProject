@@ -1,4 +1,4 @@
-package org.project.shop.Repository;
+package org.project.shop.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

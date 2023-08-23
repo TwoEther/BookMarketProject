@@ -1,7 +1,7 @@
-package org.project.shop.Service;
+package org.project.shop.service;
 
 import lombok.RequiredArgsConstructor;
-import org.project.shop.Repository.MemberRepository;
+import org.project.shop.repository.MemberRepository;
 import org.project.shop.domain.Member;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
