@@ -5,6 +5,9 @@ import lombok.Data;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 public class Member {
@@ -13,8 +16,13 @@ public class Member {
     private Long id;
     private String name;
 
+    // 정의 타입 사용
     @Embedded
     private Address address;
+
+    // 1:N (Member : Order)
+    @OneToMany(mappedBy = "member")
+    private List<Order> orders = new ArrayList<>();
 
     public Member(Long id, String name) {
         this.id = id;
