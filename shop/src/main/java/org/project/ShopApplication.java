@@ -6,10 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @SpringBootApplication
 public class ShopApplication {
-	@RequestMapping("/")
-	String home(){
-		return "Hello world";
-	}
 	public static void main(String[] args) {
 		SpringApplication.run(ShopApplication.class, args);
 	}
