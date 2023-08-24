@@ -1,13 +1,14 @@
-package org.project.shop.domain.items;
+package org.project.shop.domain;
 
 import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 import org.project.shop.domain.Item;
 
 @Entity
-@DiscriminatorColumn(name = "B")
+@DiscriminatorValue("M")
 @Getter @Setter
 public class Movie extends Item {
     private String director;

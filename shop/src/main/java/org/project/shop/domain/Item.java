@@ -14,6 +14,8 @@ import java.util.List;
 @Setter
 // 추후 물품 상속관계를 위해 추상클래스로 작성
 public abstract class Item {
+
+    @Getter
     @Id
     @GeneratedValue
     private Long id;

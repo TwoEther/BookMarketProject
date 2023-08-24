@@ -24,6 +24,14 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Order> orders = new ArrayList<>();
 
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Member(Long id, String name) {
         this.id = id;
         this.name = name;
@@ -33,4 +41,7 @@ public class Member {
         this.name = name;
     }
 
+    public Member() {
+
+    }
 }
