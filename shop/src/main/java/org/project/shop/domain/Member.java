@@ -24,6 +24,9 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Order> orders = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member")
+    private List<Review> reviews = new ArrayList<>();
+
     public void setAddress(Address address) {
         this.address = address;
     }

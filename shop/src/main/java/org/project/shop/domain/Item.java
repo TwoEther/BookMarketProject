@@ -28,6 +28,10 @@ public abstract class Item {
     @JoinTable(name = "items")
     private List<Category> categories = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "items", unique = true)
+    private Review review;
+
     // 재고 관리를 위한 로직
     public void addStock(int stockQuantity) {
         this.stockQuantity += stockQuantity;
