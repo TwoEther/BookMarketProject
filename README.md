@@ -19,6 +19,6 @@
 <ul>
     <li><a href="https://velog.io/@rmspring12/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%87%BC%ED%95%91%EB%AA%B0-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B5%AC%EC%84%B1">프로젝트 설정</a></li>
     <li><a href="https://velog.io/@rmspring12/%EC%87%BC%ED%95%91%EB%AA%B0-ERD-%EA%B5%AC%EC%B6%95%ED%95%98%EA%B8%B0">ER 다이아 그램 구성</a></li>
-        <img src="https://github.com/TwoEther/ShoppingMallProject/assets/101616106/13216ca7-bd9a-4244-853b-7ca93cdea99d" alt="">
+        <img src="https://github.com/TwoEther/BookMarketProject/assets/101616106/1927ea76-68be-42b8-bb8b-2ce795ffd553" alt="">
 </ul>
 
