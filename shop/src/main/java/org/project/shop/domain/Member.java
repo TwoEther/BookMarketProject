@@ -24,6 +24,7 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Order> orders = new ArrayList<>();
 
+    // 1:N (Member : Review)
     @OneToMany(mappedBy = "member")
     private List<Review> reviews = new ArrayList<>();
 
