@@ -5,7 +5,7 @@ import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.project.shop.domain.*;
 import org.project.shop.domain.Book;
-import org.project.shop.repository.OrderRepository;
+import org.project.shop.repository.OrderRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.couchbase.AutoConfigureDataCouchbase;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,9 +22,9 @@ public class OrderServiceTest {
     EntityManager em;
 
     @Autowired
-    OrderService orderService;
+    OrderServiceImpl orderServiceImpl;
     @Autowired
-    OrderRepository orderRepository;
+    OrderRepositoryImpl orderRepositoryImpl;
 
     /*
         테스트 조건
@@ -41,10 +41,10 @@ public class OrderServiceTest {
         int orderCount = 2;
         int expectedPrice = 20000;
         //When
-        Long orderId = orderService.order(member.getId(), item.getId(), orderCount);
+        Long orderId = orderServiceImpl.order(member.getId(), item.getId(), orderCount);
 
         //Then
-        Order currentOrder = orderRepository.findOneOrder(orderId);
+        Order currentOrder = orderRepositoryImpl.findOneOrder(orderId);
 
         /*
             1. 주문 상태는 ORDER
@@ -66,7 +66,7 @@ public class OrderServiceTest {
         int orderCount = 10;
 
         //when
-        orderService.order(member.getId(), item.getId(), orderCount);
+        orderServiceImpl.order(member.getId(), item.getId(), orderCount);
         fail("재고 초과");
 
         //then
@@ -78,8 +78,8 @@ public class OrderServiceTest {
         Member member = createMember();
         Item item = createBook("book1", 10000, 5);
         int orderCount = 2;
-        Long orderId = orderService.order(member.getId(), item.getId(), orderCount);
-        Order currentOrder = orderRepository.findOneOrder(orderId);
+        Long orderId = orderServiceImpl.order(member.getId(), item.getId(), orderCount);
+        Order currentOrder = orderRepositoryImpl.findOneOrder(orderId);
 
         //when
         currentOrder.cancel();
@@ -103,7 +103,7 @@ public class OrderServiceTest {
     private Member createMember() {
         Member member = new Member();
         member.setName("member1");
-        member.setAddress(new Address("경기", "고양", "19234"));
+//        member.setAddress(new Address("경기", "고양", "19234"));
         em.persist(member);
         return member;
     }

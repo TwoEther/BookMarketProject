@@ -2,8 +2,7 @@ package org.project.shop.service;
 
 import org.junit.jupiter.api.Test;
 import org.project.shop.domain.Member;
-import org.project.shop.repository.MemberRepository;
-import org.project.shop.service.MemberService;
+import org.project.shop.repository.MemberRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,9 +19,9 @@ public class MemberServiceTest {
      */
 
     @Autowired
-    private MemberRepository memberRepository;
+    private MemberRepositoryImpl memberRepository;
     @Autowired
-    private MemberService memberService;
+    private MemberServiceImpl memberServiceImpl;
 
     @Test
     public void join() throws Exception{
@@ -30,7 +29,7 @@ public class MemberServiceTest {
         Member member1 = new Member("kim");
 
         //when
-        Long memberId = memberService.join(member1);
+        Long memberId = memberServiceImpl.join(member1);
 
         //Then
         assertThat(memberId).isEqualTo(member1.getId());
@@ -42,8 +41,8 @@ public class MemberServiceTest {
         Member member1 = new Member("lee");
         Member member2 = new Member("lee");
 
-        memberService.join(member1);
-        memberService.join(member2);
+        memberServiceImpl.join(member1);
+        memberServiceImpl.join(member2);
 
         fail("예외가 발생");
     }

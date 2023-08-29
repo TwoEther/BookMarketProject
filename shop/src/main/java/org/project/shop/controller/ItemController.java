@@ -3,7 +3,7 @@ package org.project.shop.controller;
 import lombok.RequiredArgsConstructor;
 import org.project.shop.domain.Book;
 import org.project.shop.domain.Item;
-import org.project.shop.service.ItemService;
+import org.project.shop.service.ItemServiceImpl;
 import org.project.shop.web.BookForm;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +17,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class ItemController {
-    private final ItemService itemService;
+    private final ItemServiceImpl itemServiceImpl;
 
     @GetMapping(value = "/items/new")
     public String itemForm(Model model) {
@@ -34,13 +34,13 @@ public class ItemController {
         book.setAuthor(form.getAuthor());
         book.setPrice(form.getPrice());
 
-        itemService.saveItem(book);
+        itemServiceImpl.saveItem(book);
         return "redirect:/items";
     }
 
     @GetMapping(value = "/items")
     public String list(Model model) {
-        List<Item> items = itemService.findItems();
+        List<Item> items = itemServiceImpl.findItems();
         model.addAttribute("items", items);
         return "items/itemList";
     }
@@ -48,7 +48,7 @@ public class ItemController {
     @GetMapping(value = "/items/{itemId}/edit")
     public String updateItemForm(@PathVariable("itemId") Long itemId, Model
             model) {
-        Book item = (Book)itemService.findOneItem(itemId);
+        Book item = (Book) itemServiceImpl.findOneItem(itemId);
         BookForm form = new BookForm();
         form.setId(item.getId());
         form.setName(item.getName());
@@ -64,7 +64,7 @@ public class ItemController {
     @PostMapping(value = "/items/{itemId}/edit")
     public String updateItem(@PathVariable Long itemId, @ModelAttribute("form")
     BookForm form) {
-        itemService.updateItem(itemId, form.getName(), form.getPrice(),
+        itemServiceImpl.updateItem(itemId, form.getName(), form.getPrice(),
                 form.getStockQuantity());
         return "redirect:/items";
     }

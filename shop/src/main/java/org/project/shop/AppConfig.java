@@ -1,9 +1,8 @@
 package org.project.shop;
 
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
+import org.project.shop.repository.ItemRepositoryImpl;
 
 public class AppConfig {
-    private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("shop");
+
 
 }

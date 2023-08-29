@@ -5,9 +5,9 @@ import org.project.shop.domain.Item;
 import org.project.shop.domain.Member;
 import org.project.shop.domain.Order;
 import org.project.shop.domain.OrderSearch;
-import org.project.shop.service.ItemService;
-import org.project.shop.service.MemberService;
-import org.project.shop.service.OrderService;
+import org.project.shop.service.ItemServiceImpl;
+import org.project.shop.service.MemberServiceImpl;
+import org.project.shop.service.OrderServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,13 +17,13 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class OrderController {
-    private final OrderService orderService;
-    private final MemberService memberService;
-    private final ItemService itemService;
+    private final OrderServiceImpl orderServiceImpl;
+    private final MemberServiceImpl memberServiceImpl;
+    private final ItemServiceImpl itemServiceImpl;
     @GetMapping(value = "/order")
     public String createForm(Model model) {
-        List<Member> members = memberService.findAllMember();
-        List<Item> items = itemService.findItems();
+        List<Member> members = memberServiceImpl.findAllMember();
+        List<Item> items = itemServiceImpl.findItems();
         model.addAttribute("members", members);
         model.addAttribute("items", items);
         return "order/orderForm";
@@ -31,7 +31,7 @@ public class OrderController {
     @PostMapping(value = "/order")
     public String order(@RequestParam("memberId") Long memberId,
                         @RequestParam("itemId") Long itemId, @RequestParam("count") int count) {
-        orderService.order(memberId, itemId, count);
+        orderServiceImpl.order(memberId, itemId, count);
         return "redirect:/orders";
     }
 
@@ -39,14 +39,14 @@ public class OrderController {
     @GetMapping(value = "/orders")
     public String orderList(@ModelAttribute("orderSearch") OrderSearch
                                     orderSearch, Model model) {
-        List<Order> orders = orderService.findOrders(orderSearch);
+        List<Order> orders = orderServiceImpl.findOrders(orderSearch);
         model.addAttribute("orders", orders);
         return "order/orderList";
     }
 
     @PostMapping(value = "/orders/{orderId}/cancel")
     public String cancelOrder(@PathVariable("orderId") Long orderId) {
-        orderService.cancelOrder(orderId);
+        orderServiceImpl.cancelOrder(orderId);
         return "redirect:/orders";
     }
 }

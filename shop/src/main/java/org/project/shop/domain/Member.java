@@ -14,9 +14,15 @@ public class Member {
     @Id @GeneratedValue
     @Column(name = "MEMBER_NUM")
     private Long id;
+
+    @Column(name = "email")
+    private String email;
+    @Column(name = "password")
+    private String password;
+
     private String name;
 
-    // 정의 타입 사용
+//     정의 타입 사용
     @Embedded
     private Address address;
 
@@ -30,6 +36,14 @@ public class Member {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public void setName(String name) {

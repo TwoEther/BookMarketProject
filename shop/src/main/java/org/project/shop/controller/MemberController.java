@@ -2,9 +2,8 @@ package org.project.shop.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.project.shop.domain.Address;
 import org.project.shop.domain.Member;
-import org.project.shop.service.MemberService;
+import org.project.shop.service.MemberServiceImpl;
 import org.project.shop.web.MemberForm;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,13 +11,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import javax.naming.Binding;
 import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 public class MemberController {
-    private final MemberService memberService;
+    private final MemberServiceImpl memberServiceImpl;
 
     @GetMapping(value = "/members/new")
     public String createForm(Model model) {
@@ -31,19 +29,20 @@ public class MemberController {
         if (result.hasErrors()) {
             return "members/createMemberForm";
         }
-        Address address = new Address(form.getCity(), form.getStreet(), form.getZipcode());
+//        Address address = new Address(form.getCity(), form.getStreet(), form.getZipcode());
         Member member = new Member();
-        member.setName(form.getName());
-        member.setAddress(address);
+        member.setEmail(form.getEmail());
+        member.setPassword(form.getPassword());
+//        member.setAddress(address);
 
 
-        memberService.join(member);
+        memberServiceImpl.join(member);
         return "redirect:/";
     }
 
     @GetMapping(value = "/members")
     public String memberList(Model model){
-        List<Member> allMember = memberService.findAllMember();
+        List<Member> allMember = memberServiceImpl.findAllMember();
         model.addAttribute("members", allMember);
         return "members/memberList";
     }

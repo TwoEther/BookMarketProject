@@ -7,7 +7,23 @@
 <body>
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader" />
-    <div class="jumbotron">
+    <div class="row align-items-center" id="header_top">
+        <div class="col-2">
+            <p id="BookMarket"><strong>BookMarket</strong></p>
+        </div>
+        <div class="col-7">
+            <form class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+        <div class="col-3">
+            <a href="">로그인</a>
+            <a class="btn btn-lg btn-secondary" href="/members/new">회원 가입</a>
+        </div>
+    </div>
+    <hr>
+    <div class="">
         <h1>HELLO SHOP</h1>
         <p class="lead">회원 기능</p>
         <p>
@@ -24,6 +40,68 @@
             <a class="btn btn-lg btn-info" href="/order">상품 주문</a>
             <a class="btn btn-lg btn-info" href="/orders">주문 내역</a>
         </p>
+    </div>
+    <div class="row">
+        <p>Category1</p>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <img src="images/pngwing.com.png" alt="" width="100px" >
+        </div>
+
+        <div class="col-3">
+            <img src="images/pngwing.com.png" alt="" width="100px" >
+        </div>
+
+        <div class="col-3">
+            <img src="images/pngwing.com.png" alt="" width="100px" >
+        </div>
+
+        <div class="col-3">
+            <img src="images/pngwing.com.png" alt="" width="100px" >
+        </div>
+    </div>
+
+    <div class="row">
+        <p>Category1</p>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <img src="images/pngwing.com.png" alt="" width="100px" >
+        </div>
+
+        <div class="col-3">
+            <img src="images/pngwing.com.png" alt="" width="100px" >
+        </div>
+
+        <div class="col-3">
+            <img src="images/pngwing.com.png" alt="" width="100px" >
+        </div>
+
+        <div class="col-3">
+            <img src="images/pngwing.com.png" alt="" width="100px" >
+        </div>
+    </div>
+
+    <div class="row">
+        <p>Category1</p>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <img src="images/pngwing.com.png" alt="" width="100px" >
+        </div>
+
+        <div class="col-3">
+            <img src="images/pngwing.com.png" alt="" width="100px" >
+        </div>
+
+        <div class="col-3">
+            <img src="images/pngwing.com.png" alt="" width="100px" >
+        </div>
+
+        <div class="col-3">
+            <img src="images/pngwing.com.png" alt="" width="100px" >
+        </div>
     </div>
     <div th:replace="fragments/footer :: footer" />
 </div> <!-- /container -->
