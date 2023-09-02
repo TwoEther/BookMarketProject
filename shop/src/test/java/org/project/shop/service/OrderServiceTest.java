@@ -4,7 +4,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.project.shop.domain.*;
-import org.project.shop.domain.Book;
 import org.project.shop.repository.OrderRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.couchbase.AutoConfigureDataCouchbase;
@@ -37,7 +36,7 @@ public class OrderServiceTest {
     public void orderTest(){
         //Given
         Member member = createMember();
-        Item item = createBook("book1", 10000, 5);
+        Item item = createitem("item1", 10000, 5);
         int orderCount = 2;
         int expectedPrice = 20000;
         //When
@@ -62,7 +61,7 @@ public class OrderServiceTest {
     public void overStockQuantity() throws Exception {
         //given
         Member member = createMember();
-        Item item = createBook("book1", 10000, 5);
+        Item item = createitem("item1", 10000, 5);
         int orderCount = 10;
 
         //when
@@ -76,7 +75,7 @@ public class OrderServiceTest {
     public void cancelOrder(){
         //given
         Member member = createMember();
-        Item item = createBook("book1", 10000, 5);
+        Item item = createitem("item1", 10000, 5);
         int orderCount = 2;
         Long orderId = orderServiceImpl.order(member.getId(), item.getId(), orderCount);
         Order currentOrder = orderRepositoryImpl.findOneOrder(orderId);
@@ -90,16 +89,16 @@ public class OrderServiceTest {
 
     }
 
-
-    private Item createBook(String name, int price, int stockQuantity) {
-        Book book = new Book();
-        book.setName(name);
-        book.setPrice(price);
-        book.setStockQuantity(stockQuantity);
-        em.persist(book);
-        return book;
+    @Test
+    private Item createitem(String name, int price, int stockQuantity) {
+        Item item = new Item();
+        item.setName(name);
+        item.setPrice(price);
+        item.setStockQuantity(stockQuantity);
+        em.persist(item);
+        return item;
     }
-
+    @Test
     private Member createMember() {
         Member member = new Member();
         member.setName("member1");

@@ -1,12 +1,14 @@
 package org.project.shop.service;
 
-import org.project.shop.domain.Book;
 import org.project.shop.domain.Item;
 import org.project.shop.repository.ItemRepositoryImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ItemServiceImpl implements ItemService{
@@ -18,8 +20,19 @@ public class ItemServiceImpl implements ItemService{
 
     @Override
     @Transactional
-    public void saveItem(Book book) {
-        itemRepositoryImpl.save(book);
+    public void saveItem(Item item, MultipartFile file) throws Exception {
+        // 프로젝트 경로
+        String projPath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\files";
+        UUID uuid = UUID.randomUUID();
+
+        String fileName = uuid + "_" + file.getOriginalFilename();
+        File uploadFile = new File(projPath, fileName);
+        file.transferTo(uploadFile);
+        // DB에 파일 넣기
+        item.setFileName(fileName);
+        item.setFilePath("/files/" + fileName);
+
+        itemRepositoryImpl.save(item);
     }
 
     @Override

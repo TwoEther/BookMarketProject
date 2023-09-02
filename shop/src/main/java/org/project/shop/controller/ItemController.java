@@ -1,10 +1,9 @@
 package org.project.shop.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.project.shop.domain.Book;
 import org.project.shop.domain.Item;
 import org.project.shop.service.ItemServiceImpl;
-import org.project.shop.web.BookForm;
+import org.project.shop.web.ItemForm;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,20 +18,20 @@ public class ItemController {
 
     @GetMapping(value = "/items/new")
     public String itemForm(Model model) {
-        model.addAttribute("form", new BookForm());
+        model.addAttribute("form", new ItemForm());
         return "items/createItemForm";
     }
 
     @PostMapping(value = "/items/new")
-    public String create(BookForm form) {
-        Book book = new Book();
-        book.setName(form.getName());
-        book.setStockQuantity(form.getStockQuantity());
-        book.setIsbn(form.getIsbn());
-        book.setAuthor(form.getAuthor());
-        book.setPrice(form.getPrice());
+    public String create(ItemForm form, @RequestParam("image") MultipartFile file) throws Exception {
+        Item item = new Item();
+        item.setName(form.getName());
+        item.setStockQuantity(form.getStockQuantity());
+        item.setIsbn(form.getIsbn());
+        item.setAuthor(form.getAuthor());
+        item.setPrice(form.getPrice());
 
-        itemServiceImpl.saveItem(book);
+        itemServiceImpl.saveItem(item, file);
         return "redirect:/items";
     }
 
@@ -43,11 +42,13 @@ public class ItemController {
         return "items/itemList";
     }
 
+
     @GetMapping(value = "/items/{itemId}/edit")
     public String updateItemForm(@PathVariable("itemId") Long itemId, Model
             model) {
-        Book item = (Book) itemServiceImpl.findOneItem(itemId);
-        BookForm form = new BookForm();
+
+        Item item = itemServiceImpl.findOneItem(itemId);
+        ItemForm form = new ItemForm();
         form.setId(item.getId());
         form.setName(item.getName());
         form.setPrice(item.getPrice());
@@ -61,7 +62,7 @@ public class ItemController {
 
     @PostMapping(value = "/items/{itemId}/edit")
     public String updateItem(@PathVariable Long itemId, @ModelAttribute("form")
-    BookForm form) {
+    ItemForm form) {
         itemServiceImpl.updateItem(itemId, form.getName(), form.getPrice(),
                 form.getStockQuantity());
         return "redirect:/items";
