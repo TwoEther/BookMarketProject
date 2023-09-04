@@ -8,4 +8,6 @@ public interface MemberService {
     public Long join(Member member);
     public List<Member> findAllMember();
     public Member findOneMember(Long memberId);
+
+    public List<Member> findByEmail(String email);
 }

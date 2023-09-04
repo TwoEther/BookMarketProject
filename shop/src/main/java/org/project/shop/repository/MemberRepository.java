@@ -8,6 +8,7 @@ public interface MemberRepository {
     public void save(Member member);
     public Member findMember(Long id);
     public List<Member> findAllMember();
-    public List<Member> findByName(String name);
+    public List<Member> findByEmail(String email);
+
 
 }

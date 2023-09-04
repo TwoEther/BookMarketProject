@@ -1,6 +1,8 @@
 package org.project.shop.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
@@ -16,8 +18,13 @@ public class Member {
     private Long id;
 
     @Column(name = "email")
+    @NotBlank(message = "아이디는 필수 값 입니다.")
+//    @Pattern(regexp = "^[a-z0-9]{4,20}$", message = "아이디는 영어 소문자와 숫자만 사용하여 4~20자리여야 합니다.")
     private String email;
+
     @Column(name = "password")
+//    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,16}$", message = "비밀번호는 8~16자리수여야 합니다. 영문 대소문자, 숫자, 특수문자를 1개 이상 포함해야 합니다.")
+    @NotBlank(message = "비밀번호는 필수 값 입니다.")
     private String password;
 
     private String name;
@@ -26,6 +33,8 @@ public class Member {
     @Embedded
     private Address address;
 
+    @Embedded
+    private Grade grade;
     // 1:N (Member : Order)
     @OneToMany(mappedBy = "member")
     private List<Order> orders = new ArrayList<>();
@@ -50,9 +59,19 @@ public class Member {
         this.name = name;
     }
 
-    public Member(Long id, String name) {
-        this.id = id;
+    public Member(String email, String password, String name) {
+        this.email = email;
+        this.password = password;
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Member{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'';
     }
 
     public Member(String name) {

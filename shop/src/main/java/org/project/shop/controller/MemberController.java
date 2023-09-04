@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -25,20 +26,31 @@ public class MemberController {
     }
 
     @PostMapping(value = "/members/new")
-    public String create(@Valid MemberForm form, BindingResult result) {
+    public String signUp(@Valid MemberForm form, BindingResult result) {
         if (result.hasErrors()) {
             return "members/createMemberForm";
         }
+
+        System.out.println("form.getEmail() = " + form.getEmail());
+        System.out.println("validateDuplicateMember = " + memberServiceImpl.validateDuplicateMember(new Member(form.getEmail())));
+
+        // 중복 맴버 체크
+        if(!memberServiceImpl.validateDuplicateMember(new Member(form.getEmail()))){
+            System.out.println("Exist in MemberRepository");
+            return "redirect:/members/new";
+        } else {
+            System.out.println("Not Exist in MemberRepository");
+            String email = form.getEmail();
+            String password = form.getPassword();
+            String name = form.getName();
+            Member member = new Member(email, password, name);
+            memberServiceImpl.join(member);
+            return "redirect:/";
+        }
 //        Address address = new Address(form.getCity(), form.getStreet(), form.getZipcode());
-        Member member = new Member();
-        member.setEmail(form.getEmail());
-        member.setPassword(form.getPassword());
 //        member.setAddress(address);
-
-
-        memberServiceImpl.join(member);
-        return "redirect:/";
     }
+
 
     @GetMapping(value = "/members")
     public String memberList(Model model){

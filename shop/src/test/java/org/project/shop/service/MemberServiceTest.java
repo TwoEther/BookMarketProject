@@ -2,10 +2,14 @@ package org.project.shop.service;
 
 import org.junit.jupiter.api.Test;
 import org.project.shop.domain.Member;
+import org.project.shop.repository.MemberRepository;
 import org.project.shop.repository.MemberRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -23,16 +27,26 @@ public class MemberServiceTest {
     @Autowired
     private MemberServiceImpl memberServiceImpl;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    // Member를 저장후 꺼내옴
     @Test
     public void join() throws Exception{
         //given
-        Member member1 = new Member("kim");
+        String name = "lee";
+        String email = "test@test.com";
+        String password = passwordEncoder.encode("password1");
+        Member member1 = new Member(email, name, password);
 
         //when
         Long memberId = memberServiceImpl.join(member1);
 
         //Then
-        assertThat(memberId).isEqualTo(member1.getId());
+        List<Member> findMember = memberServiceImpl.findByEmail(email);
+        System.out.println("findMember.toString() = " + findMember.toString());
+        System.out.println("memberRepository = " + memberRepository.findAllMember());
+        assertThat(findMember.isEmpty()).isEqualTo(false);
 
     }
 

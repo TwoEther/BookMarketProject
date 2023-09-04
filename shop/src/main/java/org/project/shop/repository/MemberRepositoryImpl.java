@@ -15,6 +15,8 @@ public class MemberRepositoryImpl implements MemberRepository{
     @Override
     public void save(Member member) {
         em.persist(member);
+        em.flush();
+        System.out.println("findAllMember() = " + findAllMember());
     }
 
     @Override
@@ -29,9 +31,9 @@ public class MemberRepositoryImpl implements MemberRepository{
     }
 
     @Override
-    public List<Member> findByName(String name) {
-        return em.createQuery("select m from Member m where m.name = :name", Member.class)
-                .setParameter("name", name)
+    public List<Member> findByEmail(String email) {
+        return em.createQuery("select m from Member m where m.email = :email", Member.class)
+                .setParameter("email", email)
                 .getResultList();
     }
 }

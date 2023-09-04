@@ -20,10 +20,11 @@
                 <td th:text="${item.id}"></td>
                 <td th:text="${item.name}"></td>
                 <td th:text="${item.price}"></td>
-                <td th:text="${item.filePath}"></td>
+                <td th:text="${pageContext.request.contextPath}"></td>
 <!--                <td th:text="${item.stockQuantity}"></td>-->
                 <td>
-                    <a th:href="@{${item.filePath}}">다운로드</a>
+                    <img th:src="@{${item.getFilePath()}}" alt="">
+                    <a th:href="@{${item.FilePath()}}">다운로드</a>
                 </td>
                 <td>
                     <a href="#" th:href="@{/items/{id}/edit (id=${item.id})}"

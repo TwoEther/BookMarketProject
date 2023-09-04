@@ -1,14 +1,21 @@
 package org.project.shop.controller;
 
+import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.project.shop.domain.Item;
 import org.project.shop.service.ItemServiceImpl;
 import org.project.shop.web.ItemForm;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriUtils;
 
+import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Controller
@@ -41,7 +48,6 @@ public class ItemController {
         model.addAttribute("items", items);
         return "items/itemList";
     }
-
 
     @GetMapping(value = "/items/{itemId}/edit")
     public String updateItemForm(@PathVariable("itemId") Long itemId, Model
