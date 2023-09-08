@@ -2,10 +2,7 @@ package org.project.shop.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import lombok.Data;
 import lombok.Getter;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +14,7 @@ public class Member {
     @Column(name = "MEMBER_NUM")
     private Long id;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     @NotBlank(message = "아이디는 필수 값 입니다.")
 //    @Pattern(regexp = "^[a-z0-9]{4,20}$", message = "아이디는 영어 소문자와 숫자만 사용하여 4~20자리여야 합니다.")
     private String email;
@@ -59,10 +56,9 @@ public class Member {
         this.name = name;
     }
 
-    public Member(String email, String password, String name) {
+    public Member(String email, String password) {
         this.email = email;
         this.password = password;
-        this.name = name;
     }
 
     @Override

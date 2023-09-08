@@ -1,8 +1,8 @@
 package org.project.shop.service;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.project.shop.domain.Member;
-import org.project.shop.repository.MemberRepository;
 import org.project.shop.repository.MemberRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -37,16 +38,39 @@ public class MemberServiceTest {
         String name = "lee";
         String email = "test@test.com";
         String password = passwordEncoder.encode("password1");
-        Member member1 = new Member(email, name, password);
+        Member member1 = new Member(email, name);
 
         //when
         Long memberId = memberServiceImpl.join(member1);
 
         //Then
-        List<Member> findMember = memberServiceImpl.findByEmail(email);
+        Optional<Member> findMember = memberServiceImpl.findByEmail(email);
         System.out.println("findMember.toString() = " + findMember.toString());
         System.out.println("memberRepository = " + memberRepository.findAllMember());
-        assertThat(findMember.isEmpty()).isEqualTo(false);
+
+    }
+
+    @Test
+    @DisplayName("비밀번호 암호화 후 로그인 테스트")
+    public void login() throws Exception {
+        // 1. 기존에 회원 가입된 유저가 DB에 저장 되어 있어야 함
+        // 2. 유저의 ID와 PW를 통해 유저를 찾을수 있어야 함
+
+        //given
+        String email = "test@test.com";
+        String name = "lee";
+        String pw = "powkek";
+        Member joinMember1 = new Member(email, name);
+
+
+        // when
+        memberServiceImpl.join(joinMember1);
+
+        // then
+        Member findMember = memberServiceImpl.findOneMember(joinMember1.getId());
+        assertThat(findMember.getEmail()).isEqualTo(email);
+        assertThat(findMember.getName()).isEqualTo(name);
+        assertThat(findMember.getPassword()).isEqualTo(joinMember1.getPassword());
 
     }
 
