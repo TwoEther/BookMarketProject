@@ -9,7 +9,7 @@ public interface MemberRepository {
     public void save(Member member);
     public Member findMember(Long id);
     public List<Member> findAllMember();
-    public Optional<Member> findByEmail(String email);
+    public Optional<Member> findById(String id);
 
 
 }

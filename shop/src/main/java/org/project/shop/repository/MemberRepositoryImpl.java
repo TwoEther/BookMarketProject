@@ -31,12 +31,13 @@ public class MemberRepositoryImpl implements MemberRepository{
                 .getResultList();
     }
 
+
     @Override
-    public Optional<Member> findByEmail(String email) {
+    public Optional<Member> findById(String user_id) {
         Optional<Member> member = Optional.empty();
         try {
-             member = Optional.ofNullable(em.createQuery("select m from Member m where m.email = :email", Member.class)
-                    .setParameter("email", email)
+             member = Optional.ofNullable(em.createQuery("select m from Member m where m.user_id = :user_id", Member.class)
+                    .setParameter("user_id", user_id)
                     .getSingleResult());
         } catch (NoResultException e) {
             member = Optional.empty();

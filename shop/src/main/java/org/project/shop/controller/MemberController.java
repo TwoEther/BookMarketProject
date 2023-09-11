@@ -35,10 +35,10 @@ public class MemberController {
             return "members/createMemberForm";
         }
 
-        String email = form.getEmail();
+        String id = form.getUserId();
         String password = form.getPassword();
-        Member member = new Member(email, password);
-//        String name = form.getName();
+        Member member = new Member(id, password);
+//        String name = form.getName();e
         try {
             memberServiceImpl.join(member);
         }catch(DataIntegrityViolationException e) {
@@ -57,11 +57,10 @@ public class MemberController {
 //        member.setAddress(address);
     }
 
-    @PostMapping(value = "member/emailCheck")
+    @PostMapping(value = "member/idCheck")
     @ResponseBody
-    public boolean emailCheck(@RequestParam String email) throws Exception{
-        System.out.println("memberServiceImpl.checkDuplicateMember(email) = " + memberServiceImpl.checkDuplicateMember(email));
-        return memberServiceImpl.checkDuplicateMember(email);
+    public int idCheck(@RequestParam String userId) throws Exception{
+        return memberServiceImpl.checkDuplicateMember(userId);
     }
     
 

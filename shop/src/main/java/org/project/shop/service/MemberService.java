@@ -11,7 +11,10 @@ public interface MemberService {
     public List<Member> findAllMember();
     public Member findOneMember(Long memberId);
 
-    public Optional<Member> findByEmail(String email);
+    public Optional<Member> findById(String id);
 
-    public boolean checkDuplicateMember(String email);
+    public int checkDuplicateMember(String id);
+
+    public boolean checkReqexId(String id);
+
 }
