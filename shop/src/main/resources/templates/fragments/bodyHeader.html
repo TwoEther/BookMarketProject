@@ -26,9 +26,9 @@
                     </li>
                 </ul>
                 <div class="collapse navbar-collapse justify-content-end" id="collapsibleNavbar">
-                    <a class="btn btn-lg btn-secondary" th:href="@{/members/login}" sec:authorize="isAnonymous()">로그인</a>
-                    <a class="btn btn-lg btn-secondary" th:href="@{/members/new}" sec:authorize="isAuthenticated()">로그 아웃</a>
-                    <a class="btn btn-lg btn-secondary" th:href="@{/members/new}" sec:authorize="isAnonymous()">회원 가입</a>
+                    <a class="btn btn-lg btn-secondary" th:href="@{/member/login}" sec:authorize="isAnonymous()">로그인</a>
+                    <a class="btn btn-lg btn-secondary" th:href="@{/member/logout}" sec:authorize="isAuthenticated()">로그 아웃</a>
+                    <a class="btn btn-lg btn-secondary" th:href="@{/member/new}" sec:authorize="isAnonymous()">회원 가입</a>
                 </div>
             </div>
         </div>

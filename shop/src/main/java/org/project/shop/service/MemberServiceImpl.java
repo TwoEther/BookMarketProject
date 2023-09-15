@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 
 @Service
 @Transactional(readOnly = true)
-public class MemberServiceImpl implements MemberService, UserDetailsService {
+public class MemberServiceImpl implements MemberService {
     private final MemberRepositoryImpl memberRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -59,11 +59,11 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
     @Override
     public int checkDuplicateMember(String id) {
         if (id.isEmpty()) {
-            return -1;
+            return ExceptionCode.EMPTY.ordinal();
         } else if (!checkReqexId(id)) {
-            return 0;
+            return ExceptionCode.Reqex.ordinal();
         } else {
-            return 1;
+            return ExceptionCode.OK.ordinal();
         }
     }
 
@@ -73,16 +73,9 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         return Pattern.matches(pattern, id);
     }
 
-
-    // 반드시 구현해야하는 함수
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Member> loginMember = memberRepository.findById(username);
-        if (loginMember.isEmpty()) {
-            throw new UsernameNotFoundException("사용자를 찾을수 없습니다");
-        }
-        Member member = loginMember.get();
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        return new User(member.getUserId(), member.getPassword(), authorities);
+    public boolean checkReqexPw(String pw) {
+        String pattern = "\"^(?=.*[A-Za-z])(?=.*\\\\d)(?=.*[$@$!%*#?&])[A-Za-z\\\\d$@$!%*#?&]{8,16}$\"";
+        return Pattern.matches(pattern, pw);
     }
 }

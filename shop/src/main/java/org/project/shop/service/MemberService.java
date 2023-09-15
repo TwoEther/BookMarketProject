@@ -17,4 +17,5 @@ public interface MemberService {
 
     public boolean checkReqexId(String id);
 
+    public boolean checkReqexPw(String id);
 }

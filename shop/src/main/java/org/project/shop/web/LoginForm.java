@@ -6,8 +6,8 @@ import lombok.Setter;
 
 @Getter @Setter
 public class LoginForm {
-    @NotEmpty(message = "이메일을 입력하세요")
-    private String email;
+    @NotEmpty(message = "아이디를 입력하세요")
+    private String userId;
 
     @NotEmpty(message = "비밀번호 입력하세요")
     private String password;

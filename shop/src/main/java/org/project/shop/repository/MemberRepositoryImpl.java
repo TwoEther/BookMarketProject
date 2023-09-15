@@ -33,11 +33,11 @@ public class MemberRepositoryImpl implements MemberRepository{
 
 
     @Override
-    public Optional<Member> findById(String user_id) {
+    public Optional<Member> findById(String userId) {
         Optional<Member> member = Optional.empty();
         try {
-             member = Optional.ofNullable(em.createQuery("select m from Member m where m.user_id = :user_id", Member.class)
-                    .setParameter("user_id", user_id)
+             member = Optional.ofNullable(em.createQuery("select m from Member m where m.userId = :userId", Member.class)
+                    .setParameter("userId", userId)
                     .getSingleResult());
         } catch (NoResultException e) {
             member = Optional.empty();
