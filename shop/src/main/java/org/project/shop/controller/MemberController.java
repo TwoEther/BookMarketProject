@@ -29,10 +29,14 @@ public class MemberController {
     private final MemberServiceImpl memberServiceImpl;
 
     @GetMapping(value = "/new")
-    public String createForm(Model model) {
+    public String createForm(@RequestParam(value = "error", required = false) String error,
+                             @RequestParam(value = "exception", required = false) String exception,
+                             Model model) {
         model.addAttribute("memberForm", new MemberForm());
         return "/member/createMemberForm";
     }
+
+
 
     @PostMapping(value = "/new")
     public String signUp(@Valid MemberForm form, BindingResult result) {
