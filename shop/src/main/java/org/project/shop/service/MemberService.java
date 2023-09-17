@@ -15,6 +15,8 @@ public interface MemberService {
 
     public int checkDuplicateMember(String id);
 
+    public boolean checkPassword(String id, String pw);
+
     public boolean checkReqexId(String id);
 
     public boolean checkReqexPw(String id);

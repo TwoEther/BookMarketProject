@@ -1,5 +1,5 @@
 package org.project.shop.service;
 
 public enum ExceptionCode {
-    EMPTY, Reqex, OK
+    EMPTY, Reqex, Dup, OK
 }

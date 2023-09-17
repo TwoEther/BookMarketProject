@@ -43,7 +43,6 @@ public class MemberRepositoryImpl implements MemberRepository{
             member = Optional.empty();
         }finally {
         }
-        System.out.println("member.toString() = " + member.toString());
         return member;
 
     }

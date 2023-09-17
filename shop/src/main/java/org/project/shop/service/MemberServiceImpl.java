@@ -36,7 +36,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public Long join(Member member) {
         member.setPassword(passwordEncoder.encode(member.getPassword()));
-        System.out.println("member.toString() = " + member.toString());
+        System.out.println("member.toString() = " + member.getUserId());
         memberRepository.save(member);
         return member.getId();
     }
@@ -62,14 +62,21 @@ public class MemberServiceImpl implements MemberService {
             return ExceptionCode.EMPTY.ordinal();
         } else if (!checkReqexId(id)) {
             return ExceptionCode.Reqex.ordinal();
+        } else if (findById(id).isPresent()){
+            return ExceptionCode.Dup.ordinal();
         } else {
             return ExceptionCode.OK.ordinal();
         }
     }
 
     @Override
+    public boolean checkPassword(String id, String pw) {
+        return passwordEncoder.matches(pw, memberRepository.findById(id).get().getPassword());
+    }
+
+    @Override
     public boolean checkReqexId(String id) {
-        String pattern = "^[a-z0-9]{4,20}";
+        String pattern = "^[a-z0-9]{6,20}";
         return Pattern.matches(pattern, id);
     }
 

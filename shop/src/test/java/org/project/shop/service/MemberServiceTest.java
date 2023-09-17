@@ -36,15 +36,15 @@ public class MemberServiceTest {
     public void join() throws Exception{
         //given
         String name = "lee";
-        String email = "test@test.com";
+        String id = "lee";
         String password = passwordEncoder.encode("password1");
-        Member member1 = new Member(email, name);
+        Member member1 = new Member(id, name);
 
         //when
         Long memberId = memberServiceImpl.join(member1);
 
         //Then
-        Optional<Member> findMember = memberServiceImpl.findByEmail(email);
+        Optional<Member> findMember = memberServiceImpl.findById(id);
         System.out.println("findMember.toString() = " + findMember.toString());
         System.out.println("memberRepository = " + memberRepository.findAllMember());
 
@@ -57,10 +57,10 @@ public class MemberServiceTest {
         // 2. 유저의 ID와 PW를 통해 유저를 찾을수 있어야 함
 
         //given
-        String email = "test@test.com";
+        String id = "lee";
         String name = "lee";
         String pw = "powkek";
-        Member joinMember1 = new Member(email, name);
+        Member joinMember1 = new Member(id, name);
 
 
         // when
@@ -68,7 +68,7 @@ public class MemberServiceTest {
 
         // then
         Member findMember = memberServiceImpl.findOneMember(joinMember1.getId());
-        assertThat(findMember.getEmail()).isEqualTo(email);
+        assertThat(findMember.getUserId()).isEqualTo(id);
         assertThat(findMember.getName()).isEqualTo(name);
         assertThat(findMember.getPassword()).isEqualTo(joinMember1.getPassword());
 

@@ -45,7 +45,7 @@ public class MemberController {
         }
 
         String id = form.getUserId();
-        String password = form.getPassword();
+        String password = form.getPassword1();
         Member member = new Member(id, password);
 //        String name = form.getName();e
         if (memberServiceImpl.checkReqexId(id) && memberServiceImpl.checkReqexPw(password)) {
@@ -74,9 +74,17 @@ public class MemberController {
     @PostMapping(value = "/idCheck")
     @ResponseBody
     public int idCheck(@RequestParam String userId) throws Exception{
+        System.out.println("memberServiceImpl.checkDuplicateMember(userId) = " + memberServiceImpl.checkDuplicateMember(userId));
         return memberServiceImpl.checkDuplicateMember(userId);
     }
-    
+
+    @PostMapping(value = "/pwCheck")
+    @ResponseBody
+    public boolean pwCheck(@RequestParam String pw) throws Exception{
+        return memberServiceImpl.checkReqexPw(pw);
+    }
+
+
 
     @GetMapping(value = "/login")
     public String createLoginForm(Model model) {
