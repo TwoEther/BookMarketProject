@@ -22,7 +22,7 @@ public class PrincipalDetail implements UserDetails {
         collection.add(new GrantedAuthority() {
             @Override
             public String getAuthority() {
-                return member.getRole().value();
+                return member.getRole().getDescription();
             }
         });
         return collection;

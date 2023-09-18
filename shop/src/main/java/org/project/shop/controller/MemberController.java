@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.project.shop.domain.Member;
+import org.project.shop.domain.Role;
 import org.project.shop.service.MemberServiceImpl;
 import org.project.shop.web.LoginForm;
 import org.project.shop.web.MemberForm;
@@ -36,7 +37,10 @@ public class MemberController {
         return "/member/createMemberForm";
     }
 
-
+    @ModelAttribute("roles")
+    private Role[] roles() {
+        return Role.values();
+    }
 
     @PostMapping(value = "/new")
     public String signUp(@Valid MemberForm form, BindingResult result) {

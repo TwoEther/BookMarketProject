@@ -30,7 +30,7 @@ public class ItemServiceImpl implements ItemService{
         file.transferTo(uploadFile);
         // DB에 파일 넣기
         item.setFileName(fileName);
-        item.setFilePath("/files/" + fileName);
+        item.setFilePath("/static/files/" + fileName);
 
         itemRepositoryImpl.save(item);
     }

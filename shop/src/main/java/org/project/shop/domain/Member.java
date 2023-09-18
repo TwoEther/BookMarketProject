@@ -33,6 +33,7 @@ public class Member {
     private Address address;
 
     @Column(name = "Role")
+    @Embedded
     private Role role;
 
     @Embedded

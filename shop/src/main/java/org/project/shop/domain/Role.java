@@ -1,17 +1,20 @@
 package org.project.shop.domain;
 
+import lombok.Getter;
+
+@Getter
 public enum Role {
     ROLE_USER("ROLE_USER"),
     ROLE_ANONYMOUS("ROLE_ANONYMOUS"),
     ROLE_ADMIN("ROLE_ADMIN");
 
-    String role;
+    private final String description;
 
-    Role(String role) {
-        this.role = role;
+    Role(String description) {
+        this.description = description;
     }
 
-    public String value() {
-        return role;
+    public String getDescription() {
+        return description;
     }
 }
