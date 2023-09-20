@@ -27,6 +27,7 @@ public class Item {
     private int isbn;
     private Date createDate;
     private int pages;
+    private String description;
 
     @NotNull
     private String filePath;

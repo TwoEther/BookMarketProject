@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header" />
+<body>
+<div class="container-fluid">
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+
+    <div class="">
+        <h1>~ 에 대한 검색결과</h1>
+        <p>전체 몇건</p><hr>
+        <div th:each="item : ${items}">
+            <div class="row">
+                <div class="col-4">
+                    <img th:src="@{${item.getFilePath()}}" alt="" style="width: 100px; height: 100px;">
+                </div>
+                <div class="col-8">
+                    <a th:href="@{/item/{param1}(param1=${item.id})}"><p th:text="${item.name}"></p></a>
+                    가격 : <p th:text="${item.price}"></p>
+                </div>
+            </div><hr><br>
+        </div>
+
+<!--    <div>-->
+<!--        <table class="table table-striped">-->
+<!--            <thead>-->
+<!--            <tr>-->
+<!--                <th>#</th>-->
+<!--                <th>상품명</th>-->
+<!--                <th>가격</th>-->
+<!--                <th>재고수량</th>-->
+<!--                <th>이미지</th>-->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--            <tr th:each="item : ${items}">-->
+<!--                <td th:text="${item.id}"></td>-->
+<!--                <td th:text="${item.name}"></td>-->
+<!--                <td th:text="${item.price}"></td>-->
+<!--                <td th:text="${item.getFilePath()}"></td>-->
+<!--                <td>-->
+<!--                    <img th:src="@{${item.getFilePath()}}" alt="">-->
+<!--                </td>-->
+<!--                <td>-->
+<!--                    <a href="#" th:href="@{/items/{id}/edit (id=${item.id})}"-->
+<!--                       class="btn btn-primary" role="button">수정</a>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            </tbody>-->
+<!--        </table>-->
+<!--    </div>-->
+    <div th:replace="fragments/footer :: footer"/>
+</div> <!-- /container -->
+</body>
+</html>

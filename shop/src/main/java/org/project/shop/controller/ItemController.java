@@ -23,13 +23,13 @@ import java.util.List;
 public class ItemController {
     private final ItemServiceImpl itemServiceImpl;
 
-    @GetMapping(value = "/items/new")
+    @GetMapping(value = "/item/new")
     public String itemForm(Model model) {
         model.addAttribute("form", new ItemForm());
-        return "items/createItemForm";
+        return "item/createItemForm";
     }
 
-    @PostMapping(value = "/items/new")
+    @PostMapping(value = "/item/new")
     public String create(ItemForm form, @RequestParam("image") MultipartFile file) throws Exception {
         Item item = new Item();
         item.setName(form.getName());
@@ -39,17 +39,26 @@ public class ItemController {
         item.setPrice(form.getPrice());
 
         itemServiceImpl.saveItem(item, file);
-        return "redirect:/items";
+        return "redirect:/item";
     }
 
-    @GetMapping(value = "/items")
+    @GetMapping(value = "/item")
     public String list(Model model) {
         List<Item> items = itemServiceImpl.findItems();
         model.addAttribute("items", items);
-        return "items/itemList";
+        return "item/itemList";
     }
 
-    @GetMapping(value = "/items/{itemId}/edit")
+    @GetMapping(value = "/item/{itemId}")
+    public String showItem(@PathVariable("itemId") Long itemId, Model
+            model) {
+
+        Item item = itemServiceImpl.findOneItem(itemId);
+        model.addAttribute("item", item);
+        return "item/itemDetail";
+    }
+
+    @GetMapping(value = "/item/{itemId}/edit")
     public String updateItemForm(@PathVariable("itemId") Long itemId, Model
             model) {
 
@@ -62,16 +71,16 @@ public class ItemController {
         form.setAuthor(item.getAuthor());
         form.setIsbn(item.getIsbn());
         model.addAttribute("form", form);
-        return "items/updateItemForm";
+        return "item/updateItemForm";
     }
 
 
-    @PostMapping(value = "/items/{itemId}/edit")
+    @PostMapping(value = "/item/{itemId}/edit")
     public String updateItem(@PathVariable Long itemId, @ModelAttribute("form")
     ItemForm form) {
         itemServiceImpl.updateItem(itemId, form.getName(), form.getPrice(),
                 form.getStockQuantity());
-        return "redirect:/items";
+        return "redirect:/item";
     }
 
 }
