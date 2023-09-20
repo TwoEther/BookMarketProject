@@ -4,7 +4,7 @@
 <body>
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-    <form th:action="@{/items/new}" th:object="${form}" method="post" enctype="multipart/form-data">
+    <form th:action="@{/item/new}" th:object="${form}" method="post" enctype="multipart/form-data">
         <div class="form-group">
             <label th:for="name">상품명</label>
             <input type="text" name="name" class="form-control"
@@ -15,20 +15,41 @@
             <input type="number" name="price" class="form-control"
                    placeholder="가격을 입력하세요">
         </div>
+
         <div class="form-group">
             <label th:for="stockQuantity">수량</label>
             <input type="number" name="stockQuantity" class="form-control"
                    placeholder="수량을 입력하세요">
         </div>
+
         <div class="form-group">
             <label th:for="author">저자</label>
             <input type="text" name="author" class="form-control"
                    placeholder="저자를 입력하세요">
         </div>
+
+        <div class="form-group">
+            <label th:for="stockQuantity">출판사</label>
+            <input type="text" name="publisher" class="form-control"
+                   placeholder="수량을 입력하세요">
+        </div>
+
         <div class="form-group">
             <label th:for="isbn">ISBN</label>
-            <input type="text" name="isbn" class="form-control"
+            <input type="number" name="isbn" class="form-control"
                    placeholder="ISBN을 입력하세요">
+        </div>
+
+        <div class="form-group">
+            <label th:for="isbn">페이지</label>
+            <input type="number" name="pages" class="form-control"
+                   placeholder="페이지수를 입력하세요">
+        </div>
+
+        <div class="form-group">
+            <label th:for="isbn">부가설명</label>
+            <input type="text" name="description" class="form-control"
+                   placeholder="부가설명을 입력하세요">
         </div>
         <div class="form-group">
             <label th:for="image">image</label>

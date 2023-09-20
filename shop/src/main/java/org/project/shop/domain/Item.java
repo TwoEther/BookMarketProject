@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,7 +26,7 @@ public class Item {
     private String author;
     private String publisher;
     private int isbn;
-    private Date createDate;
+    private LocalDateTime createDate;
     private int pages;
     private String description;
 

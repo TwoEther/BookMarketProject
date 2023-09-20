@@ -33,10 +33,14 @@ public class ItemController {
     public String create(ItemForm form, @RequestParam("image") MultipartFile file) throws Exception {
         Item item = new Item();
         item.setName(form.getName());
-        item.setStockQuantity(form.getStockQuantity());
-        item.setIsbn(form.getIsbn());
-        item.setAuthor(form.getAuthor());
         item.setPrice(form.getPrice());
+        item.setStockQuantity(form.getStockQuantity());
+        item.setAuthor(form.getAuthor());
+        item.setPublisher(form.getPublisher());
+        item.setIsbn(form.getIsbn());
+        item.setCreateDate(form.getCreateDate());
+        item.setPages(form.getPages());
+        item.setDescription(form.getDescription());
 
         itemServiceImpl.saveItem(item, file);
         return "redirect:/item";
