@@ -10,4 +10,7 @@ public interface ItemService {
     public Item findOneItem(Long itemId);
     public List<Item> findItems();
     public void updateItem(Long itemId, String name, int price, int stockQuantity);
+
+    public void orderItem(Long itemId, int quantity);
+    public boolean checkStockQuantity(Long itemId, int quantity);
 }

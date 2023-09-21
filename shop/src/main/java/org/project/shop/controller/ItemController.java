@@ -20,16 +20,17 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping(value = "/item")
 public class ItemController {
     private final ItemServiceImpl itemServiceImpl;
 
-    @GetMapping(value = "/item/new")
+    @GetMapping(value = "/new")
     public String itemForm(Model model) {
         model.addAttribute("form", new ItemForm());
         return "item/createItemForm";
     }
 
-    @PostMapping(value = "/item/new")
+    @PostMapping(value = "/new")
     public String create(ItemForm form, @RequestParam("image") MultipartFile file) throws Exception {
         Item item = new Item();
         item.setName(form.getName());
@@ -46,14 +47,14 @@ public class ItemController {
         return "redirect:/item";
     }
 
-    @GetMapping(value = "/item")
+    @GetMapping(value = "")
     public String list(Model model) {
         List<Item> items = itemServiceImpl.findItems();
         model.addAttribute("items", items);
         return "item/itemList";
     }
 
-    @GetMapping(value = "/item/{itemId}")
+    @GetMapping(value = "/{itemId}")
     public String showItem(@PathVariable("itemId") Long itemId, Model
             model) {
 
@@ -62,7 +63,18 @@ public class ItemController {
         return "item/itemDetail";
     }
 
-    @GetMapping(value = "/item/{itemId}/edit")
+    @PostMapping(value = "/cart")
+    public boolean checkStockQuantity(@RequestParam("quantity") int quantity, Long itemId) {
+        // 장바구니 버튼을 클릭하면 재고를 확인
+        if (itemServiceImpl.checkStockQuantity(itemId, quantity)) {
+            itemServiceImpl.orderItem(itemId, quantity);
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    @GetMapping(value = "/{itemId}/edit")
     public String updateItemForm(@PathVariable("itemId") Long itemId, Model
             model) {
 
@@ -79,7 +91,7 @@ public class ItemController {
     }
 
 
-    @PostMapping(value = "/item/{itemId}/edit")
+    @PostMapping(value = "/{itemId}/edit")
     public String updateItem(@PathVariable Long itemId, @ModelAttribute("form")
     ItemForm form) {
         itemServiceImpl.updateItem(itemId, form.getName(), form.getPrice(),

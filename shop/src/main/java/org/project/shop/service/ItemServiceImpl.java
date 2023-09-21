@@ -52,4 +52,18 @@ public class ItemServiceImpl implements ItemService{
         item.setPrice(price);
         item.setStockQuantity(stockQuantity);
     }
+
+    @Override
+    public void orderItem(Long itemId, int quantity) {
+        Item findItem = itemRepositoryImpl.findOneItem(itemId);
+        int stockQuantity = findItem.getStockQuantity();
+        findItem.setStockQuantity(stockQuantity-quantity);
+    }
+
+    @Override
+    public boolean checkStockQuantity(Long itemId, int quantity) {
+        return findOneItem(itemId).getStockQuantity() > quantity;
+    }
+
+
 }

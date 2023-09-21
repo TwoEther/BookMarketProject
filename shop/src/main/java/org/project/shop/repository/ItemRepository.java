@@ -11,4 +11,7 @@ public interface ItemRepository{
     public Item findOneItem(Long id);
 
     public List<Item> findAllItem();
+
+//    public void deleteOneItem(Long id);
+
 }
