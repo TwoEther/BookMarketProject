@@ -63,8 +63,10 @@ public class ItemController {
         return "item/itemDetail";
     }
 
-    @PostMapping(value = "/cart")
+    @GetMapping(value = "/cart")
+    @ResponseBody
     public boolean checkStockQuantity(@RequestParam("quantity") int quantity, Long itemId) {
+        System.out.println("quantity = " + quantity + "itemId = " + itemId);
         // 장바구니 버튼을 클릭하면 재고를 확인
         if (itemServiceImpl.checkStockQuantity(itemId, quantity)) {
             itemServiceImpl.orderItem(itemId, quantity);

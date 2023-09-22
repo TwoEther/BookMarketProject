@@ -69,29 +69,26 @@
                                     function setPriceInHTML(){
                                         var price = "[[${item.price}]]";
                                         var count = document.getElementById('quantityBlock').value;
-                                        console.log(price, count)
                                         result = price * count;
                                         document.getElementById('priceText').innerHTML = result;
                                     }
-                                    function idCheck(){
+                                    function quantityCheck(){
+                                        console.log(document.getElementById('quantityBlock').value);
                                         $.ajax({
                                             url : "/item/cart",
-                                            type : "POST",
+                                            type : "GET",
                                             dataType : "JSON",
-                                            data : {"userId" : $("#userId").val()},
+                                            data : {"quantity" : $("#quantityBlock").val(),
+                                                    "itemId" : [[${item.id}]]
+                                            },
                                             beforeSend: function (xhr) {
                                               xhr.setRequestHeader(header, token);
                                             },
                                             success : function(flag){
-                                                if(flag == 0){
-                                                    $('#result').text('아이디를 입력해주세요.');
-                                                }else if(flag == 1){
-                                                    $('#result').text('사용 불가능한 아이디입니다.');
-                                                }else if(flag == 2){
-                                                    $('#result').text('중복된 아이디 입니다.');
-                                                }
-                                                else{
-                                                    $('#result').text('사용 가능한 아이디입니다.');
+                                                if(flag == true){
+                                                    alert("장바구니에 담겼습니다");
+                                                }else{
+                                                    alert("재고를 초과합니다");
                                                 }
                                             },
                                             error:function(request,status,error){
@@ -105,6 +102,9 @@
                         </div>
 
                         <a class="btn btn-lg btn-primary" style="margin-right: 10px;" th:href="@{/item/cart}" sec:authorize="isAuthenticated()">장바구니 담기</a>
+                        <script th:inline="javascript">
+
+                        </script>
                         <a class="btn btn-lg btn-primary" th:href="@{/member/login}">구매하기</a>
                     </div>
 
