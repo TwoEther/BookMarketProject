@@ -26,8 +26,6 @@ public class Member {
 
     private String name;
 
-
-
 //     정의 타입 사용
     @Embedded
     private Address address;
@@ -46,12 +44,20 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Review> reviews = new ArrayList<>();
 
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "member")
+    private Cart cart;
+
     public void setAddress(Address address) {
         this.address = address;
     }
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
     }
 
     public void setPassword(String password) {

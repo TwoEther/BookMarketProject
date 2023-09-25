@@ -32,6 +32,11 @@ public class Order {
     @JoinColumn(name = "delivery_id")
     private Delivery delivery;
 
+    // N:1 (Order : Cart)
+    @ManyToOne
+    @JoinColumn(name = "orders", insertable = false, updatable = false)
+    private Cart cart;
+
     private LocalDate orderDate;
 
     // Enum type

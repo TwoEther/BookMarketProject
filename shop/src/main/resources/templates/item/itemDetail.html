@@ -72,38 +72,50 @@
                                         result = price * count;
                                         document.getElementById('priceText').innerHTML = result;
                                     }
-                                    function quantityCheck(){
-                                        console.log(document.getElementById('quantityBlock').value);
-                                        $.ajax({
-                                            url : "/item/cart",
-                                            type : "GET",
-                                            dataType : "JSON",
-                                            data : {"quantity" : $("#quantityBlock").val(),
-                                                    "itemId" : [[${item.id}]]
-                                            },
-                                            beforeSend: function (xhr) {
-                                              xhr.setRequestHeader(header, token);
-                                            },
-                                            success : function(flag){
-                                                if(flag == true){
-                                                    alert("장바구니에 담겼습니다");
-                                                }else{
-                                                    alert("재고를 초과합니다");
-                                                }
-                                            },
-                                            error:function(request,status,error){
-                                            alert("code = "+ request.status + " message = " + request.responseText + " error = " + error); // 실패 시 처리
-                                           }
-                                        });
-                                    }
+
+
                                 </script>
                             </div>
 
                         </div>
 
-                        <a class="btn btn-lg btn-primary" style="margin-right: 10px;" th:href="@{/item/cart}" sec:authorize="isAuthenticated()">장바구니 담기</a>
+                        <a class="btn btn-lg btn-primary" style="margin-right: 10px;" th:href="@{/item/cart}" onclick="quantityCheck()" sec:authorize="isAuthenticated()">장바구니 담기</a>
                         <script th:inline="javascript">
+                            function quantityCheck(){
+                                var stock = document.getElementById('quantityBlock').value;
+                                var token = $("meta[name='_csrf']").attr("content");
+                                var header = $("meta[name='_csrf_header']").attr("content");
+                                $(function() {
+                                    $(document).ajaxSend(function(e, xhr, options) {
+                                        xhr.setRequestHeader(header, token);
+                                    });
+                                });
+                                console.log(stock);
+                                $.ajax({
+                                    url : "/item/cart",
+                                    type : "POST",
+                                    dataType : "JSON",
+                                    data : {"quantity" : stock,
+                                            "itemId" : [[${item.id}]]
+                                    },
+                                    beforeSend: function (xhr) {
+                                      xhr.setRequestHeader(header, token);
+                                    },
+                                    success : function(flag){
+                                        if(flag == true){
+                                            alert("장바구니에 담겼습니다");
+                                            location.href = "/item/[[{item.id}]]";
+                                        }else{
+                                            alert("재고를 초과합니다");
+                                            location.href = "/item/[[{item.id}]]";
+                                        }
 
+                                    },
+                                    error:function(request,status,error){
+                                    alert("code = "+ request.status + " message = " + request.responseText + " error = " + error); // 실패 시 처리
+                                   }
+                                });
+                            }
                         </script>
                         <a class="btn btn-lg btn-primary" th:href="@{/member/login}">구매하기</a>
                     </div>

@@ -17,6 +17,9 @@ import org.springframework.web.util.UriUtils;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
+
+import static org.springframework.data.util.TypeUtils.type;
 
 @Controller
 @RequiredArgsConstructor
@@ -63,10 +66,13 @@ public class ItemController {
         return "item/itemDetail";
     }
 
-    @GetMapping(value = "/cart")
+    @PostMapping(value = "/cart")
     @ResponseBody
-    public boolean checkStockQuantity(@RequestParam("quantity") int quantity, Long itemId) {
-        System.out.println("quantity = " + quantity + "itemId = " + itemId);
+    public boolean checkStockQuantity(@RequestParam Map<String, Object> param)  {
+        Long itemId = Long.parseLong((String) param.get("itemId"));
+        int quantity = Integer.parseInt((String) param.get("quantity"));
+
+        System.out.println("quantity = " + quantity);
         // 장바구니 버튼을 클릭하면 재고를 확인
         if (itemServiceImpl.checkStockQuantity(itemId, quantity)) {
             itemServiceImpl.orderItem(itemId, quantity);

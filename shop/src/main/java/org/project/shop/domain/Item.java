@@ -41,8 +41,12 @@ public class Item {
     private List<Category> categories = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "items", unique = true)
+    @JoinColumn(name = "items", unique = true, insertable = false, updatable = false)
     private Review review;
+
+    @ManyToOne
+    @JoinColumn(name = "items", insertable = false, updatable = false)
+    private Cart cart;
 
     // 재고 관리를 위한 로직
     public void addStock(int stockQuantity) {
