@@ -1,4 +1,4 @@
-package org.project.shop;
+package org.project.shop.config;
 
 import org.project.shop.auth.CustomAuthenticationFailureHandler;
 import org.project.shop.service.PrincipalDetailService;

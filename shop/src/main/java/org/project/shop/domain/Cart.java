@@ -10,9 +10,9 @@ import java.util.List;
 @Getter
 public class Cart {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cart_id")
-    private Long cartId;
+    private Long id;
     private int item_price;
 
     public Cart() {
@@ -23,27 +23,38 @@ public class Cart {
     }
 
     public Cart(Long cartId, int item_price) {
-        this.cartId = cartId;
+        this.id = cartId;
         this.item_price = item_price;
     }
 
-    public Cart(Long cartId, int item_price, Member member) {
-        this.cartId = cartId;
-        this.item_price = item_price;
-        this.member = member;
-    }
 
-    @OneToOne(mappedBy = "cart")
+    @OneToOne(mappedBy = "cart", cascade = CascadeType.MERGE)
     private Member member;
-
-    public void setMember(Member member) {
-        this.member = member;
-        member.setCart(this);
-    }
 
     @OneToMany(mappedBy = "cart")
     private List<Item> items = new ArrayList<>();
 
     @OneToMany(mappedBy = "cart")
     private List<Order> orders = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "Cart{" +
+                "cartId=" + id +
+                ", item_price=" + item_price +
+                ", member = " + member.getId() +
+                '}';
+    }
+
+
+    public void setMember(Member member) {
+        this.member = member;
+        member.setCart(this);
+    }
+
+    public static Cart createCart(Member member) {
+        Cart cart = new Cart();
+        cart.setMember(member);
+        return cart;
+    }
 }

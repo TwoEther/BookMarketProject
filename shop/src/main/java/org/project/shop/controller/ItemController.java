@@ -66,21 +66,6 @@ public class ItemController {
         return "item/itemDetail";
     }
 
-    @PostMapping(value = "/cart")
-    @ResponseBody
-    public boolean checkStockQuantity(@RequestParam Map<String, Object> param)  {
-        Long itemId = Long.parseLong((String) param.get("itemId"));
-        int quantity = Integer.parseInt((String) param.get("quantity"));
-
-        System.out.println("quantity = " + quantity);
-        // 장바구니 버튼을 클릭하면 재고를 확인
-        if (itemServiceImpl.checkStockQuantity(itemId, quantity)) {
-            itemServiceImpl.orderItem(itemId, quantity);
-            return true;
-        }else{
-            return false;
-        }
-    }
 
     @GetMapping(value = "/{itemId}/edit")
     public String updateItemForm(@PathVariable("itemId") Long itemId, Model

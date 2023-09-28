@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class MemberServiceImpl implements MemberService {
     private final MemberRepositoryImpl memberRepository;
     private final PasswordEncoder passwordEncoder;
@@ -36,7 +36,6 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public Long join(Member member) {
         member.setPassword(passwordEncoder.encode(member.getPassword()));
-        System.out.println("member.toString() = " + member.getUserId());
         memberRepository.save(member);
         return member.getId();
     }

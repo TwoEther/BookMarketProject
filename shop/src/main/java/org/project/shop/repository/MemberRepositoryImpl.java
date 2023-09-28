@@ -31,6 +31,11 @@ public class MemberRepositoryImpl implements MemberRepository{
                 .getResultList();
     }
 
+    @Override
+    public void mergeMember(Member member) {
+        em.merge(member);
+    }
+
 
     @Override
     public Optional<Member> findById(String userId) {

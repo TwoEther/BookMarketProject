@@ -9,6 +9,8 @@ public interface MemberRepository {
     public void save(Member member);
     public Member findMember(Long id);
     public List<Member> findAllMember();
+
+    public void mergeMember(Member member);
     public Optional<Member> findById(String id);
 
 

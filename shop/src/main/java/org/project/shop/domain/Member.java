@@ -44,7 +44,7 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Review> reviews = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "member")
     private Cart cart;
 
@@ -73,6 +73,11 @@ public class Member {
         this.password = password;
     }
 
+    public Member(String userId, String password, String name) {
+        this.userId = userId;
+        this.password = password;
+        this.name = name;
+    }
 
     public Member(String name) {
         this.name = name;
@@ -80,5 +85,15 @@ public class Member {
 
     public Member() {
 
+    }
+
+    @Override
+    public String toString() {
+        return "Member{" +
+                "id=" + id +
+                ", userId='" + userId + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                '}';
     }
 }
