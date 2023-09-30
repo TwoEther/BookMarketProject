@@ -30,9 +30,7 @@ public class Item {
     private int pages;
     private String description;
 
-    @NotNull
     private String filePath;
-    @NotNull
     private String fileName;
 
     // N:M
@@ -47,6 +45,16 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "items", insertable = false, updatable = false)
     private Cart cart;
+
+    public Item(String name, int price, int stockQuantity) {
+        this.name = name;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
+    }
+
+    public Item() {
+
+    }
 
     // 재고 관리를 위한 로직
     public void addStock(int stockQuantity) {

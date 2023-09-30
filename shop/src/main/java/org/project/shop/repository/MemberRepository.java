@@ -11,7 +11,7 @@ public interface MemberRepository {
     public List<Member> findAllMember();
 
     public void mergeMember(Member member);
-    public Optional<Member> findById(String id);
+    public Member findById(String id);
 
 
 }

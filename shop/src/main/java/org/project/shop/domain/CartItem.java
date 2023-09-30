@@ -10,11 +10,11 @@ public class CartItem {
     @GeneratedValue
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn
     private Item item;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn
     private Cart cart;
 
@@ -40,8 +40,19 @@ public class CartItem {
         return cartItem;
     }
 
+    public void setItemId(Long itemId) {
+        this.item.setId(itemId);
+    }
 
     public void addCount(int count) {
         this.count += count;
+    }
+
+    @Override
+    public String toString() {
+        return "CartItem{" +
+                "id=" + id +
+                ", count=" + count +
+                '}';
     }
 }

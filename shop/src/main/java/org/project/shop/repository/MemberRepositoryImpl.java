@@ -1,5 +1,6 @@
 package org.project.shop.repository;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
@@ -9,10 +10,18 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+import static org.project.shop.domain.QMember.member;
+
 @Repository
 public class MemberRepositoryImpl implements MemberRepository{
     @PersistenceContext
     private EntityManager em;
+
+    private final JPAQueryFactory queryFactory;
+
+    public MemberRepositoryImpl(JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
 
     @Override
     public void save(Member member) {
@@ -22,13 +31,17 @@ public class MemberRepositoryImpl implements MemberRepository{
 
     @Override
     public Member findMember(Long id) {
-        return em.find(Member.class, id);
+        return queryFactory.select(member)
+                .from(member)
+                .where(member.id.eq(id))
+                .fetchOne();
     }
 
     @Override
     public List<Member> findAllMember(){
-        return em.createQuery("select m from Member m", Member.class)
-                .getResultList();
+        return queryFactory.select(member)
+                .from(member)
+                .fetch();
     }
 
     @Override
@@ -38,18 +51,10 @@ public class MemberRepositoryImpl implements MemberRepository{
 
 
     @Override
-    public Optional<Member> findById(String userId) {
-        Optional<Member> member = Optional.empty();
-        try {
-             member = Optional.ofNullable(em.createQuery("select m from Member m where m.userId = :userId", Member.class)
-                    .setParameter("userId", userId)
-                    .getSingleResult());
-        } catch (NoResultException e) {
-            member = Optional.empty();
-        }finally {
-        }
-        return member;
-
+    public Member findById(String userId) {
+        return queryFactory.select(member)
+                .from(member)
+                .where(member.userId.eq(userId))
+                .fetchOne();
     }
-
 }

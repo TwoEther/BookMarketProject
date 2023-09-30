@@ -51,7 +51,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Optional<Member> findById(String id) {
+    public Member findById(String id) {
         return memberRepository.findById(id);
     }
 
@@ -61,7 +61,7 @@ public class MemberServiceImpl implements MemberService {
             return ExceptionCode.EMPTY.ordinal();
         } else if (!checkReqexId(id)) {
             return ExceptionCode.Reqex.ordinal();
-        } else if (findById(id).isPresent()){
+        } else if (findById(id) != null){
             return ExceptionCode.Dup.ordinal();
         } else {
             return ExceptionCode.OK.ordinal();
@@ -70,7 +70,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public boolean checkPassword(String id, String pw) {
-        return passwordEncoder.matches(pw, memberRepository.findById(id).get().getPassword());
+        return passwordEncoder.matches(pw, memberRepository.findById(id).getPassword());
     }
 
     @Override

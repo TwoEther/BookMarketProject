@@ -31,10 +31,14 @@ class CartServiceTest {
     private CartService cartService;
 
     @Autowired
+    private CartRepository cartRepository;
+
+    @Autowired
     private CartItemRepository cartItemRepository;
 
     @PersistenceContext
     EntityManager em;
+
 
     public Member createMember() {
         Member member = new Member("id", "password");
@@ -53,7 +57,7 @@ class CartServiceTest {
     }
 
     @Test
-    @DisplayName("장바구니 테스트")
+    @DisplayName("단순 장바구니 테스트")
     public void saveTest() {
         Member member = createMember();
         Item item = createItem();
@@ -64,13 +68,40 @@ class CartServiceTest {
 
 
         Long cartItemId = cartService.addCart(cartItem, member.getUserId());
-        Optional<CartItem> findCartItem = cartItemRepository.findById(cartItemId);
+        CartItem findCartItem = cartItemRepository.findById(cartItemId);
 
         assertThat(item.getId()).isEqualTo(cartItem.getItem().getId());
-        assertThat(cartItem.getCount()).isEqualTo(findCartItem.get().getCount());
+        assertThat(cartItem.getCount()).isEqualTo(findCartItem.getCount());
 
     }
 
+    public void setUp() {
+        Item item1 = new Item("테스트용 책1", 20000, 50);
+        Item item2 = new Item("테스트용 책2", 30000, 40);
+        itemRepository.save(item1);
+        itemRepository.save(item2);
+
+        Member member = new Member("lee", "pw1");
+        memberRepository.save(member);
+
+    }
+
+    @Test
+    @DisplayName("장바구니 실제 테스트")
+    public void cartSaveTest() {
+        setUp();
+
+        Member member = memberRepository.findById("lee");
+
+        // 1. 웹에서 상품에 대한 정보를 받음
+        String inputItemName = "테스트용 책1";
+        int inputValue = 10;
+        String currentUserName = "lee";
+
+        Cart cart = cartRepository.findByMemberId(member.getId());
+        CartItem saveCartItem = cartItemRepository.findByCartIdAndItemId(cart.getId(), member.getId());
 
 
+
+    }
 }
