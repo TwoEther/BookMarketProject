@@ -18,6 +18,7 @@ public class Item {
 
     @Id
     @GeneratedValue
+    @Column(name = "item_id")
     private Long id;
     private String name;
     private int price;
@@ -30,9 +31,7 @@ public class Item {
     private int pages;
     private String description;
 
-    @NotNull
     private String filePath;
-    @NotNull
     private String fileName;
 
     // N:M
@@ -44,9 +43,18 @@ public class Item {
     @JoinColumn(name = "items", unique = true, insertable = false, updatable = false)
     private Review review;
 
-    @ManyToOne
-    @JoinColumn(name = "items", insertable = false, updatable = false)
-    private Cart cart;
+    @OneToMany(mappedBy = "item")
+    private List<CartItem> cartItem = new ArrayList<>();
+
+    public Item(String name, int price, int stockQuantity) {
+        this.name = name;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
+    }
+
+    public Item() {
+
+    }
 
     // 재고 관리를 위한 로직
     public void addStock(int stockQuantity) {
@@ -60,5 +68,15 @@ public class Item {
             throw new NotEnoughStockException("more stock");
         }
         this.stockQuantity = resStock;
+    }
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", stockQuantity=" + stockQuantity +
+                '}';
     }
 }

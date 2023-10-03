@@ -11,8 +11,8 @@ public interface MemberService {
     public List<Member> findAllMember();
     public Member findOneMember(Long memberId);
 
-    public Optional<Member> findById(String id);
-
+    public Member findById(Long id);
+    public Member findByUserId(String userId);
     public int checkDuplicateMember(String id);
 
     public boolean checkPassword(String id, String pw);

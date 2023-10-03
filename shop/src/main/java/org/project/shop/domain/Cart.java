@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 public class Cart {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "cart_id")
     private Long id;
     private int item_price;
@@ -31,18 +31,19 @@ public class Cart {
     @OneToOne(mappedBy = "cart", cascade = CascadeType.MERGE)
     private Member member;
 
-    @OneToMany(mappedBy = "cart")
-    private List<Item> items = new ArrayList<>();
 
     @OneToMany(mappedBy = "cart")
     private List<Order> orders = new ArrayList<>();
+
+    @OneToMany(mappedBy = "cart")
+    private List<CartItem> cartItem = new ArrayList<>();
 
     @Override
     public String toString() {
         return "Cart{" +
                 "cartId=" + id +
                 ", item_price=" + item_price +
-                ", member = " + member.getId() +
+                ", member = " + member.getUserId() +
                 '}';
     }
 
@@ -51,6 +52,8 @@ public class Cart {
         this.member = member;
         member.setCart(this);
     }
+
+
 
     public static Cart createCart(Member member) {
         Cart cart = new Cart();

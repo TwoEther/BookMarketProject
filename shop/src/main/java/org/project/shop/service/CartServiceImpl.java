@@ -44,15 +44,15 @@ public class CartServiceImpl implements CartService {
          */
         Item item = itemRepository.findOneItem(cartItem.getItem().getId());
 
-        Optional<Member> member = memberRepository.findById(memberId);
-        Cart cart = cartRepository.findByMemberId(member.get().getId());
-        if(member.isEmpty()) {
-            cart = Cart.createCart(member.get());
+        Member member = memberRepository.findByUserId(memberId);
+        Cart cart = cartRepository.findByMemberId(member.getId());
+        if(cart == null) {
+            cart = Cart.createCart(member);
             cartRepository.save(cart);
         }
 
         CartItem savedItem = cartItemRepository.findByCartIdAndItemId(cart.getId(), item.getId());
-        if (savedItem == null) {
+        if (savedItem != null) {
             savedItem.addCount(cartItem.getCount());
             return savedItem.getId();
         }else{

@@ -9,10 +9,10 @@ import java.util.Collection;
 
 // Security가 /login 주소로 요청이 오면 대신 로그인 해줌
 
-public class PrincipalDetail implements UserDetails {
+public class PrincipalDetails implements UserDetails {
     private Member member;
 
-    public PrincipalDetail(Member member) {
+    public PrincipalDetails(Member member) {
         this.member = member;
     }
 
@@ -56,5 +56,12 @@ public class PrincipalDetail implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "PrincipalDetail{" +
+                "member=" + member.toString() +
+                '}';
     }
 }

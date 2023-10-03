@@ -1,6 +1,6 @@
 package org.project.shop.service;
 
-import org.project.shop.auth.PrincipalDetail;
+import org.project.shop.auth.PrincipalDetails;
 import org.project.shop.domain.Member;
 import org.project.shop.repository.MemberRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,7 +18,12 @@ public class PrincipalDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Member principal =  memberRepository.findById(username).orElseThrow(() -> new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다. " + username));
-        return new PrincipalDetail(principal);
+        Member principal = memberRepository.findByUserId(username);
+        principal.setName(principal.getUserId());
+        if (principal == null) {
+            return null;
+        } else {
+            return new PrincipalDetails(principal);
+        }
     }
 }

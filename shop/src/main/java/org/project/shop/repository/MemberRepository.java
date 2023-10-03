@@ -7,11 +7,17 @@ import java.util.Optional;
 
 public interface MemberRepository {
     public void save(Member member);
+
+    public void clear();
     public Member findMember(Long id);
     public List<Member> findAllMember();
 
     public void mergeMember(Member member);
-    public Optional<Member> findById(String id);
+
+    public Member findById(Long id);
+    public Member findByName(String userName);
+
+    public Member findByUserId(String userId);
 
 
 }

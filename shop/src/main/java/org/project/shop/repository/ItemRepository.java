@@ -8,9 +8,11 @@ import java.util.List;
 public interface ItemRepository{
     public void save(Item item);
 
+    public void clear();
     public Item findOneItem(Long id);
 
     public List<Item> findAllItem();
+
 
 //    public void deleteOneItem(Long id);
 

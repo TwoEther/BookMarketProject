@@ -13,10 +13,10 @@ import java.util.List;
 @Getter
 public class Member {
     @Id @GeneratedValue
-    @Column(name = "MEMBER_NUM")
+    @Column(name = "member_id")
     private Long id;
 
-    @Column(name = "userId", unique = true)
+    @Column(name = "user_id", unique = true)
     @NotBlank(message = "아이디는 필수 값 입니다.")
     private String userId;
 

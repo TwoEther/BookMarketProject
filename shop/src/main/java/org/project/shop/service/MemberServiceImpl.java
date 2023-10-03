@@ -51,17 +51,23 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Optional<Member> findById(String id) {
+    public Member findByUserId(String userId) {
+        return memberRepository.findByName(userId);
+    }
+
+
+    @Override
+    public Member findById(Long id) {
         return memberRepository.findById(id);
     }
 
     @Override
-    public int checkDuplicateMember(String id) {
-        if (id.isEmpty()) {
+    public int checkDuplicateMember(String user_id) {
+        if (user_id.isEmpty()) {
             return ExceptionCode.EMPTY.ordinal();
-        } else if (!checkReqexId(id)) {
+        } else if (!checkReqexId(user_id)) {
             return ExceptionCode.Reqex.ordinal();
-        } else if (findById(id).isPresent()){
+        } else if (findByUserId(user_id) != null){
             return ExceptionCode.Dup.ordinal();
         } else {
             return ExceptionCode.OK.ordinal();
@@ -70,7 +76,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public boolean checkPassword(String id, String pw) {
-        return passwordEncoder.matches(pw, memberRepository.findById(id).get().getPassword());
+        return passwordEncoder.matches(pw, memberRepository.findByUserId(id).getPassword());
     }
 
     @Override
