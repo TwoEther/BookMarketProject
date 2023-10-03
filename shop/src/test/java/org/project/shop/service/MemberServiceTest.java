@@ -44,7 +44,11 @@ public class MemberServiceTest {
         Long memberId = memberServiceImpl.join(member1);
 
         //Then
+<<<<<<< HEAD
         Member findMember = memberServiceImpl.findByUserId(id);
+=======
+        Member findMember = memberServiceImpl.findById(id);
+>>>>>>> 5045eca287e3ad1d06c9c6b68101e6e126cf919a
         System.out.println("findMember.toString() = " + findMember.toString());
         System.out.println("memberRepository = " + memberRepository.findAllMember());
 

@@ -55,6 +55,7 @@ public class MemberRepositoryImpl implements MemberRepository{
     }
 
     @Override
+<<<<<<< HEAD
     public Member findById(Long id) {
         return queryFactory.select(member)
                 .from(member)
@@ -75,4 +76,12 @@ public class MemberRepositoryImpl implements MemberRepository{
                 .where(member.userId.like(userId))
                 .fetchOne();
     }
+=======
+    public Member findById(String userId) {
+        return queryFactory.select(member)
+                .from(member)
+                .where(member.userId.eq(userId))
+                .fetchOne();
+    }
+>>>>>>> 5045eca287e3ad1d06c9c6b68101e6e126cf919a
 }

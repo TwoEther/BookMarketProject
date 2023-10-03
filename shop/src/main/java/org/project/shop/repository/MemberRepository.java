@@ -13,11 +13,15 @@ public interface MemberRepository {
     public List<Member> findAllMember();
 
     public void mergeMember(Member member);
+<<<<<<< HEAD
 
     public Member findById(Long id);
     public Member findByName(String userName);
 
     public Member findByUserId(String userId);
+=======
+    public Member findById(String id);
+>>>>>>> 5045eca287e3ad1d06c9c6b68101e6e126cf919a
 
 
 }

@@ -1,12 +1,22 @@
 package org.project.shop.querydsl;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+<<<<<<< HEAD
 import org.junit.jupiter.api.AfterEach;
+=======
+>>>>>>> 5045eca287e3ad1d06c9c6b68101e6e126cf919a
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.project.shop.domain.*;
+<<<<<<< HEAD
 import org.project.shop.repository.*;
+=======
+import org.project.shop.repository.CartItemRepository;
+import org.project.shop.repository.CartItemRepositoryImpl;
+import org.project.shop.repository.ItemRepositoryImpl;
+import org.project.shop.repository.MemberRepositoryImpl;
+>>>>>>> 5045eca287e3ad1d06c9c6b68101e6e126cf919a
 import org.project.shop.service.ItemServiceImpl;
 import org.project.shop.service.MemberServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +52,7 @@ public class QueryDslTest {
     @Autowired
     private CartItemRepositoryImpl cartItemRepositoryImpl;
 
+<<<<<<< HEAD
     @Autowired
     private CartRepositoryImpl cartRepositoryImpl;
 
@@ -60,6 +71,9 @@ public class QueryDslTest {
     @DisplayName("특정 아이디를 가진 Member 조회")
     @Test
     public void queryTest() {
+=======
+    public List<Member> createMember(){
+>>>>>>> 5045eca287e3ad1d06c9c6b68101e6e126cf919a
         List<Member> members = new ArrayList<>();
         for (int i = 1; i <= 10; i++) {
             String id = "id" + Integer.toString(i);
@@ -67,6 +81,29 @@ public class QueryDslTest {
             String name = "name" + Integer.toString(i);
             members.add(new Member(id, pw, name));
         }
+<<<<<<< HEAD
+=======
+        return members;
+    }
+
+    public List<Item> createItem(){
+        List<Item> items = new ArrayList<>();
+        for (int i = 1; i <= 10; i++) {
+            String name = "name" + Integer.toString(i);
+            int price = (int) (Math.random() * 30000) + 10000;
+            int stockQuantity = (int) (Math.random() * 100);
+            items.add(new Item(name, price, stockQuantity));
+        }
+        return items;
+    }
+
+
+
+    @DisplayName("특정 아이디를 가진 Member 조회")
+    @Test
+    public void queryTest(){
+        List<Member> members = createMember();
+>>>>>>> 5045eca287e3ad1d06c9c6b68101e6e126cf919a
 
         String findId = "id3";
         for (Member member : members) {
@@ -164,6 +201,35 @@ public class QueryDslTest {
             System.out.println("cartItem.toString() = " + cartItem.toString());
         }
         assertThat(findByMemberCartItem.size()).isEqualTo(1);
+
+    }
+
+    @DisplayName("모든 아이템 조회")
+    @Test
+    public void findAllItemTest() {
+        List<Item> items = createItem();
+        for (Item item : items) {
+            itemRepositoryImpl.save(item);
+        }
+        List<Item> findAllItems = itemRepositoryImpl.findAllItem();
+
+        assertThat(items.size()).isEqualTo(findAllItems.size());
+    }
+
+
+
+
+    @DisplayName("다중 조건 테스트")
+    @Test
+    public void findByCartIdAndItemIdTest(){
+        Cart cart = new Cart();
+        Item item = new Item();
+
+        CartItem cartItem = CartItem.createCartItem(cart, item, 5);
+        cartItemRepositoryImpl.save(cartItem);
+
+        CartItem findCartItem = cartItemRepositoryImpl.findByCartIdAndItemId(cart.getId(), item.getId());
+        assertThat(findCartItem.getCount()).isEqualTo(5);
 
     }
 }
