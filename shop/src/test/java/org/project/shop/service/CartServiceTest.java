@@ -91,11 +91,7 @@ class CartServiceTest {
     public void cartSaveTest() {
         setUp();
 
-<<<<<<< HEAD
         Member member = memberRepository.findByUserId("lee");
-=======
-        Member member = memberRepository.findById("lee");
->>>>>>> 5045eca287e3ad1d06c9c6b68101e6e126cf919a
 
         // 1. 웹에서 상품에 대한 정보를 받음
         String inputItemName = "테스트용 책1";

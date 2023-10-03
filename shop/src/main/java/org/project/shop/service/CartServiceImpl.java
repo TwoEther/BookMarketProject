@@ -44,11 +44,7 @@ public class CartServiceImpl implements CartService {
          */
         Item item = itemRepository.findOneItem(cartItem.getItem().getId());
 
-<<<<<<< HEAD
         Member member = memberRepository.findByUserId(memberId);
-=======
-        Member member = memberRepository.findById(memberId);
->>>>>>> 5045eca287e3ad1d06c9c6b68101e6e126cf919a
         Cart cart = cartRepository.findByMemberId(member.getId());
         if(cart == null) {
             cart = Cart.createCart(member);

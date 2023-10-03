@@ -56,15 +56,6 @@ public class Item {
 
     }
 
-    public Item(String name, int price, int stockQuantity) {
-        this.name = name;
-        this.price = price;
-        this.stockQuantity = stockQuantity;
-    }
-
-    public Item() {
-
-    }
 
     // 재고 관리를 위한 로직
     public void addStock(int stockQuantity) {

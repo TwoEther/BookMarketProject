@@ -12,19 +12,12 @@ public class CartItem {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-<<<<<<< HEAD
     @JoinColumn(name = "item_id")
     private Item item;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "cart_id")
-=======
-    @JoinColumn
-    private Item item;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn
->>>>>>> 5045eca287e3ad1d06c9c6b68101e6e126cf919a
     private Cart cart;
 
     private int count;
@@ -54,7 +47,6 @@ public class CartItem {
         return cartItem;
     }
 
-<<<<<<< HEAD
     public CartItem(Cart cart, Item item, int count) {
         this.item = item;
         this.cart = cart;
@@ -64,8 +56,6 @@ public class CartItem {
     public CartItem() {
     }
 
-=======
->>>>>>> 5045eca287e3ad1d06c9c6b68101e6e126cf919a
     public void setItemId(Long itemId) {
         this.item.setId(itemId);
     }
@@ -78,11 +68,8 @@ public class CartItem {
     public String toString() {
         return "CartItem{" +
                 "id=" + id +
-<<<<<<< HEAD
                 ", item=" + item.toString() +
                 ", cart=" + cart.toString() +
-=======
->>>>>>> 5045eca287e3ad1d06c9c6b68101e6e126cf919a
                 ", count=" + count +
                 '}';
     }

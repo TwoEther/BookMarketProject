@@ -1,9 +1,6 @@
 package org.project.shop.repository;
 
-<<<<<<< HEAD
 import com.querydsl.jpa.JPAExpressions;
-=======
->>>>>>> 5045eca287e3ad1d06c9c6b68101e6e126cf919a
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -52,14 +49,11 @@ public class CartRepositoryImpl implements CartRepository{
     public Cart findByMemberId(Long memberId) {
         return queryFactory.select(cart)
                 .from(cart)
-<<<<<<< HEAD
                 .where(cart.member.eq(
                         JPAExpressions.selectFrom(member)
                                 .where(member.id.eq(memberId))
                 ))
-=======
                 .where(cart.member.id.eq(memberId))
->>>>>>> 5045eca287e3ad1d06c9c6b68101e6e126cf919a
                 .fetchOne();
     }
 

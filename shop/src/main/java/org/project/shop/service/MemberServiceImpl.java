@@ -51,17 +51,18 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-<<<<<<< HEAD
     public Member findByUserId(String userId) {
         return memberRepository.findByName(userId);
+    }
+
+    @Override
+    public Member findById(String id) {
+        return null;
     }
 
 
     @Override
     public Member findById(Long id) {
-=======
-    public Member findById(String id) {
->>>>>>> 5045eca287e3ad1d06c9c6b68101e6e126cf919a
         return memberRepository.findById(id);
     }
 
@@ -71,11 +72,7 @@ public class MemberServiceImpl implements MemberService {
             return ExceptionCode.EMPTY.ordinal();
         } else if (!checkReqexId(user_id)) {
             return ExceptionCode.Reqex.ordinal();
-<<<<<<< HEAD
         } else if (findByUserId(user_id) != null){
-=======
-        } else if (findById(id) != null){
->>>>>>> 5045eca287e3ad1d06c9c6b68101e6e126cf919a
             return ExceptionCode.Dup.ordinal();
         } else {
             return ExceptionCode.OK.ordinal();
@@ -84,11 +81,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public boolean checkPassword(String id, String pw) {
-<<<<<<< HEAD
         return passwordEncoder.matches(pw, memberRepository.findByUserId(id).getPassword());
-=======
-        return passwordEncoder.matches(pw, memberRepository.findById(id).getPassword());
->>>>>>> 5045eca287e3ad1d06c9c6b68101e6e126cf919a
     }
 
     @Override
