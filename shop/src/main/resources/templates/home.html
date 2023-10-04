@@ -44,65 +44,17 @@
         <p>Category1</p>
     </div>
     <div class="row">
-        <div class="col-3">
-            <img src="images/pngwing.com.png" alt="" width="100px" >
-        </div>
-
-        <div class="col-3">
-            <img src="images/pngwing.com.png" alt="" width="100px" >
-        </div>
-
-        <div class="col-3">
-            <img src="images/pngwing.com.png" alt="" width="100px" >
-        </div>
-
-        <div class="col-3">
-            <img src="images/pngwing.com.png" alt="" width="100px" >
+        <div class="col-4" th:each="item : ${items}">
+            <a th:href="@{/item/{param1}(param1=${item.id})}">
+                <img th:src="@{${item.getFilePath()}}" alt="" style="width: 100px; height: 200px;"></a>
+            <a th:href="@{/item/{param1}(param1=${item.id})}"><strong><p th:text="${item.name}" class="text-start" id="itemName" style="text-decoration-line;none"></strong></p></a>
+            <p th:text="${item.author}"></p>
+            <p th:text="${item.publisher}"></p>
+            <strong><span th:text="${item.price}"></span></strong><span>원</span>
         </div>
     </div>
 
-    <div class="row">
-        <p>Category1</p>
     </div>
-    <div class="row">
-        <div class="col-3">
-            <img src="images/pngwing.com.png" alt="" width="100px" >
-        </div>
-
-        <div class="col-3">
-            <img src="images/pngwing.com.png" alt="" width="100px" >
-        </div>
-
-        <div class="col-3">
-            <img src="images/pngwing.com.png" alt="" width="100px" >
-        </div>
-
-        <div class="col-3">
-            <img src="images/pngwing.com.png" alt="" width="100px" >
-        </div>
-    </div>
-
-    <div class="row">
-        <p>Category1</p>
-    </div>
-    <div class="row">
-        <div class="col-3">
-            <img src="images/pngwing.com.png" alt="" width="100px" >
-        </div>
-
-        <div class="col-3">
-            <img src="images/pngwing.com.png" alt="" width="100px" >
-        </div>
-
-        <div class="col-3">
-            <img src="images/pngwing.com.png" alt="" width="100px" >
-        </div>
-
-        <div class="col-3">
-            <img src="images/pngwing.com.png" alt="" width="100px" >
-        </div>
-    </div>
-    <div th:replace="fragments/footer :: footer" />
-</div> <!-- /container -->
+    <div th:replace="fragments/footer :: footer" /></div> <!-- /container -->
 </body>
 </html>

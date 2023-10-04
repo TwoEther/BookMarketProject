@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header" />
+<body>
+<div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+
+    <div class="container" >
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col-1"><input type="checkbox"></th>
+                <th scope="col-1"><span>상품 이미지</span></th>
+                <th scope="col-4">상품정보</th>
+                <th scope="col-5">금액</th>
+                <th scope="col-1">삭제</th>
+            </tr>
+            </thead>
+
+            <tbody th:each="cartItem : ${cartItems}">
+            <tr>
+                <th scope="row" style="margin-right: 20px;"><input type="checkbox"></th>
+                <td><img th:src="@{${cartItem.item.getFilePath()}}" alt="" width="100px"></td>
+                <td><div>
+                    <a href="" th:text="${cartItem.item.name}"></a>
+                </div>
+                    <div>
+                        <p th:text="${cartItem.item.description}"></p>
+                    </div>
+                </td>
+                <td>
+                    <div><p th:text="${cartItem.item.price}"></p>
+                        <p th:text="${cartItem.count}"></p>
+                    </div>
+                </td>
+                <th scope="row" style="margin-right: 20px;"><input type="button" value="x"></th>
+            </tr>
+
+
+            </tbody>
+        </table>
+    </div>
+
+    <div th:replace="fragments/footer :: footer"/>
+</div> <!-- /container -->
+</body>
+</html>

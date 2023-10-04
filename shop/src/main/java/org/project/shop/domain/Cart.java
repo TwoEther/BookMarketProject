@@ -28,14 +28,14 @@ public class Cart {
     }
 
 
-    @OneToOne(mappedBy = "cart", cascade = CascadeType.MERGE)
+    @OneToOne(mappedBy = "cart", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private Member member;
 
 
     @OneToMany(mappedBy = "cart")
     private List<Order> orders = new ArrayList<>();
 
-    @OneToMany(mappedBy = "cart")
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.MERGE)
     private List<CartItem> cartItem = new ArrayList<>();
 
     @Override
@@ -43,7 +43,6 @@ public class Cart {
         return "Cart{" +
                 "cartId=" + id +
                 ", item_price=" + item_price +
-                ", member = " + member.getUserId() +
                 '}';
     }
 

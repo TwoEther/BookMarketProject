@@ -13,6 +13,7 @@ import java.util.List;
 
 import static org.project.shop.domain.QCart.cart;
 import static org.project.shop.domain.QCartItem.cartItem;
+import static org.project.shop.domain.QItem.item;
 import static org.project.shop.domain.QMember.member;
 import static org.project.shop.domain.QCart.cart;
 import static org.project.shop.domain.QCartItem.cartItem;
@@ -29,10 +30,9 @@ public class CartItemRepositoryImpl implements CartItemRepository{
 
     @Override
     public CartItem findByCartIdAndItemId(Long cartId, Long itemId) {
-        return queryFactory.select(cartItem)
-                .from(cartItem)
-                .leftJoin(cartItem.cart, cart)
-                .where(cart.id.eq(cartItem.cart.id))
+        return queryFactory.selectFrom(cartItem)
+                .where(cartItem.cart.id.eq(cartId).
+                        and(cartItem.item.id.eq(itemId)))
                 .fetchOne();
     }
 
@@ -62,22 +62,22 @@ public class CartItemRepositoryImpl implements CartItemRepository{
         return queryFactory.selectFrom(cartItem).fetch();
     }
 
+
     @Override
-    public List<CartItem> findByCartMemberId(Long cartId) {
-        return queryFactory.select(cartItem)
-                .from(cartItem)
-//                .where(cartItem.cart.id.eq(cartId))
+    public List<CartItem> findByCartId(Long cartId) {
+        return queryFactory.selectFrom(cartItem)
+                .leftJoin(cartItem.cart, cart)
+                .fetchJoin()
+                .where(cart.id.eq(cartId))
                 .fetch();
     }
 
     @Override
-    public List<CartItem> findByCartId(Long memberId) {
-        return queryFactory.select(cartItem)
-                .from(cartItem)
-                .where(cartItem.cart.id.eq(
-                        JPAExpressions.select(cart.id)
-                                .from(cart)
-                                .where(cart.member.id.eq(memberId))
+    public List<CartItem> findCartItemByItem(Long itemId) {
+        return queryFactory.selectFrom(cartItem)
+                .where(cartItem.item.eq(
+                        JPAExpressions.selectFrom(item)
+                                .where(item.id.eq(itemId))
                 ))
                 .fetch();
     }

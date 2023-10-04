@@ -78,9 +78,10 @@
                             </div>
 
                         </div>
-
-                        <a class="btn btn-lg btn-primary" style="margin-right: 10px;" th:href="@{/cart/add}" onclick="quantityCheck()" sec:authorize="isAuthenticated()">장바구니 담기</a>
-                        <script th:inline="javascript">
+                        <form method="post" enctype="multipart/form-data">
+                            <input class="btn btn-lg btn-primary" type="button" style="margin-right: 10px;"  onclick="quantityCheck()" sec:authorize="isAuthenticated()" value="장바구니 담기" readonly></input>
+                        </form>
+                            <script th:inline="javascript">
                             function quantityCheck(){
                                 var stock = document.getElementById('quantityBlock').value;
                                 var token = $("meta[name='_csrf']").attr("content");
@@ -101,8 +102,6 @@
                                       xhr.setRequestHeader(header, token);
                                     },
                                     success : function(flag){
-
-                                        alert("메소드호출");
                                         if(flag == true){
                                             alert("장바구니에 담겼습니다");
                                             location.reload();

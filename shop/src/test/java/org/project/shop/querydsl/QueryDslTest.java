@@ -128,13 +128,15 @@ public class QueryDslTest {
         int price = (int) (Math.random() * 30000) + 10000;
         int stockQuantity = (int) (Math.random() * 100);
 
-        Item item = new Item(name, price, stockQuantity);
-        itemRepositoryImpl.save(item);
+        Item item1 = new Item(name, price, stockQuantity);
+        Item item2 = new Item(name, price, stockQuantity);
+        itemRepositoryImpl.save(item1);
+        itemRepositoryImpl.save(item2);
 
-        CartItem cartItem1 = new CartItem(cart1, item, 5);
+        CartItem cartItem1 = CartItem.createCartItem(cart1, item1, 5);
         cartItemRepositoryImpl.save(cartItem1);
 
-        CartItem cartItem2 = new CartItem(cart2, item, 5);
+        CartItem cartItem2 = CartItem.createCartItem(cart2, item2, 3);
         cartItemRepositoryImpl.save(cartItem2);
 
         // 전체 CartItem 조회 테스트
@@ -144,26 +146,15 @@ public class QueryDslTest {
 
         // 특정 CartItem 조회 테스트
         CartItem findCartItem = cartItemRepositoryImpl.findById(cartItem1.getId());
+        List<CartItem> findAllCartItem = cartItemRepositoryImpl.findAllCartItem();
         assertThat(findCartItem.getId()).isEqualTo(cartItem1.getId());
 
-        // 특정 Cart로 CartItem 조회 테스트
-
-        
         // 특정 Member로 CartItem 조회 테스트
         Member findMember1 = memberRepositoryImpl.findByUserId("id1");
-        List<Member> allMember = memberRepositoryImpl.findAllMember();
+        Cart findCart1 = cartRepositoryImpl.findByMemberId(findMember1.getId());
 
-
-        Cart findCart = cartRepositoryImpl.findByMemberId(findMember1.getId());
-        List<CartItem> findCartItems = cartItemRepositoryImpl.findByCartId(findCart.getId());
-        System.out.println("findCart = " + findCart.toString());
-
-        List<CartItem> findByMemberCartItem = cartItemRepositoryImpl.findByCartMemberId(findCart.getId());
-        for (CartItem cartItem : findByMemberCartItem) {
-            System.out.println("cartItem.toString() = " + cartItem.toString());
-        }
+        List<CartItem> findByMemberCartItem = cartItemRepositoryImpl.findByCartId(findCart1.getId());
         assertThat(findByMemberCartItem.size()).isEqualTo(1);
-
     }
 
     @DisplayName("모든 아이템 조회")
@@ -177,4 +168,5 @@ public class QueryDslTest {
 
         assertThat(items.size()).isEqualTo(findAllItems.size());
     }
+
 }

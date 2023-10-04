@@ -11,19 +11,23 @@ public class CartItem {
     @Column(name = "cart_item_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
 
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn
+    @ManyToOne(cascade = CascadeType.ALL, fetch =  FetchType.LAZY)
+    @JoinColumn(name = "cart_id")
     private Cart cart;
 
     private int count;
 
     public void setItem(Item item) {
+        if (this.item != null) {
+            this.item.getCartItem().remove(this);
+        }
         this.item = item;
+        cart.getCartItem().add(this);
     }
 
 

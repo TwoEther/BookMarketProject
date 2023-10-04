@@ -43,7 +43,7 @@ public class Item {
     @JoinColumn(name = "items", unique = true, insertable = false, updatable = false)
     private Review review;
 
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     private List<CartItem> cartItem = new ArrayList<>();
 
     public Item(String name, int price, int stockQuantity) {

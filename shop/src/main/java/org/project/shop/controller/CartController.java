@@ -9,10 +9,13 @@ import org.project.shop.repository.CartItemRepositoryImpl;
 import org.project.shop.service.CartServiceImpl;
 import org.project.shop.service.ItemServiceImpl;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,36 +28,37 @@ public class CartController {
     private final CartItemRepositoryImpl cartItemRepositoryImpl;
 
 
-//    @GetMapping(value = "/add")
-//    public String addCartGet(Model model){
-//        return "/cart/add";
-//    }
+    @GetMapping(value = "/add")
+    public String addCartGet(Model model){
+        return "redirect:/";
+    }
+
 
     @PostMapping(value = "/add")
     @ResponseBody
-    public boolean addCartItem(@RequestParam Map<String, Object> params, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        Long itemId = Long.parseLong((String) params.get("itemId"));
+    public boolean addCartItem(@RequestParam HashMap<String, Object> params) {
+        params.forEach((key, value) -> System.out.println("key = " + key + " value = " + value));
+        System.out.println("params.getItemId = "+ params.get("itemId"));
+
+        long itemId = Long.parseLong((String) params.get("itemId"));
         int quantity = Integer.parseInt((String) params.get("quantity"));
-        String username = principalDetails.getUsername();
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails userDetails = (UserDetails)principal;
+        String username = ((UserDetails) principal).getUsername();
 
         Item findItem = itemServiceImpl.findOneItem(itemId);
         Cart cart = new Cart(findItem.getPrice());
 
         CartItem orderCartItem = new CartItem();
         orderCartItem.setCount(quantity);
-        orderCartItem.setItem(findItem);
         orderCartItem.setCart(cart);
+        orderCartItem.setItem(findItem);
 
-        // 장바구니 버튼을 클릭하면 재고를 확인
-        // 재고를 확인후 장바구니 엔티티에 추가
-        // CartItem에
-        System.out.println("method called");
-        System.out.println("username = " + username);
+
         if (itemServiceImpl.checkStockQuantity(itemId, quantity)) {
-            itemServiceImpl.orderItem(itemId, quantity);
-            Long resultId = cartServiceImpl.addCart(orderCartItem, username);
+            Long id = cartServiceImpl.addCart(orderCartItem, username);
             return true;
-
         }else{
             return false;
         }
@@ -62,6 +66,17 @@ public class CartController {
 
     @GetMapping(value = "/list")
     public String cartList(Model model) {
-        return "cart/cart_list";
+        try {
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            UserDetails userDetails = (UserDetails) principal;
+            String username = ((UserDetails) principal).getUsername();
+        } catch (Exception e) {
+            return "redirect:/";
+        }
+
+
+        List<CartItem> cartItems = cartItemRepositoryImpl.findAllCartItem();
+        model.addAttribute("cartItems", cartItems);
+        return "cart/cartList";
     }
 }

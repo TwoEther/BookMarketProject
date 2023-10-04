@@ -1,5 +1,6 @@
 package org.project.shop.service;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.AfterEach;
@@ -23,18 +24,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 class CartServiceTest {
     @Autowired
-    private ItemRepository itemRepository;
+    private MemberServiceImpl memberServiceImpl;
     @Autowired
-    private MemberRepository memberRepository;
+    private MemberRepositoryImpl memberRepositoryImpl;
 
     @Autowired
-    private CartService cartService;
+    private ItemRepositoryImpl itemRepositoryImpl;
 
     @Autowired
-    private CartRepository cartRepository;
+    private ItemServiceImpl itemServiceImpl;
 
     @Autowired
-    private CartItemRepository cartItemRepository;
+    private JPAQueryFactory queryFactory;
+
+    @Autowired
+    private CartServiceImpl cartServiceImpl;
+    @Autowired
+    private CartItemRepositoryImpl cartItemRepositoryImpl;
+
+    @Autowired
+    private CartRepositoryImpl cartRepositoryImpl;
 
     @PersistenceContext
     EntityManager em;
@@ -42,7 +51,7 @@ class CartServiceTest {
 
     public Member createMember() {
         Member member = new Member("id", "password");
-        memberRepository.save(member);
+        memberRepositoryImpl.save(member);
         return member;
     }
 
@@ -52,7 +61,7 @@ class CartServiceTest {
         item.setPrice(20000);
         item.setStockQuantity(20);
 
-        itemRepository.save(item);
+        itemRepositoryImpl.save(item);
         return item;
     }
 
@@ -67,8 +76,8 @@ class CartServiceTest {
         cartItem.setItem(item);
 
 
-        Long cartItemId = cartService.addCart(cartItem, member.getUserId());
-        CartItem findCartItem = cartItemRepository.findById(cartItemId);
+        Long cartItemId = cartServiceImpl.addCart(cartItem, member.getUserId());
+        CartItem findCartItem = cartItemRepositoryImpl.findById(cartItemId);
 
         assertThat(item.getId()).isEqualTo(cartItem.getItem().getId());
         assertThat(cartItem.getCount()).isEqualTo(findCartItem.getCount());
@@ -78,11 +87,11 @@ class CartServiceTest {
     public void setUp() {
         Item item1 = new Item("테스트용 책1", 20000, 50);
         Item item2 = new Item("테스트용 책2", 30000, 40);
-        itemRepository.save(item1);
-        itemRepository.save(item2);
+        itemRepositoryImpl.save(item1);
+        itemRepositoryImpl.save(item2);
 
         Member member = new Member("lee", "pw1");
-        memberRepository.save(member);
+        memberRepositoryImpl.save(member);
 
     }
 
@@ -91,16 +100,51 @@ class CartServiceTest {
     public void cartSaveTest() {
         setUp();
 
-        Member member = memberRepository.findByUserId("lee");
+        Member member = memberRepositoryImpl.findByUserId("lee");
 
         // 1. 웹에서 상품에 대한 정보를 받음
         String inputItemName = "테스트용 책1";
         int inputValue = 10;
         String currentUserName = "lee";
 
-        Cart cart = cartRepository.findByMemberId(member.getId());
-        CartItem saveCartItem = cartItemRepository.findByCartIdAndItemId(cart.getId(), member.getId());
+        Cart cart = cartRepositoryImpl.findByMemberId(member.getId());
+        CartItem saveCartItem = cartItemRepositoryImpl.findByCartIdAndItemId(cart.getId(), member.getId());
+    }
 
+    @Test
+    @DisplayName("중복된 아이템이 들어왔을때 처리")
+    public void duplicatedAddItemTest() {
+        Member member1 = new Member("id1", "pw1");
+        member1.setName("id1");
+        memberRepositoryImpl.save(member1);
+
+        Member member2 = new Member("id2", "pw2");
+        memberRepositoryImpl.save(member2);
+
+        Cart cart1 = new Cart();
+        cart1.setMember(member1);
+        cartRepositoryImpl.save(cart1);
+
+        Cart cart2 = new Cart();
+        cart2.setMember(member2);
+        cartRepositoryImpl.save(cart2);
+
+        String name = "name" + Integer.toString(1);
+        int price = (int) (Math.random() * 30000) + 10000;
+        int stockQuantity = (int) (Math.random() * 100);
+
+        Item item1 = new Item(name, price, stockQuantity);
+        Item item2 = new Item(name, price, stockQuantity);
+        itemRepositoryImpl.save(item1);
+        itemRepositoryImpl.save(item2);
+
+        CartItem cartItem1 = CartItem.createCartItem(cart1, item1, 5);
+        CartItem cartItem2 = CartItem.createCartItem(cart2, item1, 3);
+
+        /*
+            중복된 아이템을 가진 데이터가 들어왔을때 기존 데이터에 Add 해준다
+         */
+        cartItemRepositoryImpl.save(cartItem1);
 
 
     }

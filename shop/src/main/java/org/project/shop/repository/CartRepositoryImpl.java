@@ -30,12 +30,7 @@ public class CartRepositoryImpl implements CartRepository{
     @Override
     @Transactional
     public void save(Cart cart) {
-        Member member = cart.getMember();
-        if (member != null) {
-            em.merge(member);
-        }
-        em.merge(cart);
-        em.flush();
+        em.persist(cart);
     }
 
     @Override
@@ -49,11 +44,9 @@ public class CartRepositoryImpl implements CartRepository{
     public Cart findByMemberId(Long memberId) {
         return queryFactory.select(cart)
                 .from(cart)
-                .where(cart.member.eq(
-                        JPAExpressions.selectFrom(member)
-                                .where(member.id.eq(memberId))
-                ))
-                .where(cart.member.id.eq(memberId))
+                .leftJoin(cart.member, member)
+                .fetchJoin()
+                .where(member.id.eq(memberId))
                 .fetchOne();
     }
 

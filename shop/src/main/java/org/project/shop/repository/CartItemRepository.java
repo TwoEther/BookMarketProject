@@ -17,9 +17,10 @@ public interface CartItemRepository{
     public List<CartItem> findAllCartItem();
 
 
-    public List<CartItem> findByCartMemberId(Long cartId);
-
     public List<CartItem> findByCartId(Long memberId);
+
+    public List<CartItem> findCartItemByItem(Long itemId);
+
 
 
 }
