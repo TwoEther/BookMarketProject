@@ -37,8 +37,6 @@ public class CartController {
     @PostMapping(value = "/add")
     @ResponseBody
     public boolean addCartItem(@RequestParam HashMap<String, Object> params) {
-        params.forEach((key, value) -> System.out.println("key = " + key + " value = " + value));
-        System.out.println("params.getItemId = "+ params.get("itemId"));
 
         long itemId = Long.parseLong((String) params.get("itemId"));
         int quantity = Integer.parseInt((String) params.get("quantity"));
@@ -78,5 +76,17 @@ public class CartController {
         List<CartItem> cartItems = cartItemRepositoryImpl.findAllCartItem();
         model.addAttribute("cartItems", cartItems);
         return "cart/cartList";
+    }
+
+//    @GetMapping(value = "/delete/{cartItemId}")
+//    public String cartDeleteGet(@PathVariable Long cartItemId) {
+//        System.out.println("cartItemId = " + cartItemId);
+//        return "redirect:/";
+//    }
+    @DeleteMapping(value = "/delete/{cartItemId}")
+    public String cartDelete(@PathVariable String cartItemId) {
+        Long id = Long.parseLong(cartItemId);
+        cartServiceImpl.deleteById(id);
+        return "redirect:/";
     }
 }

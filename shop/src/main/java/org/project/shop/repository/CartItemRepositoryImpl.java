@@ -81,4 +81,12 @@ public class CartItemRepositoryImpl implements CartItemRepository{
                 ))
                 .fetch();
     }
+
+    @Override
+    @Transactional
+    public void deleteById(Long id) {
+        queryFactory.delete(cartItem)
+                .where(cartItem.id.eq(id))
+                .execute();
+    }
 }

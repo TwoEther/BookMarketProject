@@ -52,6 +52,8 @@ public class CartServiceImpl implements CartService {
         }
 
         CartItem savedItem = cartItemRepository.findByCartIdAndItemId(cart.getId(), item.getId());
+        int currentStockQuantity = item.getStockQuantity();
+        item.setStockQuantity(currentStockQuantity - cartItem.getCount());
 
         if (savedItem != null) {
             savedItem.addCount(cartItem.getCount());
@@ -61,5 +63,10 @@ public class CartServiceImpl implements CartService {
             cartItemRepository.save(findCartItem);
             return findCartItem.getId();
         }
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        cartItemRepository.deleteById(id);
     }
 }

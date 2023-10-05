@@ -21,6 +21,6 @@ public interface CartItemRepository{
 
     public List<CartItem> findCartItemByItem(Long itemId);
 
-
+    public void deleteById(Long id);
 
 }

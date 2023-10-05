@@ -20,7 +20,7 @@
             <tbody th:each="cartItem : ${cartItems}">
             <tr>
                 <th scope="row" style="margin-right: 20px;"><input type="checkbox"></th>
-                <td><img th:src="@{${cartItem.item.getFilePath()}}" alt="" width="100px"></td>
+                <td><a th:href="@{/item/{param1}(param1=${cartItem.item.id})}"><img th:src="@{${cartItem.item.getFilePath()}}" alt="" width="100px"></a></td>
                 <td><div>
                     <a href="" th:text="${cartItem.item.name}"></a>
                 </div>
@@ -29,11 +29,43 @@
                     </div>
                 </td>
                 <td>
-                    <div><p th:text="${cartItem.item.price}"></p>
+                    <div><p th:text="${cartItem.item.price}"><span>원</span></p>
                         <p th:text="${cartItem.count}"></p>
                     </div>
                 </td>
-                <th scope="row" style="margin-right: 20px;"><input type="button" value="x"></th>
+                <th scope="row" style="margin-right: 20px;">
+                    <input th:onclick="cart_delete([[${cartItem.id}]])" type="button" value="X">
+                </th>
+                <script th:inline="javascript">
+                    var token = $("meta[name='_csrf']").attr("content");
+                    var header = $("meta[name='_csrf_header']").attr("content");
+                    $(function() {
+                        $(document).ajaxSend(function(e, xhr, options) {
+                            xhr.setRequestHeader(header, token);
+                        });
+                    });
+
+                    function cart_delete(id){
+                        var newId = (id).toString();
+                        $.ajax({
+                            url : "/cart/delete/"+newId,
+                            type : "DELETE",
+                            data : {"cartItemId" : newId
+                            },
+                            beforeSend: function (xhr) {
+                                      xhr.setRequestHeader(header, token);
+                                    },
+
+                            success : function(){
+                                alert("삭제 되었습니다");
+                                location.reload();
+                            },
+                            error:function(request,status,error){
+                            alert("code = "+ request.status + " message = " + request.responseText + " error = " + error); // 실패 시 처리
+                           }
+                        });
+                    }
+                </script>
             </tr>
 
 
