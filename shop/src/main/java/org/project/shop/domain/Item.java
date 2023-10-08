@@ -52,6 +52,17 @@ public class Item {
         this.stockQuantity = stockQuantity;
     }
 
+    public Item(String name, int price, int stockQuantity, String author, String publisher, int isbn, int pages, String description) {
+        this.name = name;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
+        this.author = author;
+        this.publisher = publisher;
+        this.isbn = isbn;
+        this.pages = pages;
+        this.description = description;
+    }
+
     public Item() {
 
     }

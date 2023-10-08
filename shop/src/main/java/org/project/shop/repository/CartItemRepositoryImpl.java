@@ -37,7 +37,7 @@ public class CartItemRepositoryImpl implements CartItemRepository{
     }
 
     @Override
-    public CartItem findById(Long id) {
+    public CartItem findByCartItemId(Long id) {
         return queryFactory.select(cartItem)
                 .from(cartItem)
                 .where(cartItem.id.eq(id))

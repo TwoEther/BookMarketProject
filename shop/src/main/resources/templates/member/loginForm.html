@@ -17,7 +17,7 @@
             <input type="hidden" th:name="${_csrf.parameterName}"
                    th:value="${_csrf.token}" />
             <input type="text" th:field="*{userId}" id="userId" class="form-control" onclick=""
-                   placeholder="이메일을 입력하세요"
+                   placeholder="아이디를 입력하세요"
                    th:class="${#fields.hasErrors('userId')}? 'form-control
 fieldError' : 'form-control'">
             <p th:if="${#fields.hasErrors('userId')}"

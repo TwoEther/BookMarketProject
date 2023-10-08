@@ -29,7 +29,7 @@ public class CartController {
 
 
     @GetMapping(value = "/add")
-    public String addCartGet(Model model){
+    public String addCartGet(Model model) {
         return "redirect:/";
     }
 
@@ -42,7 +42,7 @@ public class CartController {
         int quantity = Integer.parseInt((String) params.get("quantity"));
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserDetails userDetails = (UserDetails)principal;
+        UserDetails userDetails = (UserDetails) principal;
         String username = ((UserDetails) principal).getUsername();
 
         Item findItem = itemServiceImpl.findOneItem(itemId);
@@ -57,7 +57,7 @@ public class CartController {
         if (itemServiceImpl.checkStockQuantity(itemId, quantity)) {
             Long id = cartServiceImpl.addCart(orderCartItem, username);
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -78,7 +78,7 @@ public class CartController {
         return "cart/cartList";
     }
 
-//    @GetMapping(value = "/delete/{cartItemId}")
+    //    @GetMapping(value = "/delete/{cartItemId}")
 //    public String cartDeleteGet(@PathVariable Long cartItemId) {
 //        System.out.println("cartItemId = " + cartItemId);
 //        return "redirect:/";
@@ -87,6 +87,16 @@ public class CartController {
     public String cartDelete(@PathVariable String cartItemId) {
         Long id = Long.parseLong(cartItemId);
         cartServiceImpl.deleteById(id);
+        return "redirect:/";
+    }
+
+    @PutMapping(value = "/edit/{cartItemId}")
+    @ResponseBody
+    public String cartEdit(@PathVariable String cartItemId, @RequestParam String quantity) {
+        Long id = Long.parseLong(cartItemId);
+        System.out.println("id = " + id);
+        CartItem findCartItem = cartItemRepositoryImpl.findByCartItemId(id);
+        findCartItem.addCount(Integer.parseInt(String.valueOf(quantity)));
         return "redirect:/";
     }
 }

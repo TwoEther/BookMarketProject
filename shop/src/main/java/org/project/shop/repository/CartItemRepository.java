@@ -8,7 +8,7 @@ import java.util.List;
 public interface CartItemRepository{
     public CartItem findByCartIdAndItemId(Long cartId, Long itemId);
 
-    public CartItem findById(Long id);
+    public CartItem findByCartItemId(Long id);
 
     public void save(CartItem cartItem);
 

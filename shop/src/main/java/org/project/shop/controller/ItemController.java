@@ -2,20 +2,33 @@ package org.project.shop.controller;
 
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem;
 import org.project.shop.domain.Item;
 import org.project.shop.service.ItemServiceImpl;
 import org.project.shop.web.ItemForm;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriUtils;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +40,67 @@ import static org.springframework.data.util.TypeUtils.type;
 public class ItemController {
     private final ItemServiceImpl itemServiceImpl;
 
+    @GetMapping(value = "/dbConfig")
+    public String dbConfig(Model model) throws Exception {
+        List<List<String>> ret = new ArrayList<List<String>>();
+        BufferedReader br = null;
+
+        try{
+            br = Files.newBufferedReader(Paths.get("C:\\lee\\Java\\\\BookMarketProject\\data.csv"));
+            String line = "";
+
+            while((line = br.readLine()) != null){
+                List<String> tmpList = new ArrayList<String>();
+                String array[] = line.split(",");
+                tmpList = Arrays.asList(array);
+//                System.out.println(tmpList);
+                ret.add(tmpList);
+            }
+        }catch(FileNotFoundException e){
+            e.printStackTrace();
+        }catch(IOException e){
+            e.printStackTrace();
+        }finally{
+            try{
+                if(br != null){
+                    br.close();
+                }
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+        }
+
+        for (List<String> data : ret) {
+            String title = data.get(0);
+            int price = Integer.parseInt(data.get(1));
+            int stockQuantity = Integer.parseInt(data.get(2));
+            String author = data.get(3);
+            String publisher = data.get(4);
+            int isbn = Integer.parseInt(data.get(5));
+            int page = Integer.parseInt(data.get(6));
+            String description = data.get(7);
+            String fileName = data.get(8);
+
+            String fileRoot = "C:\\lee\\Java\\\\BookMarketProject\\bookImages\\" + fileName+".png";
+            Item item = new Item(title, price, stockQuantity, author, publisher, isbn, page, description);
+            System.out.println("fileRoot = " + fileRoot);
+            File imageFile = new File(fileRoot);
+            BufferedImage image = ImageIO.read(imageFile);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write( image, "png", baos );
+            baos.flush();
+
+            MultipartFile multipartFile = new MockMultipartFile(fileName, baos.toByteArray());
+            itemServiceImpl.saveItem(item, multipartFile);
+        }
+
+
+
+
+
+        return "redirect:/";
+    }
     @GetMapping(value = "/new")
     public String itemForm(Model model) {
         model.addAttribute("form", new ItemForm());

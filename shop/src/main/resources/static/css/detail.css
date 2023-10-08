@@ -23,3 +23,9 @@ input[type="number"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
+
+.input_btn{
+    border: 0px;
+    width: 30px;
+    text-align: center;
+}

@@ -50,7 +50,7 @@ public class CartServiceImpl implements CartService {
             cart = Cart.createCart(member);
             cartRepository.save(cart);
         }
-
+        
         CartItem savedItem = cartItemRepository.findByCartIdAndItemId(cart.getId(), item.getId());
         int currentStockQuantity = item.getStockQuantity();
         item.setStockQuantity(currentStockQuantity - cartItem.getCount());

@@ -39,6 +39,13 @@
             <a class="btn btn-lg btn-info" href="/order">상품 주문</a>
             <a class="btn btn-lg btn-info" href="/orders">주문 내역</a>
         </p>
+
+        <p class="lead">관리자 기능</p>
+        <p>
+            <a class="btn btn-lg btn-info" href="/item/dbConfig">상품 일괄 등록</a>
+            <a class="btn btn-lg btn-info" href="/orders">주문 내역</a>
+        </p>
+
     </div>
     <div class="row">
         <p>Category1</p>
@@ -46,7 +53,7 @@
     <div class="row">
         <div class="col-4" th:each="item : ${items}">
             <a th:href="@{/item/{param1}(param1=${item.id})}">
-                <img th:src="@{${item.getFilePath()}}" alt="" style="width: 100px; height: 200px;"></a>
+                <img th:src="@{${item.getFilePath()}}" alt="" style="height: 200px;"></a>
             <a th:href="@{/item/{param1}(param1=${item.id})}"><strong><p th:text="${item.name}" class="text-start" id="itemName" style="text-decoration-line;none"></strong></p></a>
             <p th:text="${item.author}"></p>
             <p th:text="${item.publisher}"></p>

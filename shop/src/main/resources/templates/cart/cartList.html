@@ -1,6 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header" />
+<link rel="stylesheet" href="/static/css/detail.css">
 <body>
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
@@ -29,8 +30,67 @@
                     </div>
                 </td>
                 <td>
-                    <div><p th:text="${cartItem.item.price}"><span>원</span></p>
-                        <p th:text="${cartItem.count}"></p>
+                    <div><p th:text="${cartItem.item.price}" style="margin-bottom:0px;">원</p>
+                        <span class="countBox">
+                            <button th:id="${cartItem.id}" onclick="leftBtnClicked(this.id)"><span>-</span></button>
+                            <input type="number" th:value="${cartItem.count}" th:id="'count'+${cartItem.id}" onclick="clicked(this.id)" class="input_btn">
+                            <span id="itemPrice" style="display:none;" th:text="${cartItem.count}"></span>
+                            <button id="rightbtn" onclick="rightBtnClicked()">
+                                <span>+</span>
+                            </button>
+                            <script th:inline="javascript">
+                            function leftBtnClicked(id){
+                                var token = $("meta[name='_csrf']").attr("content");
+                                var header = $("meta[name='_csrf_header']").attr("content");
+
+                                var newId = 'count'+ id;
+                                let result = $('#'+newId).val();
+                                console.log("result = " + result);
+
+                                result--;
+                                if(result < 0) result = 0;
+                                document.getElementById(newId).value = result;
+
+                                $(function() {
+                                    $(document).ajaxSend(function(e, xhr, options) {
+                                        xhr.setRequestHeader(header, token);
+                                    });
+                                });
+                                $.ajax({
+                                    url : "/cart/edit/"+id,
+                                    type : "PUT",
+                                    dataType : "JSON",
+                                    data : {"quantity" : value,
+                                            "cartItemId" : id
+                                    },
+                                    beforeSend: function (xhr) {
+                                      xhr.setRequestHeader(header, token);
+                                    },
+                                    success : function(){
+                                        alert("실행에 성공했습니다");
+                                        location.reload();
+                                    },
+                                    error:function(request,status,error){
+                                    alert("code = "+ request.status + " message = " + request.responseText + " error = " + error); // 실패 시 처리
+                                   }
+                                });
+
+
+                            }
+
+                            function clicked(id){
+                                console.log("id = "+id);
+                            }
+
+
+                            function rightBtnClicked(){
+                                var result = document.getElementById('quantityBlock').value;
+                                result++;
+                                document.getElementById('quantityBlock').value = result;
+                            }
+
+                        </script>
+                        </span>
                     </div>
                 </td>
                 <th scope="row" style="margin-right: 20px;">
