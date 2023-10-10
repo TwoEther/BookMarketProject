@@ -95,10 +95,6 @@ public class ItemController {
             itemServiceImpl.saveItem(item, multipartFile);
         }
 
-
-
-
-
         return "redirect:/";
     }
     @GetMapping(value = "/new")
@@ -119,6 +115,9 @@ public class ItemController {
         item.setCreateDate(form.getCreateDate());
         item.setPages(form.getPages());
         item.setDescription(form.getDescription());
+
+        System.out.println("form.getCategory1() = " + form.getCategory1());
+        System.out.println("form.getCategory2() = " + form.getCategory2());
 
         itemServiceImpl.saveItem(item, file);
         return "redirect:/item";

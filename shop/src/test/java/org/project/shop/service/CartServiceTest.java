@@ -77,7 +77,7 @@ class CartServiceTest {
 
 
         Long cartItemId = cartServiceImpl.addCart(cartItem, member.getUserId());
-        CartItem findCartItem = cartItemRepositoryImpl.findById(cartItemId);
+        CartItem findCartItem = cartItemRepositoryImpl.findByCartItemId(cartItemId);
 
         assertThat(item.getId()).isEqualTo(cartItem.getItem().getId());
         assertThat(cartItem.getCount()).isEqualTo(findCartItem.getCount());
