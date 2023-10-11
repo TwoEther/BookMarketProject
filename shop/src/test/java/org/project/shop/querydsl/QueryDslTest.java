@@ -145,7 +145,7 @@ public class QueryDslTest {
 
 
         // 특정 CartItem 조회 테스트
-        CartItem findCartItem = cartItemRepositoryImpl.findById(cartItem1.getId());
+        CartItem findCartItem = cartItemRepositoryImpl.findByCartItemId(cartItem1.getId());
         List<CartItem> findAllCartItem = cartItemRepositoryImpl.findAllCartItem();
         assertThat(findCartItem.getId()).isEqualTo(cartItem1.getId());
 

@@ -49,6 +49,8 @@ public class Item {
         this.stockQuantity = stockQuantity;
     }
 
+
+
     public Item(String name, int price, int stockQuantity, String author, String publisher, int isbn, int pages, String description) {
         this.name = name;
         this.price = price;
