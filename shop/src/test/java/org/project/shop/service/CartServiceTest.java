@@ -77,7 +77,7 @@ class CartServiceTest {
 
 
         Long cartItemId = cartServiceImpl.addCart(cartItem, member.getUserId());
-        CartItem findCartItem = cartItemRepositoryImpl.findById(cartItemId);
+        CartItem findCartItem = cartItemRepositoryImpl.findByCartItemId(cartItemId);
 
         assertThat(item.getId()).isEqualTo(cartItem.getItem().getId());
         assertThat(cartItem.getCount()).isEqualTo(findCartItem.getCount());
@@ -144,8 +144,6 @@ class CartServiceTest {
         /*
             중복된 아이템을 가진 데이터가 들어왔을때 기존 데이터에 Add 해준다
          */
-        cartItemRepositoryImpl.save(cartItem1);
-
 
     }
 }

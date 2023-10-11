@@ -3,7 +3,6 @@ package org.project.shop.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,31 +10,29 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@ToString(exclude = "items")
 public class Category {
     @Id
     @GeneratedValue
     @Column(name = "category_id")
     private Long id;
-    private String name;
-
-    @ManyToMany
-    @JoinTable(name = "category_item",
-            joinColumns = @JoinColumn(name = "category_id"),
-            inverseJoinColumns = @JoinColumn(name = "item_id"))
-    private List<Item> items = new ArrayList<>();
+    private String category1;
+    private String category2;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
-    private Category parent;
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    private List<CategoryItem> categoryItems = new ArrayList<>();
 
-    @OneToMany(mappedBy = "parent")
-    private List<Category> child = new ArrayList<>();
+    public Category(String category1, String category2) {
+        this.category1 = category1;
+        this.category2 = category2;
+    }
 
-    //연관관계 메소드
-    public void addChildCategory(Category child){
-        this.child.add(child);
-        child.setParent(this);
+    @Override
+    public String toString() {
+        return "Category{" +
+                "id=" + id +
+                ", category1='" + category1 + '\'' +
+                ", category2='" + category2 + '\'' +
+                '}';
     }
 }

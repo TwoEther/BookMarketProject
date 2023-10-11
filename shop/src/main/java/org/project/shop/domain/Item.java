@@ -1,13 +1,11 @@
 package org.project.shop.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -34,10 +32,6 @@ public class Item {
     private String filePath;
     private String fileName;
 
-    // N:M
-    @ManyToMany
-    @JoinTable(name = "items")
-    private List<Category> categories = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "items", unique = true, insertable = false, updatable = false)
@@ -46,11 +40,16 @@ public class Item {
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     private List<CartItem> cartItem = new ArrayList<>();
 
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
+    private List<CategoryItem> categoryItems = new ArrayList<>();
+
     public Item(String name, int price, int stockQuantity) {
         this.name = name;
         this.price = price;
         this.stockQuantity = stockQuantity;
     }
+
+
 
     public Item(String name, int price, int stockQuantity, String author, String publisher, int isbn, int pages, String description) {
         this.name = name;

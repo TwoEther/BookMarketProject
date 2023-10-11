@@ -4,7 +4,12 @@ import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem;
+import org.project.shop.domain.Category;
+import org.project.shop.domain.CategoryItem;
 import org.project.shop.domain.Item;
+import org.project.shop.service.CategoryItemServiceImpl;
+import org.project.shop.service.CategoryService;
+import org.project.shop.service.CategoryServiceImpl;
 import org.project.shop.service.ItemServiceImpl;
 import org.project.shop.web.ItemForm;
 import org.springframework.core.io.UrlResource;
@@ -39,6 +44,8 @@ import static org.springframework.data.util.TypeUtils.type;
 @RequestMapping(value = "/item")
 public class ItemController {
     private final ItemServiceImpl itemServiceImpl;
+    private final CategoryServiceImpl categoryServiceImpl;
+    private final CategoryItemServiceImpl categoryItemServiceImpl;
 
     @GetMapping(value = "/dbConfig")
     public String dbConfig(Model model) throws Exception {
@@ -95,10 +102,6 @@ public class ItemController {
             itemServiceImpl.saveItem(item, multipartFile);
         }
 
-
-
-
-
         return "redirect:/";
     }
     @GetMapping(value = "/new")
@@ -119,6 +122,21 @@ public class ItemController {
         item.setCreateDate(form.getCreateDate());
         item.setPages(form.getPages());
         item.setDescription(form.getDescription());
+
+        String category1 = form.getCategory1();
+        String category2 = form.getCategory2();
+
+        if (categoryServiceImpl.findByCategoryName(category1, category2) == null) {
+            Category findCategory = new Category(category1, category2);
+            categoryServiceImpl.save(findCategory);
+        }
+        Category findCategory = categoryServiceImpl.findByCategoryName(category1, category2);
+
+        CategoryItem categoryItem = new CategoryItem();
+        categoryItem.setItem(item);
+        categoryItem.setCategory(findCategory);
+
+        categoryItemServiceImpl.save(categoryItem);
 
         itemServiceImpl.saveItem(item, file);
         return "redirect:/item";

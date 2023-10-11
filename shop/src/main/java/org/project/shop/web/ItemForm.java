@@ -20,6 +20,9 @@ public class ItemForm {
     private LocalDateTime createDate;
     private int pages;
     private String description;
+    private String category1;
+    private String category2;
+
 
     public ItemForm(){
         this.createDate = LocalDateTime.now();

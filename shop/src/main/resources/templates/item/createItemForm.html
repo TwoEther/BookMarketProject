@@ -42,7 +42,7 @@
 
         <div class="form-group">
             <label th:for="isbn">페이지</label>
-            <input type="number" name="pages" class="form-control"
+            <input type="number" name="pages" class="form-control" id="page_id"
                    placeholder="페이지수를 입력하세요">
         </div>
 
@@ -51,11 +51,67 @@
             <input type="text" name="description" class="form-control"
                    placeholder="부가설명을 입력하세요">
         </div>
+
+        <div class="form-group">
+            <label>카테고리</label></br>
+            <select onchange="categoryChange(this)" id="select1">
+                <option>카테고리를 선택해주세요</option>
+                <option value="국내 도서">국내 도서</option>
+                <option value="외국 도서">외국 도서</option>
+            </select>
+
+            <select id="select2" onchange="setCategories()">
+                <option>카테고리를 선택해주세요</option>
+            </select>
+
+            <input type="hidden" id="category1" class="form-control" name="category1"
+                   placeholder="부가설명을 입력하세요" >
+
+            <input type="hidden" id="category2" class="form-control" name="category2"
+                   placeholder="부가설명을 입력하세요">
+
+
+
+            <script th:lnline="javascript">
+                function categoryChange(e) {
+                    var sub = ["소설", "시/에세이", "인문", "가정/육아", "요리", "건강",
+                    "취미/실용/스포츠", "경제/경영", "자기계발", "정치/사회", "역사/문화"];
+                    var target = document.getElementById("select2");
+
+                    var d = sub;
+
+                    target.options.length = 0;
+
+                    for (x in d) {
+                        var opt = document.createElement("option");
+                        opt.value = d[x];
+                        opt.innerHTML = d[x];
+                        target.appendChild(opt);
+                    }
+                }
+
+                function setCategories(){
+                    var cate1 = document.getElementById("select1").value;
+                    var cate2 = document.getElementById("select2").value;
+
+                    document.getElementById("category1").value = cate1;
+                    document.getElementById("category2").value = cate2;
+
+                    console.log("v1 = "+document.getElementById("category1").value);
+                    console.log("v2 = "+document.getElementById("category2").value);
+                    console.log("page_id = "+document.getElementById("page_id").value);
+                }
+            </script>
+        </div>
+
         <div class="form-group">
             <label th:for="image">image</label>
             <input type="file" name="image" class="form-control"
                    placeholder="이미지 입력하세요">
         </div>
+
+
+
 
 
 

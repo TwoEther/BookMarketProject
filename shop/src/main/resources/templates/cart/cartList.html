@@ -43,13 +43,13 @@
                                 var token = $("meta[name='_csrf']").attr("content");
                                 var header = $("meta[name='_csrf_header']").attr("content");
 
-                                var newId = 'count'+ id;
-                                let result = $('#'+newId).val();
-                                console.log("result = " + result);
-
+                                var newId = '#'+'count'+ id;
+                                let result = Number($newId).val());
+                                console.log("result = "+result);
                                 result--;
                                 if(result < 0) result = 0;
-                                document.getElementById(newId).value = result;
+                                $(newId).val(result);
+
 
                                 $(function() {
                                     $(document).ajaxSend(function(e, xhr, options) {
@@ -74,20 +74,8 @@
                                     alert("code = "+ request.status + " message = " + request.responseText + " error = " + error); // 실패 시 처리
                                    }
                                 });
-
-
                             }
-
-                            function clicked(id){
-                                console.log("id = "+id);
-                            }
-
-
-                            function rightBtnClicked(){
-                                var result = document.getElementById('quantityBlock').value;
-                                result++;
-                                document.getElementById('quantityBlock').value = result;
-                            }
+                        }
 
                         </script>
                         </span>
