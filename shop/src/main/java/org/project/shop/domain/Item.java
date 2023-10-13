@@ -40,8 +40,9 @@ public class Item {
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     private List<CartItem> cartItem = new ArrayList<>();
 
-    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
-    private List<CategoryItem> categoryItems = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item")
+    private Category category;
 
     public Item(String name, int price, int stockQuantity) {
         this.name = name;
@@ -65,7 +66,13 @@ public class Item {
     public Item() {
 
     }
-
+    public void setCategory(Category category) {
+        if (this.category != null) {
+            this.category.getItem().remove(this);
+        }
+        this.category = category;
+        category.getItem().add(this);
+    }
 
     // 재고 관리를 위한 로직
     public void addStock(int stockQuantity) {
@@ -81,9 +88,6 @@ public class Item {
         this.stockQuantity = resStock;
     }
 
-    public void changeCategoryItem() {
-
-    }
 
     @Override
     public String toString() {
@@ -91,6 +95,7 @@ public class Item {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", price=" + price +
+                ", category=" + category.toString() +
                 ", stockQuantity=" + stockQuantity +
                 '}';
     }

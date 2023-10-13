@@ -1,5 +1,6 @@
 package org.project.shop.service;
 
+import org.project.shop.domain.Category;
 import org.project.shop.domain.Item;
 import org.project.shop.repository.ItemRepositoryImpl;
 import org.springframework.stereotype.Service;
@@ -63,6 +64,16 @@ public class ItemServiceImpl implements ItemService{
     @Override
     public boolean checkStockQuantity(Long itemId, int quantity) {
         return findOneItem(itemId).getStockQuantity() > quantity;
+    }
+
+    @Override
+    public List<Item> findByKeyword(String keyword) {
+        return itemRepositoryImpl.findByKeyword(keyword);
+    }
+
+    @Override
+    public List<Item> findByItemWithCategory(Category category) {
+        return itemRepositoryImpl.findByItemWithCategory(category);
     }
 
 

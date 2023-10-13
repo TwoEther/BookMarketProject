@@ -13,8 +13,9 @@
             <p id="BookMarket"><strong>BookMarket</strong></p>
         </div>
         <div class="col-7">
-            <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <form class="d-flex" th:action="@{/item}" th:object="${form}">
+                <label th:for="keyword">검색어</label>
+                <input class="form-control me-2" type="search" name="keyword" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
         </div>
@@ -22,31 +23,6 @@
         </div>
     </div>
     <hr>
-    <div class="">
-        <h1>HELLO SHOP</h1>
-        <p class="lead">회원 기능</p>
-        <p>
-            <a class="btn btn-lg btn-secondary" href="/member/new">회원 가입</a>
-            <a class="btn btn-lg btn-secondary" href="/member/memberList">회원 목록</a>
-        </p>
-        <p class="lead">상품 기능</p>
-        <p>
-            <a class="btn btn-lg btn-dark" href="/item/new">상품 등록</a>
-            <a class="btn btn-lg btn-dark" href="/item">상품 목록</a>
-        </p>
-        <p class="lead">주문 기능</p>
-        <p>
-            <a class="btn btn-lg btn-info" href="/order">상품 주문</a>
-            <a class="btn btn-lg btn-info" href="/orders">주문 내역</a>
-        </p>
-
-        <p class="lead">관리자 기능</p>
-        <p>
-            <a class="btn btn-lg btn-info" href="/item/dbConfig">상품 일괄 등록</a>
-            <a class="btn btn-lg btn-info" href="/orders">주문 내역</a>
-        </p>
-
-    </div>
     <div class="row">
         <p>Category1</p>
     </div>

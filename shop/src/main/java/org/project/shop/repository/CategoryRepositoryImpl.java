@@ -6,25 +6,30 @@ import jakarta.persistence.PersistenceContext;
 import org.project.shop.domain.Category;
 import org.project.shop.domain.QCategory;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.project.shop.domain.QCategory.category;
 
 @Repository
+@Transactional
 public class CategoryRepositoryImpl implements CategoryRepository{
     @PersistenceContext
     EntityManager em;
 
     private final JPAQueryFactory queryFactory;
 
+
     public CategoryRepositoryImpl(JPAQueryFactory queryFactory) {
         this.queryFactory = queryFactory;
     }
 
     @Override
+    @Transactional
     public void save(Category category) {
         em.persist(category);
+        em.flush();
     }
 
     @Override
@@ -37,8 +42,8 @@ public class CategoryRepositoryImpl implements CategoryRepository{
     @Override
     public Category findByCategoryName(String category1, String category2) {
         return queryFactory.selectFrom(category)
-                .where(category.category1.like(category1)
-                        .and(category.category2.like(category2))
+                .where(category.category1.eq(category1)
+                        .and(category.category2.eq(category2))
                 ).fetchOne();
     }
 

@@ -1,5 +1,6 @@
 package org.project.shop.service;
 
+import org.project.shop.domain.Category;
 import org.project.shop.domain.Item;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,4 +14,7 @@ public interface ItemService {
 
     public void orderItem(Long itemId, int quantity);
     public boolean checkStockQuantity(Long itemId, int quantity);
+
+    public List<Item> findByKeyword(String keyword);
+    public List<Item> findByItemWithCategory(Category category);
 }

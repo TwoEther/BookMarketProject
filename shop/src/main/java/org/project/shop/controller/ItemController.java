@@ -1,43 +1,28 @@
 package org.project.shop.controller;
 
-import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem;
 import org.project.shop.domain.Category;
-import org.project.shop.domain.CategoryItem;
 import org.project.shop.domain.Item;
-import org.project.shop.service.CategoryItemServiceImpl;
-import org.project.shop.service.CategoryService;
 import org.project.shop.service.CategoryServiceImpl;
 import org.project.shop.service.ItemServiceImpl;
 import org.project.shop.web.ItemForm;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
+import org.project.shop.web.SearchForm;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.UriUtils;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.MalformedURLException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-
-import static org.springframework.data.util.TypeUtils.type;
 
 @Controller
 @RequiredArgsConstructor
@@ -45,7 +30,6 @@ import static org.springframework.data.util.TypeUtils.type;
 public class ItemController {
     private final ItemServiceImpl itemServiceImpl;
     private final CategoryServiceImpl categoryServiceImpl;
-    private final CategoryItemServiceImpl categoryItemServiceImpl;
 
     @GetMapping(value = "/dbConfig")
     public String dbConfig(Model model) throws Exception {
@@ -53,7 +37,7 @@ public class ItemController {
         BufferedReader br = null;
 
         try{
-            br = Files.newBufferedReader(Paths.get("C:\\lee\\Java\\\\BookMarketProject\\data.csv"));
+            br = Files.newBufferedReader(Paths.get("C:\\lee\\Java\\data.csv"));
             String line = "";
 
             while((line = br.readLine()) != null){
@@ -87,17 +71,24 @@ public class ItemController {
             int page = Integer.parseInt(data.get(6));
             String description = data.get(7);
             String fileName = data.get(8);
+            String category1 = data.get(9);
+            String category2 = data.get(10);
 
-            String fileRoot = "C:\\lee\\Java\\\\BookMarketProject\\bookImages\\" + fileName+".png";
+            if (categoryServiceImpl.findByCategoryName(category1, category2) == null) {
+                categoryServiceImpl.save(new Category(category1, category2));
+            }
+            Category findCategory = categoryServiceImpl.findByCategoryName(category1, category2);
+
+            String fileRoot = "C:\\lee\\Java\\bookImages\\" + fileName+".png";
             Item item = new Item(title, price, stockQuantity, author, publisher, isbn, page, description);
-            System.out.println("fileRoot = " + fileRoot);
+            item.setCategory(findCategory);
             File imageFile = new File(fileRoot);
             BufferedImage image = ImageIO.read(imageFile);
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write( image, "png", baos );
             baos.flush();
-
+            System.out.println("item.toString() = " + item.toString());
             MultipartFile multipartFile = new MockMultipartFile(fileName, baos.toByteArray());
             itemServiceImpl.saveItem(item, multipartFile);
         }
@@ -122,35 +113,26 @@ public class ItemController {
         item.setCreateDate(form.getCreateDate());
         item.setPages(form.getPages());
         item.setDescription(form.getDescription());
-
-<<<<<<< HEAD
-        System.out.println("form.getCategory1() = " + form.getCategory1());
-        System.out.println("form.getCategory2() = " + form.getCategory2());
-=======
         String category1 = form.getCategory1();
         String category2 = form.getCategory2();
 
-        if (categoryServiceImpl.findByCategoryName(category1, category2) == null) {
-            Category findCategory = new Category(category1, category2);
-            categoryServiceImpl.save(findCategory);
+        if(categoryServiceImpl.findByCategoryName(category1, category2) == null){
+            categoryServiceImpl.save(new Category(category1, category2));
         }
+
         Category findCategory = categoryServiceImpl.findByCategoryName(category1, category2);
-
-        CategoryItem categoryItem = new CategoryItem();
-        categoryItem.setItem(item);
-        categoryItem.setCategory(findCategory);
-
-        categoryItemServiceImpl.save(categoryItem);
->>>>>>> 16b61c9b69a8d380269626d10c49fc8f9a30ba77
-
+        item.setCategory(findCategory);
         itemServiceImpl.saveItem(item, file);
         return "redirect:/item";
     }
 
     @GetMapping(value = "")
-    public String list(Model model) {
-        List<Item> items = itemServiceImpl.findItems();
-        model.addAttribute("items", items);
+    public String list(Model model, SearchForm form) {
+        String keyword = form.getKeyword();
+        List<Item> findAllItem = itemServiceImpl.findByKeyword(keyword);
+        model.addAttribute("items", findAllItem);
+        model.addAttribute("keyword", keyword);
+
         return "item/itemList";
     }
 

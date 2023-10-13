@@ -1,17 +1,22 @@
 package org.project.shop.repository;
 
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.project.shop.config.QuerydslConfig;
+import org.project.shop.domain.Category;
+import org.project.shop.domain.QCategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.project.shop.domain.Item;
 
 import java.util.List;
 
+import static org.project.shop.domain.QCategory.category;
+import static org.project.shop.domain.QCategoryItem.categoryItem;
 import static org.project.shop.domain.QItem.item;
 
 @Repository
@@ -50,6 +55,23 @@ public class ItemRepositoryImpl implements ItemRepository{
     public List<Item> findAllItem(){
         return queryFactory.select(item)
                 .from(item)
+                .fetch();
+    }
+
+    @Override
+    public List<Item> findByItemWithCategory(Category category) {
+        return queryFactory.selectFrom(item)
+
+                .fetch();
+
+    }
+
+    @Override
+    public List<Item> findByKeyword(String keyword) {
+        return queryFactory.selectFrom(item)
+                .where(item.name.like("%" + keyword + "%").or(
+                        item.author.like("%" + keyword + "%")
+                ))
                 .fetch();
     }
 }

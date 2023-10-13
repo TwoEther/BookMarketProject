@@ -27,7 +27,7 @@ public class CartItem {
             this.item.getCartItem().remove(this);
         }
         this.item = item;
-        cart.getCartItem().add(this);
+        item.getCartItem().add(this);
     }
 
 

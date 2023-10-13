@@ -1,5 +1,6 @@
 package org.project.shop.repository;
 
+import org.project.shop.domain.Category;
 import org.project.shop.domain.Item;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -13,7 +14,9 @@ public interface ItemRepository{
 
     public List<Item> findAllItem();
 
+    public List<Item> findByItemWithCategory(Category category);
 
+    public List<Item> findByKeyword(String keyword);
 //    public void deleteOneItem(Long id);
 
 }

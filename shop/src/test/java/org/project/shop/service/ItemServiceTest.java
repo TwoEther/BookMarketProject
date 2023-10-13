@@ -2,15 +2,17 @@ package org.project.shop.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-<<<<<<< HEAD
-=======
 import org.project.shop.domain.Category;
-import org.project.shop.domain.CategoryItem;
->>>>>>> 16b61c9b69a8d380269626d10c49fc8f9a30ba77
 import org.project.shop.domain.Item;
+import org.project.shop.repository.ItemRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
@@ -21,45 +23,79 @@ public class ItemServiceTest {
     @Autowired
     private ItemServiceImpl itemServiceImpl;
 
-<<<<<<< HEAD
-    @DisplayName("카테고리 설정 테스트")
-    @Test
-    public void setItemCategoryTest() {
-        /*
-            1. Item에서 Category에 대한 정보가 들어올때 CategoryItem에서
-               Category에 대한 정보를 찾을수 있어야 함
-         */
-=======
+    @Autowired
+    private ItemRepositoryImpl itemRepositoryImpl;
+
     @Autowired
     private CategoryServiceImpl categoryServiceImpl;
+
 
     @DisplayName("카테고리 설정 테스트")
     @Test
     public void setItemCategoryTest() {
         Item item1 = new Item("item1", 30000, 5);
         Item item2 = new Item("item2", 50000, 3);
-
         String category1 = "국내 서적";
         String category2 = "소설";
         String category3 = "인문";
 
-        Category category = categoryServiceImpl.findByCategoryName(category1, category2);
-        if (category == null) {
+        Category categoryObj1 = categoryServiceImpl.findByCategoryName(category1, category2);
+        if (categoryObj1 == null) {
             Category newCategory = new Category(category1, category2);
+            System.out.println("newCategory.toString() = " + newCategory.toString());
             categoryServiceImpl.save(newCategory);
         }
 
-        Category findCategory = categoryServiceImpl.findByCategoryName(category1, category2);
+        Category categoryObj2 = categoryServiceImpl.findByCategoryName(category1, category3);
+        if (categoryObj2 == null) {
+            Category newCategory = new Category(category1, category3);
+            categoryServiceImpl.save(newCategory);
+        }
+        List<Category> findAllCategory = categoryServiceImpl.findAllCategory();
+        for (Category category : findAllCategory) {
+            System.out.println("category.toString() = " + category.toString());
+        }
 
-        CategoryItem categoryItem = new CategoryItem();
-        categoryItem.setCategory(findCategory);
-        categoryItem.setItem(item1);
+        Category findCategory1 = categoryServiceImpl.findByCategoryName(category1, category2);
+        Category findCategory2 = categoryServiceImpl.findByCategoryName(category1, category3);
 
-        System.out.println("categoryItem.toString() = " + categoryItem.toString());
+    }
 
+    @DisplayName("카테고리로 아이템 찾기")
+    @Test
+    public void findByItemWithCategory() {
+        for (int i = 0; i < 5; i++) {
+            String name = "item"+i;
+            int price = (int) (Math.random() * 30000) + 10000;
+            int stockQuantity = (int) (Math.random() * 100);
 
+            Item item = new Item(name, price, stockQuantity);
+            itemRepositoryImpl.save(item);
+        }
 
+        List<String> countries = new ArrayList<>();
+        List<String> categories = new ArrayList<>();
 
->>>>>>> 16b61c9b69a8d380269626d10c49fc8f9a30ba77
+        countries.add("국내 서적");
+        countries.add("외국 서적");
+
+        categories.add("사회/정치");
+        categories.add("경영/경제");
+
+        Category category1 = new Category(countries.get(0), categories.get(0));
+        Category category2 = new Category(countries.get(0), categories.get(1));
+        Category category3 = new Category(countries.get(1), categories.get(0));
+        Category category4 = new Category(countries.get(1), categories.get(1));
+
+        categoryServiceImpl.save(category1);
+        categoryServiceImpl.save(category2);
+        categoryServiceImpl.save(category3);
+        categoryServiceImpl.save(category4);
+
+        List<Item> findAllitem = itemServiceImpl.findItems();
+        Item item1 = findAllitem.get(0);
+        item1.setCategory(category1);
+        Category findCategory = item1.getCategory();
+        assertThat(findCategory.getCategory1()).isEqualTo(category1.getCategory1());
     }
 }
