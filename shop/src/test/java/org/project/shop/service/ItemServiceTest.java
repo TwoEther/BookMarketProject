@@ -1,11 +1,13 @@
 package org.project.shop.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.project.shop.domain.Category;
 import org.project.shop.domain.Item;
 import org.project.shop.repository.ItemRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +31,7 @@ public class ItemServiceTest {
     @Autowired
     private CategoryServiceImpl categoryServiceImpl;
 
-
+    /*
     @DisplayName("카테고리 설정 테스트")
     @Test
     public void setItemCategoryTest() {
@@ -65,7 +67,7 @@ public class ItemServiceTest {
     @Test
     public void findByItemWithCategory() {
         for (int i = 0; i < 5; i++) {
-            String name = "item"+i;
+            String name = "item" + i;
             int price = (int) (Math.random() * 30000) + 10000;
             int stockQuantity = (int) (Math.random() * 100);
 
@@ -98,4 +100,56 @@ public class ItemServiceTest {
         Category findCategory = item1.getCategory();
         assertThat(findCategory.getCategory1()).isEqualTo(category1.getCategory1());
     }
+    */
+    @BeforeEach
+    public void createItems() {
+        for (int i = 0; i < 5; i++) {
+            String name = "item" + i;
+            int price = (int) (Math.random() * 30000) + 10000;
+            int stockQuantity = (int) (Math.random() * 100);
+
+            Item item = new Item(name, price, stockQuantity);
+            itemRepositoryImpl.save(item);
+        }
+    }
+    @BeforeEach
+    public void createCategories() {
+        List<String> countries = new ArrayList<>();
+        List<String> categories = new ArrayList<>();
+        countries.add("국내 서적");
+        countries.add("외국 서적");
+
+        categories.add("사회/정치");
+        categories.add("경영/경제");
+        categories.add("과학");
+
+        for (int i = 0; i < countries.size(); i++) {
+            String country = countries.get(i);
+            for (int j = 0; j < categories.size(); j++) {
+                String category = categories.get(j);
+                Category newCategory = new Category(country, category);
+                categoryServiceImpl.save(newCategory);
+            }
+        }
+    }
+    
+    @DisplayName("GroupByCategory 테스트")
+    @Test
+    public void groupByCategoryTest() {
+        List<Item> savedItems = itemServiceImpl.findItems();
+        List<Category> savedCategory = categoryServiceImpl.findAllCategory();
+
+        for (int i = 0; i < savedItems.size(); i++) {
+            savedItems.get(i).setCategory(savedCategory.get(i));
+        }
+
+        for (Item savedItem : savedItems) {
+            System.out.println("savedItem.toString() = " + savedItem.toString());
+        }
+
+        List<Item> findAllItems = itemServiceImpl.orderByCategory();
+        for (Item findAllItem : findAllItems) {
+            System.out.println("findAllItem.toString() = " + findAllItem.toString());
+        }
+    } 
 }

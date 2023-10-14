@@ -68,12 +68,20 @@ public class ItemServiceImpl implements ItemService{
 
     @Override
     public List<Item> findByKeyword(String keyword) {
+        if (keyword == null) {
+            return itemRepositoryImpl.findAllItem();
+        }
         return itemRepositoryImpl.findByKeyword(keyword);
     }
 
     @Override
-    public List<Item> findByItemWithCategory(Category category) {
-        return itemRepositoryImpl.findByItemWithCategory(category);
+    public List<Item> findByItemWithCategory(String category2) {
+        return itemRepositoryImpl.findByItemWithCategory(category2);
+    }
+
+    @Override
+    public List<Item> orderByCategory() {
+        return itemRepositoryImpl.orderByCategory();
     }
 
 

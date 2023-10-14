@@ -14,9 +14,11 @@ public interface ItemRepository{
 
     public List<Item> findAllItem();
 
-    public List<Item> findByItemWithCategory(Category category);
+    public List<Item> findByItemWithCategory(String category2);
 
     public List<Item> findByKeyword(String keyword);
 //    public void deleteOneItem(Long id);
+
+    public List<Item> orderByCategory();
 
 }

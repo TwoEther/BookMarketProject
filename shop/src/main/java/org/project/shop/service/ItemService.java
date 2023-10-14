@@ -16,5 +16,7 @@ public interface ItemService {
     public boolean checkStockQuantity(Long itemId, int quantity);
 
     public List<Item> findByKeyword(String keyword);
-    public List<Item> findByItemWithCategory(Category category);
+    public List<Item> findByItemWithCategory(String category2);
+
+    public List<Item> orderByCategory();
 }

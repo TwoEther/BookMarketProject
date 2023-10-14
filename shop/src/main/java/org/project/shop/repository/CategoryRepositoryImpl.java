@@ -50,6 +50,15 @@ public class CategoryRepositoryImpl implements CategoryRepository{
     @Override
     public List<Category> findAllCategory() {
         return queryFactory.selectFrom(category)
+                .orderBy(category.category2.asc())
+                .fetch();
+    }
+
+    @Override
+    public List<String> findAllCategory2() {
+        return queryFactory.select(category.category2)
+                .from(category)
+                .distinct()
                 .fetch();
     }
 

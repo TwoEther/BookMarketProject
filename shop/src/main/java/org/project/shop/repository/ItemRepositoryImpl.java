@@ -16,7 +16,6 @@ import org.project.shop.domain.Item;
 import java.util.List;
 
 import static org.project.shop.domain.QCategory.category;
-import static org.project.shop.domain.QCategoryItem.categoryItem;
 import static org.project.shop.domain.QItem.item;
 
 @Repository
@@ -59,9 +58,10 @@ public class ItemRepositoryImpl implements ItemRepository{
     }
 
     @Override
-    public List<Item> findByItemWithCategory(Category category) {
+    public List<Item> findByItemWithCategory(String category2) {
         return queryFactory.selectFrom(item)
-
+                .where(item.category.category2.eq(category2))
+                .limit(3)
                 .fetch();
 
     }
@@ -70,8 +70,20 @@ public class ItemRepositoryImpl implements ItemRepository{
     public List<Item> findByKeyword(String keyword) {
         return queryFactory.selectFrom(item)
                 .where(item.name.like("%" + keyword + "%").or(
-                        item.author.like("%" + keyword + "%")
-                ))
+                        item.author.like("%" + keyword + "%").or(
+                                item.category.category1.like("%" + keyword + "%").or(
+                                        item.category.category2.like("%" + keyword + "%")
+                                ))
+                        )
+                )
                 .fetch();
+    }
+
+    @Override
+    public List<Item> orderByCategory() {
+        return queryFactory.selectFrom(item)
+                .orderBy(item.category.category2.asc())
+                .fetch();
+
     }
 }

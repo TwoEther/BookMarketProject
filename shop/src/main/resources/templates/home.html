@@ -8,33 +8,28 @@
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader" />
 
-    <div class="row align-items-center" id="header_top">
-        <div class="col-2">
-            <p id="BookMarket"><strong>BookMarket</strong></p>
-        </div>
-        <div class="col-7">
+    <div class="row align-items-center" id="header_top" style="margin-top:10px; margin-bottom:10px;">
+        <div style="float:right; display:inline;">
             <form class="d-flex" th:action="@{/item}" th:object="${form}">
-                <label th:for="keyword">검색어</label>
-                <input class="form-control me-2" type="search" name="keyword" placeholder="Search" aria-label="Search">
+                <input class="form-control me-2" type="search" name="keyword" placeholder="검색어를 입력하세요" aria-label="Search">
                 <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
         </div>
         <div class="col-3">
         </div>
     </div>
-    <hr>
-    <div class="row">
-        <p>Category1</p>
-    </div>
-    <div class="row">
-        <div class="col-4" th:each="item : ${items}">
+
+    <div class="row" th:each="allItem : ${allItems}" style="">
+        <h4 th:text="${allItem.get(0).getCategory().getCategory2()}"></h4>
+        <div th:each="item : ${allItem}" class="col-4">
             <a th:href="@{/item/{param1}(param1=${item.id})}">
                 <img th:src="@{${item.getFilePath()}}" alt="" style="height: 200px;"></a>
-            <a th:href="@{/item/{param1}(param1=${item.id})}"><strong><p th:text="${item.name}" class="text-start" id="itemName" style="text-decoration-line;none"></strong></p></a>
-            <p th:text="${item.author}"></p>
-            <p th:text="${item.publisher}"></p>
+            <a th:href="@{/item/{param1}(param1=${item.id})}"><strong><p th:text="${item.name}" class="text-start" id="itemName" style="text-decoration-line:none; margin-bottom:0px"></strong></p></a>
+            <p th:text="${item.author}" style="margin-bottom:0px"></p>
+            <p th:text="${item.publisher}" style="margin-bottom:0px"></p>
             <strong><span th:text="${item.price}"></span></strong><span>원</span>
         </div>
+        <hr>
     </div>
 
     </div>

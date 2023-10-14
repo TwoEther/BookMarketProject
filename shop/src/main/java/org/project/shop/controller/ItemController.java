@@ -130,9 +130,9 @@ public class ItemController {
     public String list(Model model, SearchForm form) {
         String keyword = form.getKeyword();
         List<Item> findAllItem = itemServiceImpl.findByKeyword(keyword);
+
         model.addAttribute("items", findAllItem);
         model.addAttribute("keyword", keyword);
-
         return "item/itemList";
     }
 

@@ -13,4 +13,6 @@ public interface CategoryRepository {
     public Category findByCategoryName(String category1, String category2);
 
     public List<Category> findAllCategory();
+
+    public List<String> findAllCategory2();
 }
