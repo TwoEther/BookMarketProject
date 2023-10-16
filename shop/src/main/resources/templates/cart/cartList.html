@@ -18,6 +18,80 @@
             </tr>
             </thead>
 
+            <script th:inline="javascript">
+                function leftBtnClicked(id){
+                    var id = id.substr(4);
+                    var token = $("meta[name='_csrf']").attr("content");
+                    var header = $("meta[name='_csrf_header']").attr("content");
+
+                    let number = $('#count'+id).val();
+                    const cart = {"cartItemId" : id,
+                                  "quantity" : "-1"};
+                    $(function() {
+                        $(document).ajaxSend(function(e, xhr, options) {
+                            xhr.setRequestHeader(header, token);
+                        });
+                    });
+                    $.ajax({
+                        url : "/cart/edit",
+                        type : "PUT",
+                        data : cart,
+                        beforeSend: function (xhr) {
+                          xhr.setRequestHeader(header, token);
+                        },
+                        async    : false,
+                        success : function(){
+                            let number = Number($('#count'+id).val());
+                            if(number > 0){
+                                let price = Number($('#price'+id).text()) / number;
+                                number -= 1;
+                                $('#count'+id).val(number);
+                                $('#price'+id).text(price * number);
+                            }
+                        },
+                        error:function(request,status,error){
+                        alert("code = "+ request.status + " message = " + request.responseText + " error = " + error); // 실패 시 처리
+                       }
+                    });
+                }
+
+                function rightBtnClicked(id){
+                    var id = id.substr(5);
+                    var token = $("meta[name='_csrf']").attr("content");
+                    var header = $("meta[name='_csrf_header']").attr("content");
+
+                    let number = $('#count'+id).val();
+                    const cart = {"cartItemId" : id,
+                                  "quantity" : "1"};
+                    $(function() {
+                        $(document).ajaxSend(function(e, xhr, options) {
+                            xhr.setRequestHeader(header, token);
+                        });
+                    });
+                    $.ajax({
+                        url : "/cart/edit",
+                        type : "PUT",
+                        data : cart,
+                        beforeSend: function (xhr) {
+                          xhr.setRequestHeader(header, token);
+                        },
+                        async    : false,
+                        success : function(){
+                            let number = Number($('#count'+id).val());
+                            if(number > 0){
+                                let price = Number($('#price'+id).text()) / number;
+                                number += 1;
+                                $('#count'+id).val(number);
+                                $('#price'+id).text(price * number);
+                            }
+                        },
+                        error:function(request,status,error){
+                        alert("code = "+ request.status + " message = " + request.responseText + " error = " + error); // 실패 시 처리
+                       }
+                    });
+                }
+            </script>
+
             <tbody th:each="cartItem : ${cartItems}">
             <tr>
                 <th scope="row" style="margin-right: 20px;"><input type="checkbox"></th>
@@ -30,54 +104,14 @@
                     </div>
                 </td>
                 <td>
-                    <div><p th:text="${cartItem.item.price}" style="margin-bottom:0px;">원</p>
+                    <div><p th:text="${cartItem.item.price} * ${cartItem.count}" style="margin-bottom:0px;" th:id="'price'+${cartItem.id}"><span>원</span></p>
                         <span class="countBox">
-                            <button th:id="${cartItem.id}" onclick="leftBtnClicked(this.id)"><span>-</span></button>
-                            <input type="number" th:value="${cartItem.count}" th:id="'count'+${cartItem.id}" onclick="clicked(this.id)" class="input_btn">
-                            <span id="itemPrice" style="display:none;" th:text="${cartItem.count}"></span>
-                            <button id="rightbtn" onclick="rightBtnClicked()">
+                            <button th:id="'left'+${cartItem.id}" onclick="leftBtnClicked(this.id)"><span>-</span></button>
+                            <input type="number" th:value="${cartItem.count}" th:id="'count'+${cartItem.id}" class="input_btn" onchange="changePrice('{cartItem.id}')">
+                            <span id="itemCount" style="display:none;" th:text="${cartItem.count}"></span>
+                            <button th:id="'right'+${cartItem.id}" onclick="rightBtnClicked(this.id)">
                                 <span>+</span>
                             </button>
-                            <script th:inline="javascript">
-                            function leftBtnClicked(id){
-                                var token = $("meta[name='_csrf']").attr("content");
-                                var header = $("meta[name='_csrf_header']").attr("content");
-
-                                var newId = '#'+'count'+ id;
-                                let result = Number($newId).val());
-                                console.log("result = "+result);
-                                result--;
-                                if(result < 0) result = 0;
-                                $(newId).val(result);
-
-
-                                $(function() {
-                                    $(document).ajaxSend(function(e, xhr, options) {
-                                        xhr.setRequestHeader(header, token);
-                                    });
-                                });
-                                $.ajax({
-                                    url : "/cart/edit/"+id,
-                                    type : "PUT",
-                                    dataType : "JSON",
-                                    data : {"quantity" : value,
-                                            "cartItemId" : id
-                                    },
-                                    beforeSend: function (xhr) {
-                                      xhr.setRequestHeader(header, token);
-                                    },
-                                    success : function(){
-                                        alert("실행에 성공했습니다");
-                                        location.reload();
-                                    },
-                                    error:function(request,status,error){
-                                    alert("code = "+ request.status + " message = " + request.responseText + " error = " + error); // 실패 시 처리
-                                   }
-                                });
-                            }
-                        }
-
-                        </script>
                         </span>
                     </div>
                 </td>

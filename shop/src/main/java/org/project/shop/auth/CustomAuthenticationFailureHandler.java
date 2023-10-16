@@ -28,7 +28,7 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
             errorMessage = "알 수 없는 이유";
         }
         errorMessage = URLEncoder.encode(errorMessage, "UTF-8");
-        setDefaultFailureUrl("/loginForm?error=true&exception=" + errorMessage);
+        setDefaultFailureUrl("/member/login?error=true&exception=" + errorMessage);
         super.onAuthenticationFailure(request, response, exception);
 
     }

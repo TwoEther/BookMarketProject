@@ -10,6 +10,7 @@
 
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader" />
+    <h4>회원가입</h4>
     <form role="form" id="loginForm" th:action="@{/member/new}" th:object="${memberForm}"
           method="post">
         <div class="form-group">

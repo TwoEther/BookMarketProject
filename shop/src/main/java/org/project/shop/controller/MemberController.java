@@ -78,7 +78,6 @@ public class MemberController {
     @PostMapping(value = "/idCheck")
     @ResponseBody
     public int idCheck(@RequestParam String userId) throws Exception{
-        System.out.println("memberServiceImpl.checkDuplicateMember(userId) = " + memberServiceImpl.checkDuplicateMember(userId));
         return memberServiceImpl.checkDuplicateMember(userId);
     }
 
@@ -91,7 +90,11 @@ public class MemberController {
 
 
     @GetMapping(value = "/login")
-    public String createLoginForm(Model model) {
+    public String createLoginForm(@RequestParam(value = "error", required = false) String error,
+                                  @RequestParam(value = "exception", required = false) String exception,
+                                  Model model) {
+        model.addAttribute("error", error);
+        model.addAttribute("exception", exception);
         model.addAttribute("loginForm", new LoginForm());
         return "/member/loginForm";
     }

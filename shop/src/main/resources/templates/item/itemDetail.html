@@ -93,7 +93,7 @@
                             </div>
 
                         </div>
-                        <form method="post" enctype="multipart/form-data">
+                        <form method="post" enctype="multipart/form-data" style="display:inline;">
                             <input class="btn btn-lg btn-primary" type="button" style="margin-right: 10px;"  onclick="quantityCheck()" sec:authorize="isAuthenticated()" value="장바구니 담기" readonly></input>
                         </form>
                             <script th:inline="javascript">
@@ -132,7 +132,7 @@
                                 });
                             }
                         </script>
-                        <a class="btn btn-lg btn-primary" th:href="@{/member/login}">구매하기</a>
+                        <a class="btn btn-lg btn-primary" th:href="@{/member/login}" style="float:right;">구매하기</a>
                     </div>
 
 

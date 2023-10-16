@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -90,13 +91,24 @@ public class CartController {
         return "redirect:/";
     }
 
-    @PutMapping(value = "/edit/{cartItemId}")
+
+    @PutMapping(value = "/edit")
+    @Transactional
     @ResponseBody
-    public String cartEdit(@PathVariable String cartItemId, @RequestParam String quantity) {
-        Long id = Long.parseLong(cartItemId);
-        System.out.println("id = " + id);
+    public void cartEdit(@RequestParam HashMap<String, String> params) {
+        Long id = Long.parseLong(params.get("cartItemId"));
+        String quantity = params.get("quantity");
         CartItem findCartItem = cartItemRepositoryImpl.findByCartItemId(id);
-        findCartItem.addCount(Integer.parseInt(String.valueOf(quantity)));
-        return "redirect:/";
+        Item findItem = itemServiceImpl.findOneItem(findCartItem.getItem().getId());
+
+        findCartItem.setCount(findCartItem.getCount()-1);
+
+        System.out.println("---------------");
+        System.out.println("findItem.getStockQuantity() = " + findItem.getStockQuantity());
+        findItem.setStockQuantity(findItem.getStockQuantity()-Integer.parseInt(quantity));
+        System.out.println("findItem.getStockQuantity() = " + findItem.getStockQuantity());
+        System.out.println("---------------");
+
+        findCartItem.addCount(Integer.parseInt(quantity));
     }
 }
