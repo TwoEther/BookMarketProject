@@ -2,15 +2,65 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header" />
 <link rel="stylesheet" href="/static/css/detail.css">
+    <script>
+        function selectAllCheckBox(){
+            var checkBoxes = document.getElementsByName("item_check_box");
+
+            if(document.getElementById("checkBoxAll").checked == true){
+                for(var i=0; i < checkBoxes.length; i++) checkBoxes[i].checked=true;
+            } else {
+                for(var i=0; i < checkBoxes.length; i++) checkBoxes[i].checked=false;
+            }
+            changePriceBlock();
+        }
+
+        function selectOneCheckBox(id){
+            var checkBox = document.getElementById(id);
+            var checkBoxes = document.getElementsByName("item_check_box");
+            var parentCheckBox = document.getElementById("checkBoxAll");
+            const rand = Math.floor(Math.random() * 99999999);
+            let isChecked = 0;
+
+            for(var i=0; i< checkBoxes.length; i++){
+                if(checkBoxes[i].checked == true) isChecked += 1;
+            }
+
+            if(checkBox.checked == true){
+                if(isChecked == checkBoxes.length){parentCheckBox.checked = true;}
+             }else{
+                 parentCheckBox.checked = false;
+             }
+
+
+             $('#change').text(rand);
+             changePriceBlock();
+        }
+
+         function changePriceBlock(){
+            var array = new Array();
+            let money = 0;
+            var checkBoxes = document.getElementsByName("item_check_box");
+            for(var i=0; i < checkBoxes.length; i++) {
+                if(checkBoxes[i].checked == true){
+                    let id = "price"+checkBoxes[i].id.substr(4);
+                    money += Number($('#'+id).text());
+                }
+            }
+            var result1 = money.toLocaleString('ko-KR');
+            var result2 = (money+3000).toLocaleString('ko-KR');
+            $('#total_price').text(result1+"원");
+            $('#payment_price').text(result2+"원");
+        }
+</script>
 <body>
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-
+    <div style="display:none" id="change" onchange="">1</div>
     <div class="container" >
         <table class="table">
             <thead>
             <tr>
-                <th scope="col-1"><input type="checkbox"></th>
+                <th scope="col-1"><input type="checkbox" id="checkBoxAll" checked="checked" onclick="selectAllCheckBox()"> </th>
                 <th scope="col-1"><span>상품 이미지</span></th>
                 <th scope="col-4">상품정보</th>
                 <th scope="col-5">금액</th>
@@ -19,14 +69,15 @@
             </thead>
 
             <script th:inline="javascript">
-                function leftBtnClicked(id){
+                function btnClicked(id, count){
                     var id = id.substr(4);
                     var token = $("meta[name='_csrf']").attr("content");
                     var header = $("meta[name='_csrf_header']").attr("content");
-
                     let number = $('#count'+id).val();
+                    let price = Number($('#value'+id).text());
+
                     const cart = {"cartItemId" : id,
-                                  "quantity" : "-1"};
+                                  "count" : count};
                     $(function() {
                         $(document).ajaxSend(function(e, xhr, options) {
                             xhr.setRequestHeader(header, token);
@@ -39,62 +90,25 @@
                         beforeSend: function (xhr) {
                           xhr.setRequestHeader(header, token);
                         },
-                        async    : false,
                         success : function(){
                             let number = Number($('#count'+id).val());
-                            if(number > 0){
-                                let price = Number($('#price'+id).text()) / number;
-                                number -= 1;
+                            if(number>= 0){
+                                number = ((number+count) < 0) ? 0 : number+count;
                                 $('#count'+id).val(number);
-                                $('#price'+id).text(price * number);
+                                $('#price'+id).text((price * number));
                             }
                         },
                         error:function(request,status,error){
                         alert("code = "+ request.status + " message = " + request.responseText + " error = " + error); // 실패 시 처리
                        }
                     });
-                }
-
-                function rightBtnClicked(id){
-                    var id = id.substr(5);
-                    var token = $("meta[name='_csrf']").attr("content");
-                    var header = $("meta[name='_csrf_header']").attr("content");
-
-                    let number = $('#count'+id).val();
-                    const cart = {"cartItemId" : id,
-                                  "quantity" : "1"};
-                    $(function() {
-                        $(document).ajaxSend(function(e, xhr, options) {
-                            xhr.setRequestHeader(header, token);
-                        });
-                    });
-                    $.ajax({
-                        url : "/cart/edit",
-                        type : "PUT",
-                        data : cart,
-                        beforeSend: function (xhr) {
-                          xhr.setRequestHeader(header, token);
-                        },
-                        async    : false,
-                        success : function(){
-                            let number = Number($('#count'+id).val());
-                            if(number > 0){
-                                let price = Number($('#price'+id).text()) / number;
-                                number += 1;
-                                $('#count'+id).val(number);
-                                $('#price'+id).text(price * number);
-                            }
-                        },
-                        error:function(request,status,error){
-                        alert("code = "+ request.status + " message = " + request.responseText + " error = " + error); // 실패 시 처리
-                       }
-                    });
+                    changePriceBlock();
                 }
             </script>
 
             <tbody th:each="cartItem : ${cartItems}">
             <tr>
-                <th scope="row" style="margin-right: 20px;"><input type="checkbox"></th>
+                <th scope="row" style="margin-right: 20px;"><input type="checkbox" checked="checked" th:id="'item'+${cartItem.id}" name="item_check_box" onclick="selectOneCheckBox(this.id)"></th>
                 <td><a th:href="@{/item/{param1}(param1=${cartItem.item.id})}"><img th:src="@{${cartItem.item.getFilePath()}}" alt="" width="100px"></a></td>
                 <td><div>
                     <a href="" th:text="${cartItem.item.name}"></a>
@@ -104,12 +118,13 @@
                     </div>
                 </td>
                 <td>
-                    <div><p th:text="${cartItem.item.price} * ${cartItem.count}" style="margin-bottom:0px;" th:id="'price'+${cartItem.id}"><span>원</span></p>
+                    <p style="display:none;" th:text="${cartItem.item.price}" th:id="'value'+${cartItem.id}"> </p>
+                    <div><p th:text="${cartItem.item.price} * ${cartItem.count}" style="margin-bottom:0px;" th:id="'price'+${cartItem.id}"></p>
                         <span class="countBox">
-                            <button th:id="'left'+${cartItem.id}" onclick="leftBtnClicked(this.id)"><span>-</span></button>
+                            <button th:id="'left'+${cartItem.id}" onclick="btnClicked(this.id, -1)"><span>-</span></button>
                             <input type="number" th:value="${cartItem.count}" th:id="'count'+${cartItem.id}" class="input_btn" onchange="changePrice('{cartItem.id}')">
                             <span id="itemCount" style="display:none;" th:text="${cartItem.count}"></span>
-                            <button th:id="'right'+${cartItem.id}" onclick="rightBtnClicked(this.id)">
+                            <button th:id="'righ'+${cartItem.id}" onclick="btnClicked(this.id, 1)">
                                 <span>+</span>
                             </button>
                         </span>
@@ -149,11 +164,17 @@
                     }
                 </script>
             </tr>
-
-
             </tbody>
         </table>
     </div>
+    <div class="container">
+        <div id="total_price_area" style="float:center;">
+            <p style="display:inline;">총 상품 가격 : <span id="total_price">0원</span></p>
+            <p style="display:inline;">배송비 : <span id="delivery_fee">3000원</span></p>
+            <p style="display:inline;">결제 금액 : <span id="payment_price">3000원</span></p>
+        </div>
+    </div>
+
 
     <div th:replace="fragments/footer :: footer"/>
 </div> <!-- /container -->

@@ -97,18 +97,11 @@ public class CartController {
     @ResponseBody
     public void cartEdit(@RequestParam HashMap<String, String> params) {
         Long id = Long.parseLong(params.get("cartItemId"));
-        String quantity = params.get("quantity");
+        int count = Integer.parseInt(params.get("count"));
         CartItem findCartItem = cartItemRepositoryImpl.findByCartItemId(id);
         Item findItem = itemServiceImpl.findOneItem(findCartItem.getItem().getId());
 
-        findCartItem.setCount(findCartItem.getCount()-1);
-
-        System.out.println("---------------");
-        System.out.println("findItem.getStockQuantity() = " + findItem.getStockQuantity());
-        findItem.setStockQuantity(findItem.getStockQuantity()-Integer.parseInt(quantity));
-        System.out.println("findItem.getStockQuantity() = " + findItem.getStockQuantity());
-        System.out.println("---------------");
-
-        findCartItem.addCount(Integer.parseInt(quantity));
+        findItem.setStockQuantity(findItem.getStockQuantity()+count);
+        findCartItem.addCount(count);
     }
 }
