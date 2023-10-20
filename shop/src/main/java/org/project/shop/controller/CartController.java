@@ -75,15 +75,14 @@ public class CartController {
 
 
         List<CartItem> cartItems = cartItemRepositoryImpl.findAllCartItem();
+        int price = 0;
+        for (CartItem cartItem : cartItems) price += cartItem.getItem().getPrice() * cartItem.getCount();
+
         model.addAttribute("cartItems", cartItems);
+        model.addAttribute("price", price);
         return "cart/cartList";
     }
 
-    //    @GetMapping(value = "/delete/{cartItemId}")
-//    public String cartDeleteGet(@PathVariable Long cartItemId) {
-//        System.out.println("cartItemId = " + cartItemId);
-//        return "redirect:/";
-//    }
     @DeleteMapping(value = "/delete/{cartItemId}")
     public String cartDelete(@PathVariable String cartItemId) {
         Long id = Long.parseLong(cartItemId);

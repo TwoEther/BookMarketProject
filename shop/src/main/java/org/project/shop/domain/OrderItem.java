@@ -8,6 +8,7 @@ import lombok.Getter;
 
 public class OrderItem {
     @Id @GeneratedValue
+    @Column(name="orderItem_id")
     private Long id;
 
     // N:1 (OrderItem : item)
@@ -58,5 +59,16 @@ public class OrderItem {
     // 주문상품 가격 조회
     public int getTotalPrice(){
         return getOrderPrice() * getCount();
+    }
+
+    @Override
+    public String toString() {
+        return "OrderItem{" +
+                "id=" + id +
+                ", item=" + item +
+                ", order=" + order +
+                ", orderPrice=" + orderPrice +
+                ", count=" + count +
+                '}';
     }
 }

@@ -25,6 +25,8 @@ public class Member {
     private String password;
 
     private String name;
+    private String phoneNum;
+    private String email;
 
 //     정의 타입 사용
     @Embedded
@@ -73,10 +75,12 @@ public class Member {
         this.password = password;
     }
 
-    public Member(String userId, String password, String name) {
+    public Member(String userId, String password, String name, String phoneNum, String email) {
         this.userId = userId;
         this.password = password;
         this.name = name;
+        this.phoneNum = phoneNum;
+        this.email = email;
     }
 
     public Member(String name) {

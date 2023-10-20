@@ -14,8 +14,14 @@ public class MemberForm {
 
     private String roles;
 
-//    @NotEmpty(message = "이름을 입력하세요")
-//    private String name;
+    @NotEmpty(message = "이름을 입력하세요")
+    private String name;
+
+    @NotEmpty(message = "핸드폰 번호를 입력하세요")
+    private String phoneNum;
+
+    @NotEmpty(message = "이메일을 입력하세요")
+    private String email;
 //
 //    private String city;
 //    private String street;

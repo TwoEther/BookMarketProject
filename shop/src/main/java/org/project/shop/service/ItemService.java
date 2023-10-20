@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface ItemService {
+    public void saveItemNoImage(Item item);
     public void saveItem(Item Item, MultipartFile file) throws Exception;
     public Item findOneItem(Long itemId);
     public List<Item> findItems();

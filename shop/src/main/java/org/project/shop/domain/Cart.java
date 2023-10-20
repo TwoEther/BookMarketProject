@@ -28,14 +28,14 @@ public class Cart {
     }
 
 
-    @OneToOne(mappedBy = "cart", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Member member;
 
 
-    @OneToMany(mappedBy = "cart")
-    private List<Order> orders = new ArrayList<>();
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    private List<Order> order = new ArrayList<>();
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CartItem> cartItem = new ArrayList<>();
 
     @Override

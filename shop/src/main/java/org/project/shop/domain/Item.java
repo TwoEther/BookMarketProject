@@ -95,7 +95,6 @@ public class Item {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", price=" + price +
-                ", category=" + category.toString() +
                 ", stockQuantity=" + stockQuantity +
                 '}';
     }

@@ -50,8 +50,11 @@ public class MemberController {
 
         String id = form.getUserId();
         String password = form.getPassword1();
-        Member member = new Member(id, password);
-//        String name = form.getName();e
+        String name = form.getName();
+        String phoneNum = form.getPhoneNum();
+        String email = form.getEmail();
+        Member member = new Member(id, password, name, phoneNum, email);
+
         if (memberServiceImpl.checkReqexId(id) && memberServiceImpl.checkReqexPw(password)) {
             result.reject("signupFailed", "아이디나 패스워드가 올바르지 않습니다");
             return "/member/createMemberForm";

@@ -2,6 +2,7 @@ package org.project.shop.service;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.project.shop.domain.*;
 import org.project.shop.repository.OrderRepositoryImpl;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.couchbase.AutoConfigureDataCouchbase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -19,91 +22,60 @@ import static org.assertj.core.api.Assertions.fail;
 public class OrderServiceTest {
     @PersistenceContext
     EntityManager em;
-
+    @Autowired
+    MemberServiceImpl memberServiceImpl;
+    @Autowired
+    ItemServiceImpl itemServiceImpl;
     @Autowired
     OrderServiceImpl orderServiceImpl;
     @Autowired
     OrderRepositoryImpl orderRepositoryImpl;
+    
+    @Autowired
+    OrderItemServiceImpl orderItemServiceImpl;
 
-    /*
-        테스트 조건
-        1. 상품 주문이 성공되어야 함
-        2. 상품을 주문할때 재고 수량을 초과하면 안됨
-        3. 주문 취소가 성공
-     */
+    @Autowired
+    CartServiceImpl cartServiceImpl;
 
+    @DisplayName("장바구니를 거치지 않는 단일 품목 구매 테스트")
     @Test
-    public void orderTest(){
-        //Given
-        Member member = createMember();
-        Item item = createitem("item1", 10000, 5);
-        int orderCount = 2;
-        int expectedPrice = 20000;
-        //When
-        Long orderId = orderServiceImpl.order(member.getId(), item.getId(), orderCount);
-
-        //Then
-        Order currentOrder = orderRepositoryImpl.findOneOrder(orderId);
-
+    public void singleItemPurchaseTest() {
         /*
-            1. 주문 상태는 ORDER
-            2. 상품 주문 종류는 1
-            3. 주문 가격은 주문 개수 * 상품 가격
-            4. 재고 개수는 주문 수량 만큼 감소 해야함
+            1. 회원이 하나의 아이템을 여러개 구매
+            2. 구매한 아이템이 OrderRepository에 저장되어 있어야함.
          */
-        assertThat(OrderStatus.ORDER).isEqualTo(currentOrder.getStatus());
-        assertThat(currentOrder.getOrderItems().size()).isEqualTo(1);
-        assertThat(20000).isEqualTo(currentOrder.getTotalPrice());
-        assertThat(item.getStockQuantity()).isEqualTo(5 - orderCount);
-    }
+        Member member1 = new Member("id1", "pw1");
+        Member member2 = new Member("id2", "pw2");
+        memberServiceImpl.join(member1);
+        memberServiceImpl.join(member2);
 
-    @Test
-    public void overStockQuantity() throws Exception {
-        //given
-        Member member = createMember();
-        Item item = createitem("item1", 10000, 5);
-        int orderCount = 10;
+        Item item1 = new Item("item1", 20000, 30);
+        Item item2 = new Item("item2", 34000, 10);
+        itemServiceImpl.saveItemNoImage(item1);
+        itemServiceImpl.saveItemNoImage(item2);
 
-        //when
-        orderServiceImpl.order(member.getId(), item.getId(), orderCount);
-        fail("재고 초과");
+        String memberId1 = "id1";
 
-        //then
-    }
+        // 특정 회원이 물품 구입
+        /*
+            OrderItem 에서 물품 구매를 등록, Order 에서 이를 모아 처리
+         */
+        Member findMember1 = memberServiceImpl.findByUserId(memberId1);
+        Order order1 = new Order();
+        Cart cart1 = new Cart();
+        cartServiceImpl.save(cart1);
 
-    @Test
-    public void cancelOrder(){
-        //given
-        Member member = createMember();
-        Item item = createitem("item1", 10000, 5);
-        int orderCount = 2;
-        Long orderId = orderServiceImpl.order(member.getId(), item.getId(), orderCount);
-        Order currentOrder = orderRepositoryImpl.findOneOrder(orderId);
+        order1.setMember(findMember1);
+        order1.setCart(cart1);
+        orderServiceImpl.save(order1);
+        OrderItem orderItem = OrderItem.createOrderItem(item1, 20000, 3);
+        orderItem.setOrder(order1);
 
-        //when
-        currentOrder.cancel();
-
-        //then
-        assertThat(OrderStatus.CANCEL).isEqualTo(currentOrder.getStatus());
-        assertThat(item.getStockQuantity()).isEqualTo(5);
-
-    }
-
-    @Test
-    private Item createitem(String name, int price, int stockQuantity) {
-        Item item = new Item();
-        item.setName(name);
-        item.setPrice(price);
-        item.setStockQuantity(stockQuantity);
-        em.persist(item);
-        return item;
-    }
-    @Test
-    private Member createMember() {
-        Member member = new Member();
-        member.setName("member1");
-//        member.setAddress(new Address("경기", "고양", "19234"));
-        em.persist(member);
-        return member;
+        orderItemServiceImpl.save(orderItem);
+        List<OrderItem> findAllOrderItem = orderItemServiceImpl.findAllOrderItem();
+        assertThat(findAllOrderItem.size()).isEqualTo(1);
+        for (OrderItem item : findAllOrderItem) {
+            System.out.println("item.toString() = " + item.toString());
+        }
     }
 }

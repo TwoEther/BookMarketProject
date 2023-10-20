@@ -49,4 +49,9 @@ public class OrderServiceImpl implements OrderService{
     public List<Order> findOrders(OrderSearch orderSearch) {
         return orderRepositoryImpl.findAllOrder(orderSearch);
     }
+
+    @Override
+    public void save(Order order) {
+        orderRepositoryImpl.save(order);
+    }
 }

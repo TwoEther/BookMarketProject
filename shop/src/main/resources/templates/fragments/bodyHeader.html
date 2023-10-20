@@ -19,7 +19,7 @@
                         <a class="nav-link active" aria-current="page" th:href="@{/item}">상품 목록</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">마이페이지</a>
+                        <a class="nav-link" href="#" sec:authorize="isAuthenticated()">마이페이지</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Pricing</a>

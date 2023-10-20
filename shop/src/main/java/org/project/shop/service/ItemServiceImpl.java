@@ -20,6 +20,11 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
+    public void saveItemNoImage(Item item) {
+        itemRepositoryImpl.save(item);
+    }
+
+    @Override
     @Transactional
     public void saveItem(Item item, MultipartFile file) throws Exception {
         // 프로젝트 경로

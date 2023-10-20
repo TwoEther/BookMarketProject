@@ -30,8 +30,6 @@
              }else{
                  parentCheckBox.checked = false;
              }
-
-
              $('#change').text(rand);
              changePriceBlock();
         }
@@ -73,8 +71,14 @@
                     var id = id.substr(4);
                     var token = $("meta[name='_csrf']").attr("content");
                     var header = $("meta[name='_csrf_header']").attr("content");
-                    let number = $('#count'+id).val();
+                    let number = Number($('#count'+id).val());
                     let price = Number($('#value'+id).text());
+
+                    if(number>= 0){
+                        number = ((number+count) < 0) ? 0 : number+count;
+                        $('#count'+id).val(number);
+                        $('#price'+id).text((price * number));
+                    }
 
                     const cart = {"cartItemId" : id,
                                   "count" : count};
@@ -91,12 +95,6 @@
                           xhr.setRequestHeader(header, token);
                         },
                         success : function(){
-                            let number = Number($('#count'+id).val());
-                            if(number>= 0){
-                                number = ((number+count) < 0) ? 0 : number+count;
-                                $('#count'+id).val(number);
-                                $('#price'+id).text((price * number));
-                            }
                         },
                         error:function(request,status,error){
                         alert("code = "+ request.status + " message = " + request.responseText + " error = " + error); // 실패 시 처리
@@ -169,12 +167,17 @@
     </div>
     <div class="container">
         <div id="total_price_area" style="float:center;">
-            <p style="display:inline;">총 상품 가격 : <span id="total_price">0원</span></p>
+            <p style="display:inline;">총 상품 가격 : <span id="total_price" th:text="${price}+'원'"></span></p>
             <p style="display:inline;">배송비 : <span id="delivery_fee">3000원</span></p>
             <p style="display:inline;">결제 금액 : <span id="payment_price">3000원</span></p>
         </div>
     </div>
 
+    <div class="" style="margin:auto;">
+        <a th:href="@{/item}" class="btn btn-lg btn-secondary">계속 쇼핑하기</a>
+        <a class="btn btn-lg btn-primary">구매 하기</a>
+
+    </div>
 
     <div th:replace="fragments/footer :: footer"/>
 </div> <!-- /container -->

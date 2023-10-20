@@ -14,7 +14,6 @@ import java.util.List;
 @Getter @Setter
 public class Order {
     @Id @GeneratedValue
-    @Column(name="order_id")
     private Long id;
 
     // 지연 로딩 사용
@@ -24,7 +23,7 @@ public class Order {
     private Member member;
 
     // 1:N (Order : OrderItem)
-    @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.MERGE)
     private List<OrderItem> orderItems = new ArrayList<>();
 
     // 1:N (Order : Delivery)
@@ -33,8 +32,8 @@ public class Order {
     private Delivery delivery;
 
     // N:1 (Order : Cart)
-    @ManyToOne
-    @JoinColumn(name = "orders", insertable = false, updatable = false)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(insertable = false, updatable = false)
     private Cart cart;
 
     private LocalDate orderDate;
@@ -93,5 +92,14 @@ public class Order {
             totalPrice += orderItem.getTotalPrice();
         }
         return totalPrice;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", member=" + member +
+                ", orderItems=" + orderItems +
+                '}';
     }
 }

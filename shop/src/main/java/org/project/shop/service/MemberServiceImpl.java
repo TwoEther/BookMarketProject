@@ -52,13 +52,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member findByUserId(String userId) {
-        return memberRepository.findByName(userId);
+        return memberRepository.findByUserId(userId);
     }
 
-    @Override
-    public Member findById(String id) {
-        return null;
-    }
 
 
     @Override

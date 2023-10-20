@@ -10,4 +10,6 @@ public interface CartService {
     public Long addCart(CartItem cartItem, String memberId);
 
     public void deleteById(Long id);
+
+    public void save(Cart cart);
 }
