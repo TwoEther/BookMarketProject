@@ -2,58 +2,53 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header"/>
 <body>
+<style>
+    #item_btn > a {
+        width:150px;
+    }
+</style>
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-    <div>
-        <div>
-            <form th:object="${orderSearch}" class="form-inline">
-                <div class="form-group mb-2">
-                    <input type="text" th:field="*{memberName}" class="formcontrol"
-                           placeholder="회원명"/>
+    <div class="container">
+        <div class="row">
+            <div class="col-3" id="infoArea">
+                <p>비밀번호 재설정</p>
+                <a th:href="@{/member/address}">배송지 설정</a>
+                <p>회원 탈퇴</p>
+            </div>
+
+            <div class="col-9" id="orderArea">
+                <p>주문 목록</p><hr>
+                <div class="itemArea">
+                    <h2>2023.10.21</h2>
+                    <div class="itemDetailArea">
+                        <table>
+                            <tbody>
+                            <tr></tr>
+                            <td style="width: 400px;">
+                                <div style="display: inline-block;" ><img src="images/pngwing.com.png" width="100px" alt=""></div>
+                                <div style="display: inline-block;">
+                                    <p style="margin-bottom: 0px;">책 제목은 이것 입니다</p>
+                                    <p style="margin-bottom: 0px;">16,000원 </p>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="" id="item_btn">
+                                    <a href="" class="btn btn-outline-primary" style="margin-bottom: 5px;">배송 조회</a>
+                                    <a href="" class="btn btn-outline-secondary" style="margin-bottom: 5px;">교환 및 반품 신청</a>
+                                    <a href="" class="btn btn-outline-secondary" style="margin-bottom: 5px;">리뷰 작성하기</a>
+                                </div>
+
+                            </td>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="form-group mx-sm-1 mb-2">
-                    <select th:field="*{orderStatus}" class="form-control">
-                        <option value="">주문상태</option>
-                        <option th:each=
-                                        "status : ${T(jpabook.jpashop.domain.OrderStatus).values()}"
-                                th:value="${status}"
-                                th:text="${status}">option
-                        </option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary mb-2">검색</button>
-            </form>
+
+
+            </div>
         </div>
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>#</th>
-                <th>회원명</th>
-                <th>대표상품 이름</th>
-                <th>대표상품 주문가격</th>
-                <th>대표상품 주문수량</th>
-                <th>상태</th>
-                <th>일시</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="item : ${orders}">
-                <td th:text="${item.id}"></td>
-                <td th:text="${item.member.name}"></td>
-                <td th:text="${item.orderItems[0].item.name}"></td>
-                <td th:text="${item.orderItems[0].orderPrice}"></td>
-                <td th:text="${item.orderItems[0].count}"></td>
-                <td th:text="${item.status}"></td>
-                <td th:text="${item.orderDate}"></td>
-                <td>
-                    <a th:if="${item.status.name() == 'ORDER'}" href="#"
-                       th:href="'javascript:cancel('+${item.id}+')'"
-                       class="btn btn-danger">CANCEL</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+
     </div>
     <div th:replace="fragments/footer :: footer"/>
 </div> <!-- /container -->

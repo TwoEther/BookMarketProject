@@ -8,15 +8,19 @@ import lombok.Getter;
 @Embeddable
 @Getter
 public class Address {
-    private String city;
-    private String street;
     private String zipcode;
+    private String address1;
+    private String address2;
+    private String reference;
+
+
+    public Address(String zipcode, String address1, String address2, String reference) {
+        this.zipcode = zipcode;
+        this.address1 = address1;
+        this.address2 = address2;
+        this.reference = reference;
+    }
 
     protected Address(){}
 
-    public Address(String city, String street, String zipcode) {
-        this.city = city;
-        this.street = street;
-        this.zipcode = zipcode;
-    }
 }

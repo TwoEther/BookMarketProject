@@ -2,9 +2,12 @@ package org.project.shop.service;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.project.shop.domain.*;
+import org.project.shop.repository.CartItemRepositoryImpl;
 import org.project.shop.repository.OrderRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.couchbase.AutoConfigureDataCouchbase;
@@ -30,12 +33,15 @@ public class OrderServiceTest {
     OrderServiceImpl orderServiceImpl;
     @Autowired
     OrderRepositoryImpl orderRepositoryImpl;
-    
+
     @Autowired
     OrderItemServiceImpl orderItemServiceImpl;
 
     @Autowired
     CartServiceImpl cartServiceImpl;
+
+    @Autowired
+    CartItemRepositoryImpl cartItemRepository;
 
     @DisplayName("장바구니를 거치지 않는 단일 품목 구매 테스트")
     @Test
@@ -77,5 +83,58 @@ public class OrderServiceTest {
         for (OrderItem item : findAllOrderItem) {
             System.out.println("item.toString() = " + item.toString());
         }
+    }
+
+    @DisplayName("장바구니 상품이 주문 엔티티로 전환 테스트")
+    @Test
+    public void cartItemToOrderItemTest() {
+        // 요구 조건
+        /*
+            1. 서로 다른 맴버에 대해서 장바 구니 목록이 공유 되면 안됨
+            2. 장바 구니 상태의 아이템 이 구매 목록에 전부 포함 되어야 함
+         */
+
+        Member member1 = new Member("id1", "pw1");
+        Member member2 = new Member("id2", "pw2");
+
+        memberServiceImpl.join(member1);
+        memberServiceImpl.join(member2);
+
+        int stock1 = 30;
+        int stock2 = 40;
+
+        Item book1 = new Item("book1", 20000, stock1);
+        Item book2 = new Item("book2", 32000, stock2);
+        itemServiceImpl.saveItemNoImage(book1);
+        itemServiceImpl.saveItemNoImage(book2);
+
+        Cart cart1 = new Cart();
+        Cart cart2 = new Cart();
+        cart1.setMember(member1);
+        cart2.setMember(member2);
+
+        cartServiceImpl.save(cart1);
+        cartServiceImpl.save(cart2);
+
+        int count1 = 3;
+        int count2 = 5;
+
+        CartItem cartItem1 = CartItem.createCartItem(cart1, book1, count1);
+        CartItem cartItem2 = CartItem.createCartItem(cart2, book2, count2);
+
+        cartItemRepository.save(cartItem1);
+        cartItemRepository.save(cartItem2);
+
+        book1.setStockQuantity(stock1-count1);
+        book2.setStockQuantity(stock2-count2);
+
+        System.out.println("cartItem1.toString() = " + cartItem1.toString());
+        System.out.println("cartItem2.toString() = " + cartItem2.toString());
+
+        /*
+            장바 구니에 있는 상품이 옮겨 질때 필요한 요소
+            1. 아이템 및 수량
+            2.
+         */
     }
 }

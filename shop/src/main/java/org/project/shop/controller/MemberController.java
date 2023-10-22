@@ -5,14 +5,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.project.shop.domain.Address;
 import org.project.shop.domain.Member;
 import org.project.shop.domain.Role;
 import org.project.shop.service.MemberServiceImpl;
+import org.project.shop.web.AddressForm;
 import org.project.shop.web.LoginForm;
 import org.project.shop.web.MemberForm;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -62,11 +65,11 @@ public class MemberController {
 
         try {
             memberServiceImpl.join(member);
-        }catch(DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException e) {
             e.printStackTrace();
             result.reject("signupFailed", "이미 등록된 사용자입니다.");
             return "/member/createMemberForm";
-        }catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             result.reject("signupFailed", e.getMessage());
             return "/member/createMemberForm";
@@ -80,16 +83,15 @@ public class MemberController {
 
     @PostMapping(value = "/idCheck")
     @ResponseBody
-    public int idCheck(@RequestParam String userId) throws Exception{
+    public int idCheck(@RequestParam String userId) throws Exception {
         return memberServiceImpl.checkDuplicateMember(userId);
     }
 
     @PostMapping(value = "/pwCheck")
     @ResponseBody
-    public boolean pwCheck(@RequestParam String pw) throws Exception{
+    public boolean pwCheck(@RequestParam String pw) throws Exception {
         return memberServiceImpl.checkReqexPw(pw);
     }
-
 
 
     @GetMapping(value = "/login")
@@ -103,7 +105,7 @@ public class MemberController {
     }
 
     @PostMapping(value = "/login")
-    public String login(@Valid LoginForm form, BindingResult result){
+    public String login(@Valid LoginForm form, BindingResult result) {
         if (result.hasErrors()) {
             return "/member/loginForm";
         }
@@ -118,9 +120,39 @@ public class MemberController {
     }
 
     @GetMapping(value = "/memberList")
-    public String memberList(Model model){
+    public String memberList(Model model) {
         List<Member> allMember = memberServiceImpl.findAllMember();
         model.addAttribute("members", allMember);
+        return "/member/memberList";
+    }
+
+    @GetMapping(value = "/address")
+    public String setDeliveryMember(Model model) {
+        model.addAttribute("AddressForm", new AddressForm());
+        return "member/address";
+    }
+
+    @PostMapping(value = "/address")
+    public String setDeliveryMemberPost(AddressForm addressForm) {
+        String zipcode = addressForm.getZipcode();
+        String address1 = addressForm.getAddress1();
+        String address2 = addressForm.getAddress2();
+        String reference = addressForm.getReference();
+
+
+        Object principal;
+        try {
+            principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            UserDetails userDetails = (UserDetails) principal;
+            String username = ((UserDetails) principal).getUsername();
+        } catch (Exception e) {
+            return "redirect:/";
+        }
+
+        Member findMember = memberServiceImpl.findByUserId(((UserDetails) principal).getUsername());
+        Address address = new Address(zipcode, address1, address2, reference);
+        findMember.setAddress(address);
+
         return "/member/memberList";
     }
 }

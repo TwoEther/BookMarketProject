@@ -35,9 +35,13 @@ public class ItemController {
     public String dbConfig(Model model) throws Exception {
         List<List<String>> ret = new ArrayList<List<String>>();
         BufferedReader br = null;
+        String path1 = "C:\\lee\\Java\\data.csv";
+        String path2 = "C:\\lee\\Project\\Spring\\data.csv";
+        String imagePath1 = "C:\\lee\\Java\\bookImages";
+        String imagePath2 = "C:\\lee\\Project\\Spring\\bookImages\\";
 
         try{
-            br = Files.newBufferedReader(Paths.get("C:\\lee\\Java\\data.csv"));
+            br = Files.newBufferedReader(Paths.get(path2));
             String line = "";
 
             while((line = br.readLine()) != null){
@@ -79,7 +83,7 @@ public class ItemController {
             }
             Category findCategory = categoryServiceImpl.findByCategoryName(category1, category2);
 
-            String fileRoot = "C:\\lee\\Java\\bookImages\\" + fileName+".png";
+            String fileRoot = imagePath2 + fileName+".png";
             Item item = new Item(title, price, stockQuantity, author, publisher, isbn, page, description);
             item.setCategory(findCategory);
             File imageFile = new File(fileRoot);

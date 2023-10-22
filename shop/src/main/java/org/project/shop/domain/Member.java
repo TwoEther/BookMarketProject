@@ -75,6 +75,12 @@ public class Member {
         this.password = password;
     }
 
+    public Member(String userId, String password, String name) {
+        this.userId = userId;
+        this.password = password;
+        this.name = name;
+    }
+
     public Member(String userId, String password, String name, String phoneNum, String email) {
         this.userId = userId;
         this.password = password;

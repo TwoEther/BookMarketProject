@@ -100,7 +100,7 @@ fieldError' : 'form-control'" oninput="idCheck()">
                 <label th:for="email">이메일</label>
                 <input type="hidden" th:name="${_csrf.parameterName}"
                        th:value="${_csrf.token}" />
-                <input type="email" th:field="*{phoneNum}" class="form-control"
+                <input type="email" th:field="*{email}" class="form-control"
                        placeholder="이메일을 입력해 주세요" id="email"
                        th:class="${#fields.hasErrors('email')}? 'form-control
             fieldError' : 'form-control'">
