@@ -3,6 +3,8 @@ package org.project.shop.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.util.List;
+
 @Entity
 @Getter
 public class CartItem {
@@ -49,6 +51,14 @@ public class CartItem {
         cartItem.setItem(item);
         cartItem.setCount(count);
         return cartItem;
+    }
+
+    public static int getTotalPrice(List<CartItem> cartItemList) {
+        int totalPrice = 0;
+        for (CartItem cartItem : cartItemList) {
+            totalPrice += cartItem.count * cartItem.getItem().getPrice();
+        }
+        return totalPrice;
     }
 
     public CartItem(Cart cart, Item item, int count) {

@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -133,6 +134,7 @@ public class MemberController {
     }
 
     @PostMapping(value = "/address")
+    @Transactional
     public String setDeliveryMemberPost(AddressForm addressForm) {
         String zipcode = addressForm.getZipcode();
         String address1 = addressForm.getAddress1();

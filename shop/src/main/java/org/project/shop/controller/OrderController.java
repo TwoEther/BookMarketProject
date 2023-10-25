@@ -1,13 +1,8 @@
 package org.project.shop.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.project.shop.domain.Item;
-import org.project.shop.domain.Member;
-import org.project.shop.domain.Order;
-import org.project.shop.domain.OrderSearch;
-import org.project.shop.service.ItemServiceImpl;
-import org.project.shop.service.MemberServiceImpl;
-import org.project.shop.service.OrderServiceImpl;
+import org.project.shop.domain.*;
+import org.project.shop.service.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -23,6 +18,8 @@ public class OrderController {
     private final OrderServiceImpl orderServiceImpl;
     private final MemberServiceImpl memberServiceImpl;
     private final ItemServiceImpl itemServiceImpl;
+    private final CartServiceImpl cartServiceImpl;
+    private final CartItemServiceImpl cartItemServiceImpl;
 
     @GetMapping(value = "")
     public String createForm(Model model) {
@@ -64,7 +61,31 @@ public class OrderController {
     }
 
     @GetMapping(value = "/payment")
-    public String orderPayment() {
+    public String orderPaymentGet() {
+        return "order/payment";
+    }
+
+    @PostMapping(value = "/payment")
+    public String orderPayment(Model model) {
+        /*
+            view로 넘겨야 할 것들
+            1. 구매자에 대한 정보(Member, Address)
+            2. 구매 상품에 대한 정보(cartItem)
+         */
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails userDetails = (UserDetails) principal;
+        String username = ((UserDetails) principal).getUsername();
+
+        Member findMember = memberServiceImpl.findByUserId(username);
+        Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
+        List<CartItem> findCartItems = cartItemServiceImpl.findByCartId(findCart.getId());
+        int totalPrice = CartItem.getTotalPrice(findCartItems);
+
+
+        model.addAttribute("member", findMember);
+        model.addAttribute("cartItems", findCartItems);
+        model.addAttribute("totalPrice", totalPrice);
+
         return "order/payment";
     }
 }

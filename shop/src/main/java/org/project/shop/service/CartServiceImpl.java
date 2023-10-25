@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import static org.project.shop.domain.QItem.item;
+
 @Service
 public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
@@ -32,7 +34,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Long addCart(CartItem cartItem, String memberId) {
+    public Long addCart(Member findMember, Item findItem, int quantity) {
         /*
             1. 장바구니에 담을 상품을 조회한다
             2. 현재 로그인한 회원을 조회한다
@@ -42,27 +44,29 @@ public class CartServiceImpl implements CartService {
                 4.1 이미 있는 상품의 경우 기존 수량에 추가
             5. 장바구니를 생성후 저장
          */
-        Item item = itemRepository.findOneItem(cartItem.getItem().getId());
 
-        Member member = memberRepository.findByUserId(memberId);
-        Cart cart = cartRepository.findByMemberId(member.getId());
-        if(cart == null) {
-            cart = Cart.createCart(member);
-            cartRepository.save(cart);
+        if(cartRepository.findByMemberId(findMember.getId()) == null) {
+            Cart newCart = Cart.createCart(findMember);
+            cartRepository.save(newCart);
         }
-        
-        CartItem savedItem = cartItemRepository.findByCartIdAndItemId(cart.getId(), item.getId());
-        int currentStockQuantity = item.getStockQuantity();
-        item.setStockQuantity(currentStockQuantity - cartItem.getCount());
+        Cart findCart = cartRepository.findByMemberId(findMember.getId());
 
+        CartItem savedItem = cartItemRepository.findByCartIdAndItemId(findCart.getId(), findItem.getId());
+
+        // 이미 장바구니에 존재하는 아이템이라면?
         if (savedItem != null) {
-            savedItem.addCount(cartItem.getCount());
+            savedItem.addCount(quantity);
             return savedItem.getId();
         }else{
-            CartItem findCartItem = CartItem.createCartItem(cart, item, cartItem.getCount());
+            CartItem findCartItem = CartItem.createCartItem(findCart, findItem, quantity);
             cartItemRepository.save(findCartItem);
             return findCartItem.getId();
         }
+    }
+
+    @Override
+    public Cart findByMemberId(Long memberId) {
+        return cartRepository.findByMemberId(memberId);
     }
 
     @Override

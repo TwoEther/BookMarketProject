@@ -6,7 +6,6 @@
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
     <div class="container">
         <div class="header">
-            <h1 style="margin-top: 30px;">책 구매사이트 제작 프로젝트</h1><hr>
             <h2>주문 및 결제</h2><hr>
         </div>
 
@@ -15,17 +14,17 @@
             <table>
                 <tr>
                     <td>이름</td>
-                    <td>홍길동</td>
+                    <td th:text="${member.name}"></td>
                 </tr>
 
                 <tr>
                     <td>이메일</td>
-                    <td>test@test.com</td>
+                    <td th:text="${member.email}"></td>
                 </tr>
 
                 <tr>
                     <td>휴대폰 번호</td>
-                    <td>010-3847-0289</td>
+                    <td th:text="${member.phoneNum}"></td>
                 </tr>
             </table>
         </div>
@@ -35,27 +34,26 @@
             <table>
                 <tr>
                     <td>이름</td>
-                    <td>홍길동</td>
+                    <td th:text="${member.name}"></td>
                 </tr>
 
                 <tr>
                     <td>배송 주소</td>
-                    <td>서울특별시 광진구 광진로 283 3001호</td>
+                    <td th:text="${member.address.address1}"></td>
                 </tr>
 
                 <tr>
                     <td>연락처</td>
-                    <td>010-3847-0289</td>
+                    <td th:text="${member.phoneNum}"></td>
                 </tr>
             </table>
         </div>
 
         <div class="delivery_item">
             <h3>배송 상품 정보</h3>
-            <div>
-                <p>item1</p>
-                <p>item2</p>
-                <p>item3</p>
+            <div th:each ="cartItem : ${cartItems}">
+                <div th:text ="${cartItem.item.name}" style="display:inline;"></div>
+                <div th:text ="','+${cartItem.count}+'개'" style="display:inline;"></div>
             </div>
         </div>
 
@@ -64,7 +62,7 @@
             <table>
                 <tr>
                     <td>총 상품가격</td>
-                    <td>59000원</td>
+                    <td th:text="${totalPrice}"></td>
                 </tr>
 
                 <tr>
