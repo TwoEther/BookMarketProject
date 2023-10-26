@@ -2,7 +2,10 @@ package org.project.shop.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.project.shop.domain.*;
+<<<<<<< HEAD
 import org.project.shop.service.KakaoPayService;
+=======
+>>>>>>> 3d855e2cba19f8d5302519c158e97e1e4489391d
 import org.project.shop.service.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,7 +25,10 @@ public class OrderController {
     private final ItemServiceImpl itemServiceImpl;
     private final CartServiceImpl cartServiceImpl;
     private final CartItemServiceImpl cartItemServiceImpl;
+<<<<<<< HEAD
     private final KakaoPayService kakaoPayService;
+=======
+>>>>>>> 3d855e2cba19f8d5302519c158e97e1e4489391d
 
     @GetMapping(value = "")
     public String createForm(Model model) {
@@ -82,19 +88,27 @@ public class OrderController {
         Member findMember = memberServiceImpl.findByUserId(username);
         Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
         List<CartItem> findCartItems = cartItemServiceImpl.findByCartId(findCart.getId());
+<<<<<<< HEAD
 
         int deliveryFee = Math.round(((float) CartItem.getTotalCount(findCartItems) / 5)) * 3500;
         int totalPrice = CartItem.getTotalPrice(findCartItems);
         int totalCount = CartItem.getTotalCount(findCartItems);
         int paymentPrice = deliveryFee + totalPrice;
+=======
+        int totalPrice = CartItem.getTotalPrice(findCartItems);
+>>>>>>> 3d855e2cba19f8d5302519c158e97e1e4489391d
 
 
         model.addAttribute("member", findMember);
         model.addAttribute("cartItems", findCartItems);
+<<<<<<< HEAD
         model.addAttribute("deliveryFee", deliveryFee);
         model.addAttribute("totalPrice", totalPrice);
         model.addAttribute("totalCount", totalCount);
         model.addAttribute("paymentPrice", paymentPrice);
+=======
+        model.addAttribute("totalPrice", totalPrice);
+>>>>>>> 3d855e2cba19f8d5302519c158e97e1e4489391d
 
         return "order/payment";
     }

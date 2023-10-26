@@ -61,6 +61,7 @@ public class CartItem {
         return totalPrice;
     }
 
+<<<<<<< HEAD
     public static int getTotalCount(List<CartItem> cartItemList) {
         int totalCount = 0;
         for (CartItem cartItem : cartItemList) {
@@ -70,6 +71,8 @@ public class CartItem {
     }
 
 
+=======
+>>>>>>> 3d855e2cba19f8d5302519c158e97e1e4489391d
     public CartItem(Cart cart, Item item, int count) {
         this.item = item;
         this.cart = cart;
