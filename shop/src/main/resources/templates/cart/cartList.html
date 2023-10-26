@@ -1,6 +1,11 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header" />
+<style>
+    .btn_area > * {
+        display:inline;
+    }
+</style>
 <link rel="stylesheet" href="/static/css/detail.css">
     <script>
         function selectAllCheckBox(){
@@ -60,8 +65,8 @@
             <tr>
                 <th scope="col-1"><input type="checkbox" id="checkBoxAll" checked="checked" onclick="selectAllCheckBox()"> </th>
                 <th scope="col-1"><span>상품 이미지</span></th>
-                <th scope="col-4">상품정보</th>
-                <th scope="col-5">금액</th>
+                <th scope="col-3">상품정보</th>
+                <th scope="col-6">금액</th>
                 <th scope="col-1">삭제</th>
             </tr>
             </thead>
@@ -173,9 +178,11 @@
         </div>
     </div>
 
-    <div class="" style="margin:auto;">
+    <div class="btn_area" style="margin:auto;">
         <a th:href="@{/item}" class="btn btn-lg btn-secondary">계속 쇼핑하기</a>
-        <a th:href="@{/order/payment}" class="btn btn-lg btn-primary">구매 하기</a>
+        <form th:action="@{/order/payment}" method="post">
+            <input type="submit" class="btn btn-lg btn-primary" value="구매 하기">
+        </form>
 
     </div>
 

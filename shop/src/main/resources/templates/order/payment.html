@@ -2,12 +2,26 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header"/>
 <body>
+<style>
+    #body > div {
+        margin-bottom:20px;
+    }
+
+    table {
+        width: 100%;
+        border-top: 1px solid #444444;
+        border-collapse: collapse;
+    }
+    th, td {
+        border-bottom: 1px solid #444444;
+        padding: 10px;
+    }
+</style>
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-    <div class="container">
+    <div class="container" id="body">
         <div class="header">
-            <h1 style="margin-top: 30px;">책 구매사이트 제작 프로젝트</h1><hr>
-            <h2>주문 및 결제</h2><hr>
+            <h2>주문 및 결제</h2>
         </div>
 
         <div class="buyer">
@@ -15,17 +29,17 @@
             <table>
                 <tr>
                     <td>이름</td>
-                    <td>홍길동</td>
+                    <td th:text="${member.name}"></td>
                 </tr>
 
                 <tr>
                     <td>이메일</td>
-                    <td>test@test.com</td>
+                    <td th:text="${member.email}"></td>
                 </tr>
 
                 <tr>
                     <td>휴대폰 번호</td>
-                    <td>010-3847-0289</td>
+                    <td th:text="${member.phoneNum}"></td>
                 </tr>
             </table>
         </div>
@@ -35,28 +49,28 @@
             <table>
                 <tr>
                     <td>이름</td>
-                    <td>홍길동</td>
+                    <td th:text="${member.name}"></td>
                 </tr>
 
                 <tr>
                     <td>배송 주소</td>
-                    <td>서울특별시 광진구 광진로 283 3001호</td>
+                    <td th:text="${member.address.address1}"></td>
                 </tr>
 
                 <tr>
                     <td>연락처</td>
-                    <td>010-3847-0289</td>
+                    <td th:text="${member.phoneNum}"></td>
                 </tr>
             </table>
         </div>
 
         <div class="delivery_item">
             <h3>배송 상품 정보</h3>
-            <div>
-                <p>item1</p>
-                <p>item2</p>
-                <p>item3</p>
-            </div>
+            <table th:each ="cartItem : ${cartItems}">
+                <tr>
+                    <td th:text ="${cartItem.item.name} + ',' + ${cartItem.count} + '개'"></td>
+                </tr>
+            </table>
         </div>
 
         <div class="payment_area">
@@ -64,32 +78,72 @@
             <table>
                 <tr>
                     <td>총 상품가격</td>
-                    <td>59000원</td>
+                    <td th:text="${totalPrice}+'원'"></td>
                 </tr>
 
                 <tr>
                     <td>배송비</td>
-                    <td>3500원</td>
+                    <td th:text="${deliveryFee}+'원'"></td>
                 </tr>
 
                 <tr>
                     <td>총 결제 금액</td>
-                    <td>28000원</td>
+                    <td th:text="${paymentPrice}+'원'"></td>
                 </tr>
 
                 <tr>
                     <td>결제 방법</td>
                     <td>
-                        <input type="radio" name="결제1"value="결제1">결제 1
-                        <input type="radio" name="결제1"value="결제1">결제 1
+                        <label><input type="radio" name="paymentMethod" value="kakao">카카오 페이 결제</label>
+                        <label><input type="radio" name="paymentMethod" value="account">무통장 입금</label>
                     </td>
                 </tr>
             </table>
         </div>
 
         <div class="buttonArea">
-            <input type="button" class="btn-secondary" value="뒤로 가기">
-            <input type="button" class="btn-secondary" value="결제 하기">
+            <input type="button" class="btn-secondary" value="뒤로 가기" >
+            <input type="button" class="btn-secondary" value="결제 하기" onclick="executePayment()">
+            <script th:inline="javascript">
+                function executePayment(){
+                    var arr = document.getElementsByName('paymentMethod');
+                    var type = "";
+                    for(var i=0; i<arr.length; i++){
+                        if(arr[i].checked){type = arr[i].value;}
+                    }
+                    var itemName = [[${cartItems[0].item.name}]];
+                    var total_count = [[${totalCount}]];
+                    var total_price = [[${totalPrice}]];
+
+                    var token = $("meta[name='_csrf']").attr("content");
+                    var header = $("meta[name='_csrf_header']").attr("content");
+                    $(function() {
+                        $(document).ajaxSend(function(e, xhr, options) {
+                            xhr.setRequestHeader(header, token);
+                        });
+                    });
+
+                    data = {"itemName" : itemName,
+                            "total_count" : total_count,
+                            "total_price" : total_price,
+                            "type" : type};
+
+                    $.ajax({
+                        url : "/kakaopay/ready",
+                        type : "POST",
+                        beforeSend: function (xhr) {
+                                      xhr.setRequestHeader(header, token);
+                                    },
+                        data : data,
+                        success : function(data){
+                            location.href = data.next_redirect_pc_url;
+                        },
+                        error:function(request,status,error){
+                        alert("code = "+ request.status + " message = " + request.responseText + " error = " + error); // 실패 시 처리
+                       }
+                    });
+                }
+            </script>
         </div>
     </div>
     <div th:replace="fragments/footer :: footer"/>

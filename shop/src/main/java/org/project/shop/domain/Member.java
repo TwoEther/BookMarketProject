@@ -46,7 +46,7 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Review> reviews = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "member")
     private Cart cart;
 
@@ -91,6 +91,10 @@ public class Member {
 
     public Member(String name) {
         this.name = name;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public Member() {

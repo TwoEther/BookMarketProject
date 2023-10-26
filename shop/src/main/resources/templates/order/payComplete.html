@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"/>
+<body>
+<style>
+</style>
+<div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <div class="container" id="body">
+        <div class="container">
+            <h3>나의 기도 및 6건이 결제가 완료되었습니다.</h3>
+            <div class="recipeArea">
+                <p th:text="${kakaoApprove}"></p>
+            </div>
+            <a class="btn btn-lg btn-primary" >계속 쇼핑하기</a>
+            <a class="btn btn-lg btn-secondary">장바구니로 가기</a>
+        </div>
+    </div>
+    <div th:replace="fragments/footer :: footer"/>
+</div> <!-- /container -->
+</body>
+
+</html>

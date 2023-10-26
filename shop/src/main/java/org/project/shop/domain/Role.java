@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum Role {
-    ROLE_USER("ROLE_USER"),
-    ROLE_ANONYMOUS("ROLE_ANONYMOUS"),
-    ROLE_ADMIN("ROLE_ADMIN");
+    ROLE_USER("일반 유저"),
+    ROLE_ANONYMOUS("비로그인 유저"),
+    ROLE_ADMIN("관리자");
 
     private final String description;
 
