@@ -75,6 +75,17 @@ public class MemberRepositoryImpl implements MemberRepository{
                 .where(member.userId.like(userId))
                 .fetchOne();
     }
+
+    @Override
+    public String findMemberIdByEmailAndPhoneNum(String email, String phoneNum) {
+        return queryFactory.select(member.userId)
+                .from(member)
+                .where(member.email.eq(email).and(
+                        member.phoneNum.eq(phoneNum)
+                )).fetchOne();
+
+    }
+
     public Member findById(String userId) {
         return queryFactory.select(member)
                 .from(member)

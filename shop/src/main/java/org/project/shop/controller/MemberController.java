@@ -12,6 +12,7 @@ import org.project.shop.service.MemberServiceImpl;
 import org.project.shop.web.AddressForm;
 import org.project.shop.web.LoginForm;
 import org.project.shop.web.MemberForm;
+import org.project.shop.web.findIDForm;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -114,7 +115,26 @@ public class MemberController {
         return "redirect:/";
     }
 
-    @GetMapping("/member/logout")
+    @GetMapping("/findId")
+    public String findId(Model model) {
+        model.addAttribute("findIDForm", new findIDForm());
+        return "/member/idForm";
+    }
+    @PostMapping("/findId")
+    public String findIdPost(findIDForm form, Model model) {
+        String email = form.getEmail();
+        String phoneNum = form.getPhoneNum();
+        String findMemberID = memberServiceImpl.findMemberIdByEmailAndPhoneNum(email, phoneNum);
+        if (findMemberID != null) {
+            model.addAttribute("userId", findMemberID);
+            return "/member/resultId";
+        }else{
+            return "/member/idForm";
+        }
+
+    }
+
+    @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
         new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
         return "redirect:/";

@@ -18,6 +18,8 @@ public interface MemberRepository {
     public Member findByName(String userName);
 
     public Member findByUserId(String userId);
+
+    public String findMemberIdByEmailAndPhoneNum(String email, String phoneNum);
     public Member findById(String id);
 
 

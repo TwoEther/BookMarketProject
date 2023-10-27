@@ -13,6 +13,8 @@ public interface MemberService {
 
     public Member findByUserId(String userId);
 
+    public String findMemberIdByEmailAndPhoneNum(String email, String phoneNum);
+
     public int checkDuplicateMember(String id);
 
     public boolean checkPassword(String id, String pw);
