@@ -33,9 +33,12 @@ public class SecurityConfig {
                         .anyRequest().permitAll())
                 // 로그인 처리
                 .formLogin((formLogin) -> formLogin
+                        // 로그인 페이지
                         .loginPage("/member/LoginForm")
+                        // 로그인이 성공했을 경우 url
                         .loginProcessingUrl("/member/login")
                         .defaultSuccessUrl("/")
+                        // 로그인 실패 핸들러
                         .failureHandler(customAuthenticationFailureHandler)
                         .usernameParameter("userId")
                         .passwordParameter("password"))

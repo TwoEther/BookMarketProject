@@ -9,7 +9,8 @@
 <body>
 
 <div class="container">
-    <h2 th:text="${userId}"></h2>
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <h3 style="float:center;">아이디는 <span th:text="${userId}" style="color:red;">userID</span> 입니다.</h3>
     <br/>
     <div th:replace="fragments/footer :: footer" />
 </div> <!-- /container -->

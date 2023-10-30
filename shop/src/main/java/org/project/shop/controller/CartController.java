@@ -70,16 +70,20 @@ public class CartController {
 
         Member findMember = memberServiceImpl.findByUserId(username);
         Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
-        List<CartItem> findCartItem = cartItemServiceImpl.findByCartId(findCart.getId());
-        for (CartItem cartItem : findCartItem) {
-            System.out.println("cartItem.toString() = " + cartItem.toString());
-        }
-        
-        int price = 0;
-        for (CartItem cartItem : findCartItem) price += cartItem.getItem().getPrice() * cartItem.getCount();
 
-        model.addAttribute("cartItems", findCartItem);
-        model.addAttribute("price", price);
+        if (findCart == null) {
+            model.addAttribute("msg", "장바구니에 상품이 없습니다");
+            model.addAttribute("url", "home");
+        }else{
+            List<CartItem> findCartItem = cartItemServiceImpl.findByCartId(findCart.getId());
+            int price = 0;
+            for (CartItem cartItem : findCartItem) price += cartItem.getItem().getPrice() * cartItem.getCount();
+
+            model.addAttribute("msg", "장바구니");
+            model.addAttribute("url", "home");
+            model.addAttribute("cartItems", findCartItem);
+            model.addAttribute("price", price);
+        }
         return "cart/cartList";
     }
 

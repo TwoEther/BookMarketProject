@@ -111,7 +111,7 @@ fieldError' : 'form-control'" oninput="idCheck()">
             <div>
                 <div th:each="role : ${roles}" class="form-check form-check-inline">
                     <input type="radio" th:field="*{roles}" th:value="${role.name()}" class="form-check-input">
-                    <label th:for="${#ids.prev('roles')}" th:text="${role.description}" class="form-check-label"></label>
+                    <label th:for="${#ids.prev('roles')}" th:text="${role.getDescription()}" class="form-check-label"></label>
                 </div>
             </div>
             <div class="form_footer">

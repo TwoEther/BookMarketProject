@@ -11,6 +11,11 @@ import java.util.List;
 
 @Entity
 @Getter
+@Table(name="Member", uniqueConstraints = {
+        @UniqueConstraint(
+                name="EMAIL_PHONENUM_UNIQUE",
+                columnNames={"email","phoneNum"}
+        )})
 public class Member {
     @Id @GeneratedValue
     @Column(name = "member_id")
@@ -32,8 +37,6 @@ public class Member {
     @Embedded
     private Address address;
 
-    @Column(name = "Role")
-    @Embedded
     private Role role;
 
     @Embedded
@@ -108,6 +111,9 @@ public class Member {
                 ", userId='" + userId + '\'' +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
+                ", phoneNum='" + phoneNum + '\'' +
+                ", email='" + email + '\'' +
+                ", role=" + role +
                 '}';
     }
 }

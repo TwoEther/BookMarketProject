@@ -3,6 +3,7 @@ package org.project.shop.service;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.project.shop.domain.Member;
+import org.project.shop.domain.Role;
 import org.project.shop.repository.MemberRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -85,4 +86,22 @@ public class MemberServiceTest {
         fail("예외가 발생");
     }
 
+    @DisplayName("Member 권한 테스트")
+    @Test
+    public void memberRoleTest() {
+        Member member1 = new Member("test1", "test1");
+        Member member2 = new Member("test2", "test2");
+
+        memberServiceImpl.join(member1);
+        memberServiceImpl.join(member2);
+
+        member1.setRole(Role.ROLE_ADMIN);
+        member2.setRole(Role.ROLE_USER);
+
+        assertThat(member1.getRole()).isEqualTo(Role.ROLE_ADMIN);
+        assertThat(member2.getRole()).isEqualTo(Role.ROLE_USER);
+
+        System.out.println("member1.toString() = " + member1.toString());
+
+    }
 }

@@ -58,6 +58,9 @@ public class MemberController {
         String name = form.getName();
         String phoneNum = form.getPhoneNum();
         String email = form.getEmail();
+        String roles = form.getRoles();
+
+
         Member member = new Member(id, password, name, phoneNum, email);
 
         if (memberServiceImpl.checkReqexId(id) && memberServiceImpl.checkReqexPw(password)) {
@@ -78,9 +81,6 @@ public class MemberController {
         }
 
         return "redirect:/";
-
-//        Address address = new Address(form.getCity(), form.getStreet(), form.getZipcode());
-//        member.setAddress(address);
     }
 
     @PostMapping(value = "/idCheck")

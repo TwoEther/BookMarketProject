@@ -11,7 +11,7 @@
                 <th>#</th>
                 <th>아이디</th>
                 <th>비밀번호</th>
-                <th>이름</th>
+                <th>role</th>
                 <th>도시</th>
                 <th>주소</th>
                 <th>우편번호</th>
@@ -22,7 +22,7 @@
                 <td th:text="${member.id}"></td>
                 <td th:text="${member.userId}"></td>
                 <td th:text="${member.password}"></td>
-                <td th:text="${member.name}"></td>
+                <td th:text="${member.getRole()}"></td>
                 <td th:text="${member.address?.city}"></td>
                 <td th:text="${member.address?.street}"></td>
                 <td th:text="${member.address?.zipcode}"></td>

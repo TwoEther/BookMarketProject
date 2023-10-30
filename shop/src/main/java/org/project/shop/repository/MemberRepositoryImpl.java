@@ -26,7 +26,6 @@ public class MemberRepositoryImpl implements MemberRepository{
     @Override
     public void save(Member member) {
         em.persist(member);
-        em.flush();
     }
 
     @Override
