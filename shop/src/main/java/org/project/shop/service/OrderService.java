@@ -10,5 +10,7 @@ public interface OrderService {
     public void cancelOrder(Long orderId);
     public List<Order> findOrders(OrderSearch orderSearch);
 
+    public Order findOrderByMemberId(Long memberId);
+
     public void save(Order order);
 }

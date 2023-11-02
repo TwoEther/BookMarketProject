@@ -1,7 +1,7 @@
 package org.project.shop.repository;
 
+import com.querydsl.core.Tuple;
 import org.project.shop.domain.CartItem;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
@@ -20,6 +20,9 @@ public interface CartItemRepository{
     public List<CartItem> findByCartId(Long memberId);
 
     public List<CartItem> findCartItemByItem(Long itemId);
+
+    public List<Tuple> findItemIdByCartId(Long cartId);
+
 
     public void deleteById(Long id);
 

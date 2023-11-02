@@ -1,11 +1,11 @@
 package org.project.shop.repository;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.project.shop.domain.CartItem;
-import org.project.shop.domain.QCartItem;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,9 +14,6 @@ import java.util.List;
 import static org.project.shop.domain.QCart.cart;
 import static org.project.shop.domain.QCartItem.cartItem;
 import static org.project.shop.domain.QItem.item;
-import static org.project.shop.domain.QMember.member;
-import static org.project.shop.domain.QCart.cart;
-import static org.project.shop.domain.QCartItem.cartItem;
 
 @Repository
 public class CartItemRepositoryImpl implements CartItemRepository{
@@ -79,6 +76,14 @@ public class CartItemRepositoryImpl implements CartItemRepository{
                         JPAExpressions.selectFrom(item)
                                 .where(item.id.eq(itemId))
                 ))
+                .fetch();
+    }
+
+    @Override
+    public List<Tuple> findItemIdByCartId(Long cartId) {
+        return queryFactory.select(cartItem.item, cartItem.count)
+                .from(cartItem)
+                .where(cartItem.cart.id.eq(cartId))
                 .fetch();
     }
 

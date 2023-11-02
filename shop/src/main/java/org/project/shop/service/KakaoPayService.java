@@ -16,7 +16,7 @@ import org.springframework.web.client.RestTemplate;
 @Transactional
 public class KakaoPayService {
     static final String cid = "TC0ONETIME";         // 가맹점 테스트 코드
-    static final String admin_key = "";
+    static final String admin_key = "5d54c247fe0d2e2db5c6e48c58e924ca";
 
     private KakaoReadyResponse kakaoReady;
 

@@ -1,5 +1,6 @@
 package org.project.shop.repository;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
@@ -7,16 +8,20 @@ import lombok.RequiredArgsConstructor;
 import org.project.shop.domain.Member;
 import org.project.shop.domain.Order;
 import org.project.shop.domain.OrderSearch;
+import org.project.shop.domain.QOrder;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.project.shop.domain.QOrder.order;
+
 @Repository
 @RequiredArgsConstructor
 public class OrderRepositoryImpl implements OrderRepository{
     private final EntityManager em;
+    private final JPAQueryFactory queryFactory;
 
     @Override
     public void save(Order order) {
@@ -26,6 +31,13 @@ public class OrderRepositoryImpl implements OrderRepository{
     @Override
     public Order findOneOrder(Long id) {
         return em.find(Order.class, id);
+    }
+
+    @Override
+    public Order findOrderByMemberId(Long memberId) {
+        return queryFactory.selectFrom(order)
+                .where(order.member.id.eq(memberId))
+                .fetchOne();
     }
 
     @Override

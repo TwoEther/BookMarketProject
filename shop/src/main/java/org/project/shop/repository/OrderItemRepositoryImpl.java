@@ -4,6 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.project.shop.domain.OrderItem;
+import org.project.shop.domain.OrderStatus;
 import org.project.shop.domain.QOrderItem;
 import org.springframework.stereotype.Repository;
 
@@ -32,6 +33,30 @@ public class OrderItemRepositoryImpl implements OrderItemRepository{
         return queryFactory.selectFrom(orderItem)
                 .where(orderItem.id.eq(id))
                 .fetchOne();
+    }
+
+    @Override
+    public List<OrderItem> findOrderItemByOrderId(Long orderId) {
+        return queryFactory.selectFrom(orderItem)
+                .where(orderItem.order.id.eq(orderId))
+                .fetch();
+    }
+
+    @Override
+    public List<OrderItem> findOrderItemByItemId(Long itemId) {
+        return queryFactory.selectFrom(orderItem)
+                .where(orderItem.item.id.eq(itemId))
+                .fetch();
+    }
+
+    @Override
+    public List<OrderItem> findOrderItemByOrderAndItem(Long orderId, Long itemId) {
+        return queryFactory.selectFrom(orderItem)
+                .where(orderItem.order.id.eq(orderId).and(
+                        orderItem.item.id.eq(itemId).and(
+                                orderItem.order.status.eq(OrderStatus.READY)
+                        )
+                )).fetch();
     }
 
     @Override

@@ -71,10 +71,6 @@
                     <td th:text ="${cartItem.item.name} + ',' + ${cartItem.count} + '개'"></td>
                 </tr>
             </table>
-            <div th:each ="cartItem : ${cartItems}">
-                <div th:text ="${cartItem.item.name}" style="display:inline;"></div>
-                <div th:text ="','+${cartItem.count}+'개'" style="display:inline;"></div>
-            </div>
         </div>
 
         <div class="payment_area">
@@ -83,7 +79,6 @@
                 <tr>
                     <td>총 상품가격</td>
                     <td th:text="${totalPrice}+'원'"></td>
-                    <td th:text="${totalPrice}"></td>
                 </tr>
 
                 <tr>

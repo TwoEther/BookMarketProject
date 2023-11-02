@@ -49,10 +49,11 @@ public class KakaoPayController {
         Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
         List<CartItem> findCartItems = cartItemServiceImpl.findByCartId(findCart.getId());
 
-
-
         KakaoApproveResponse kakaoApprove = kakaoPayService.ApproveResponse(pgToken);
-        model.addAttribute("kakaoApprove", kakaoApprove.toString());
+
+
+
+        model.addAttribute("kakaoApprove", kakaoApprove);
         return "order/payComplete";
     }
 }

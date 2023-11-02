@@ -1,5 +1,6 @@
 package org.project.shop.service;
 
+import com.querydsl.core.Tuple;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.BeforeAll;
@@ -18,6 +19,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.project.shop.domain.QCartItem.cartItem;
 
 @AutoConfigureDataCouchbase
 @SpringBootTest
@@ -39,7 +41,9 @@ public class OrderServiceTest {
 
     @Autowired
     CartServiceImpl cartServiceImpl;
-
+    
+    @Autowired
+    CartItemServiceImpl cartItemServiceImpl;
     @Autowired
     CartItemRepositoryImpl cartItemRepository;
 
@@ -128,13 +132,30 @@ public class OrderServiceTest {
         book1.setStockQuantity(stock1-count1);
         book2.setStockQuantity(stock2-count2);
 
-        System.out.println("cartItem1.toString() = " + cartItem1.toString());
-        System.out.println("cartItem2.toString() = " + cartItem2.toString());
+        List<Tuple> findItemIds = cartItemServiceImpl.findItemIdByCartId(cart1.getId());
+        Order order = Order.createOrder(member1);
+        orderServiceImpl.save(order);
+        
+        for (Tuple tuple : findItemIds) {
+            Item item = tuple.get(cartItem.item);
+            int count = tuple.<Integer>get(cartItem.count);
 
-        /*
-            장바 구니에 있는 상품이 옮겨 질때 필요한 요소
-            1. 아이템 및 수량
-            2.
-         */
+            OrderItem orderItem = OrderItem.createOrderItem(item, item != null ? item.getPrice() : 0, count);
+            orderItem.setOrder(order);
+            orderItemServiceImpl.save(orderItem);
+        }
+
+        List<OrderItem> allOrderItem = orderItemServiceImpl.findAllOrderItem();
+//        assertThat(allOrderItem.size()).isEqualTo(findItemIds.size());
+
+        List<OrderItem> orderItemByOrderAndItem = orderItemServiceImpl.findOrderItemByOrderAndItem(order.getId(), book1.getId());
+        for (OrderItem orderItem : allOrderItem) {
+            System.out.println("orderItem.toString() = " + orderItem.toString());
+        }
+        
+        for (OrderItem orderItem : orderItemByOrderAndItem) {
+            System.out.println("orderItemByOrderAndItem.toString() = " + orderItem.toString());
+        }
+
     }
 }

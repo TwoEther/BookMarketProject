@@ -18,4 +18,24 @@ public class KakaoApproveResponse {
     private String created_at; // 결제 요청 시간
     private String approved_at; // 결제 승인 시간
     private String payload; // 결제 승인 요청에 대해 저장 값, 요청 시 전달 내용
+
+    @Override
+    public String toString() {
+        return "KakaoApproveResponse{" +
+                "aid='" + aid + '\'' +
+                ", tid='" + tid + '\'' +
+                ", cid='" + cid + '\'' +
+                ", sid='" + sid + '\'' +
+                ", partner_order_id='" + partner_order_id + '\'' +
+                ", partner_user_id='" + partner_user_id + '\'' +
+                ", payment_method_type='" + payment_method_type + '\'' +
+                ", amount=" + amount +
+                ", item_name='" + item_name + '\'' +
+                ", item_code='" + item_code + '\'' +
+                ", quantity=" + quantity +
+                ", created_at='" + created_at + '\'' +
+                ", approved_at='" + approved_at + '\'' +
+                ", payload='" + payload + '\'' +
+                '}';
+    }
 }

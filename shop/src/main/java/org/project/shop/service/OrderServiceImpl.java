@@ -31,7 +31,7 @@ public class OrderServiceImpl implements OrderService{
 
         // 주문상품 생성
         OrderItem orderItem = OrderItem.createOrderItem(item, item.getPrice(), count);
-        Order order = Order.createOrder(member, delivery, orderItem);
+        Order order = Order.createOrder(member);
 
         // 주문 저장
         orderRepositoryImpl.save(order);
@@ -48,6 +48,11 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public List<Order> findOrders(OrderSearch orderSearch) {
         return orderRepositoryImpl.findAllOrder(orderSearch);
+    }
+
+    @Override
+    public Order findOrderByMemberId(Long memberId) {
+        return orderRepositoryImpl.findOrderByMemberId(memberId);
     }
 
     @Override

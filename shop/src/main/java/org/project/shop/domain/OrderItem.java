@@ -47,7 +47,7 @@ public class OrderItem {
         orderItem.setOrderPrice(orderPrice);
         orderItem.setCount(count);
 
-        item.removeStock(count);
+//        item.removeStock(count);
         return orderItem;
     }
 
@@ -65,8 +65,6 @@ public class OrderItem {
     public String toString() {
         return "OrderItem{" +
                 "id=" + id +
-                ", item=" + item +
-                ", order=" + order +
                 ", orderPrice=" + orderPrice +
                 ", count=" + count +
                 '}';

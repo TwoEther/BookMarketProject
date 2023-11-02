@@ -60,14 +60,11 @@ public class Order {
 
 
 
-    public static Order createOrder(Member member, Delivery delivery, OrderItem... OrderItems){
+    public static Order createOrder(Member member){
         Order order = new Order();
         order.setMember(member);
-        order.setDelivery(delivery);
-        for (OrderItem orderItem : OrderItems) {
-            order.addOrderItem(orderItem);
-        }
-        order.setStatus(OrderStatus.ORDER);
+
+        order.setStatus(OrderStatus.READY);
         order.setOrderDate(LocalDate.now());
         return order;
     }
@@ -77,7 +74,7 @@ public class Order {
         if (delivery.getStatus() == DeliveryStatus.COMP) {
             throw new IllegalStateException("이미 배송된 상품은 취소가 불가능합니다");
         }
-        this.setStatus(OrderStatus.CANCEL);
+        this.setStatus(OrderStatus.READY);
         for (OrderItem orderItem : orderItems) {
             orderItem.cancel();
         }
