@@ -51,7 +51,17 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public Order findOrderByMemberId(Long memberId) {
+    public Order findByMemberIdBeforePayment(Long memberId) {
+        return orderRepositoryImpl.findByMemberIdBeforePayment(memberId);
+    }
+
+    @Override
+    public List<Order> findByMemberIdAfterPayment(Long memberId) {
+        return orderRepositoryImpl.findByMemberIdAfterPayment(memberId);
+    }
+
+    @Override
+    public List<Order> findOrderByMemberId(Long memberId) {
         return orderRepositoryImpl.findOrderByMemberId(memberId);
     }
 

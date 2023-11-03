@@ -11,7 +11,11 @@ public interface OrderRepository {
 
     public Order findOneOrder(Long id);
 
-    public Order findOrderByMemberId(Long memberId);
+    public Order findByMemberIdBeforePayment(Long memberId);
+
+    public List<Order> findByMemberIdAfterPayment(Long memberId);
+
+    public List<Order> findOrderByMemberId(Long memberId);
 
     public List<Order> findAllOrder(OrderSearch orderSearch);
 }

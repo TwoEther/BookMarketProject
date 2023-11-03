@@ -10,23 +10,23 @@
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
     <div class="container">
-        <div class="row">
-            <div class="col-3" id="infoArea">
+        <div>
+            <div style="width:200px; display:inline;" id="infoArea">
                 <p>비밀번호 재설정</p>
                 <a th:href="@{/member/address}">배송지 설정</a>
                 <p>회원 탈퇴</p>
             </div>
 
-            <div class="col-9" id="orderArea">
-                <p>주문 목록</p><hr>
-                <div class="itemArea">
-                    <h2>2023.10.21</h2>
+            <div id="orderArea" style="display:inline;">
+                <h2>주문 목록</h2><hr>
+                <div th:each = "order : ${allOrder}"  class="itemArea">
+                    <h2 th:text="${order.orderDate}"></h2>
                     <div class="itemDetailArea">
                         <table>
                             <tbody>
                             <tr></tr>
                             <td style="width: 400px;">
-                                <div style="display: inline-block;" ><img src="images/pngwing.com.png" width="100px" alt=""></div>
+<!--                                <div style="display: inline-block;" ><img th:src="@{${order.orderItems[0].item.getFilePath()}}" width="100px" alt=""></div>-->
                                 <div style="display: inline-block;">
                                     <p style="margin-bottom: 0px;">책 제목은 이것 입니다</p>
                                     <p style="margin-bottom: 0px;">16,000원 </p>

@@ -5,10 +5,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
-import org.project.shop.domain.Member;
+import org.project.shop.domain.*;
 import org.project.shop.domain.Order;
-import org.project.shop.domain.OrderSearch;
-import org.project.shop.domain.QOrder;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -34,10 +32,29 @@ public class OrderRepositoryImpl implements OrderRepository{
     }
 
     @Override
-    public Order findOrderByMemberId(Long memberId) {
+    public Order findByMemberIdBeforePayment(Long memberId) {
+        return queryFactory.selectFrom(order)
+                .where(order.member.id.eq(memberId).
+                        and(order.status.eq(OrderStatus.READY))
+                )
+                .fetchOne();
+    }
+
+    @Override
+    public List<Order> findByMemberIdAfterPayment(Long memberId) {
+        return queryFactory.selectFrom(order)
+                .where(order.member.id.eq(memberId).
+                        and(order.status.eq(OrderStatus.SUCCESS))
+                )
+                .orderBy(order.orderDate.desc())
+                .fetch();
+    }
+
+    @Override
+    public List<Order> findOrderByMemberId(Long memberId) {
         return queryFactory.selectFrom(order)
                 .where(order.member.id.eq(memberId))
-                .fetchOne();
+                .fetch();
     }
 
     @Override

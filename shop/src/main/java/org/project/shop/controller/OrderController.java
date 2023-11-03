@@ -63,10 +63,28 @@ public class OrderController {
     }
 
     @GetMapping(value = "/orderList")
-    public String orderListByMember() {
+    public String orderListByMember(Model model) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserDetails userDetails = (UserDetails) principal;
         String username = ((UserDetails) principal).getUsername();
+
+        Member findMember = memberServiceImpl.findByUserId(username);
+        List<Order> findAllOrder = orderServiceImpl.findByMemberIdAfterPayment(findMember.getId());
+        if (findAllOrder.isEmpty()) {
+            model.addAttribute("allOrder", findAllOrder);
+        } else {
+            List<List<Item>> paymentList = new ArrayList<>();
+            for (Order order : findAllOrder) {
+                List<OrderItem> allOrder = orderItemServiceImpl.findOrderItemByOrderId(order.getId());
+                List<Item> findItems = OrderItem.findItems(allOrder);
+                paymentList.add(findItems);
+            }
+            System.out.println("paymentList = " + paymentList);
+
+            model.addAttribute("allOrder", findAllOrder);
+        }
+
+
         return "order/orderList";
     }
 
@@ -77,16 +95,12 @@ public class OrderController {
 
     @PostMapping(value = "/payment")
     @Transactional
-    public String orderPayment(@RequestParam("index") String index, Model model) {
+    public String orderPayment(@RequestParam("index") String temp, Model model) {
         /*
             view로 넘겨야 할 것들
             1. 구매자에 대한 정보(Member, Address)
             2. 구매 상품에 대한 정보(cartItem)
          */
-        List<Integer> newSplitList = new ArrayList<>();
-        List.of(index.split(",")).forEach(x -> {
-            newSplitList.add(Integer.parseInt(x));
-        });
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserDetails userDetails = (UserDetails) principal;
@@ -95,41 +109,24 @@ public class OrderController {
         Member findMember = memberServiceImpl.findByUserId(username);
         Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
         List<CartItem> findCartItems = cartItemServiceImpl.findByCartId(findCart.getId());
+
+        List<Integer> newSplitList = new ArrayList<>();
+        List.of(temp.split(",")).forEach(x -> {
+            newSplitList.add(Integer.parseInt(x));
+        });
+
         List<CartItem> paymentCartItems = new ArrayList<>();
         for (Integer i : newSplitList) {
             paymentCartItems.add(findCartItems.get(i));
         }
 
-        //OrderItem에 추가
-        List<Tuple> findAllItemID = cartItemServiceImpl.findItemIdByCartId(findCart.getId());
-        if (orderServiceImpl.findOrderByMemberId(findMember.getId()) == null) {
-            Order order = Order.createOrder(findMember);
-            orderServiceImpl.save(order);
-        }
-        Order findOrder = orderServiceImpl.findOrderByMemberId(findMember.getId());
-
-
-        for (CartItem cartItem : paymentCartItems) {
-            Item item = cartItem.getItem();
-            int count = cartItem.getCount();
-
-            OrderItem orderItem = OrderItem.createOrderItem(item, item != null ? item.getPrice() : 0, count);
-
-            // 똑같은 주문
-            List<OrderItem> allOrderItemByOrderAndItem = orderItemServiceImpl.findOrderItemByOrderAndItem(findOrder.getId(), item.getId());
-            if (!allOrderItemByOrderAndItem.isEmpty()) {
-                OrderItem createOrderItem = OrderItem.createOrderItem(item, item.getPrice(), count);
-                orderItemServiceImpl.save(createOrderItem);
-            }
-
-        }
 
         int deliveryFee = Math.round(((float) CartItem.getTotalCount(findCartItems) / 5)) * 3500;
-        int totalPrice = CartItem.getTotalPrice(findCartItems);
-        int totalCount = CartItem.getTotalCount(findCartItems);
+        int totalPrice = CartItem.getTotalPrice(paymentCartItems);
+        int totalCount = CartItem.getTotalCount(paymentCartItems);
         int paymentPrice = deliveryFee + totalPrice;
 
-
+        model.addAttribute("index", temp);
         model.addAttribute("member", findMember);
         model.addAttribute("cartItems", paymentCartItems);
         model.addAttribute("deliveryFee", deliveryFee);

@@ -17,6 +17,11 @@
             <a class="btn btn-lg btn-secondary">장바구니로 가기</a>
         </div>
     </div>
+
+    <div th:each="orderItem : ${orderItems}">
+        <p th:text="${orderItem.Item.name}"></p>
+        <p th:text="${orderItem.Item.price}"></p>
+    </div>
     <div th:replace="fragments/footer :: footer"/>
 </div> <!-- /container -->
 </body>

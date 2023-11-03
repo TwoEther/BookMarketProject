@@ -14,7 +14,11 @@ import java.util.List;
 @Getter @Setter
 public class Order {
     @Id @GeneratedValue
+    @Column(name = "order_id")
     private Long id;
+
+    @Column(unique = true)
+    private String tid;
 
     // 지연 로딩 사용
     // N:1 (Order : Member)
@@ -48,6 +52,7 @@ public class Order {
         member.getOrders().add(this);
     }
 
+
     public void addOrderItem(OrderItem orderItem) {
         this.orderItems.add(orderItem);
         orderItem.setOrder(this);
@@ -59,12 +64,15 @@ public class Order {
     }
 
 
+    public void setTid(String tid) {
+        this.tid = tid;
+    }
 
     public static Order createOrder(Member member){
         Order order = new Order();
         order.setMember(member);
-
         order.setStatus(OrderStatus.READY);
+        order.setTid("");
         order.setOrderDate(LocalDate.now());
         return order;
     }

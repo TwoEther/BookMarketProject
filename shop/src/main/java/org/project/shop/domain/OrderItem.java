@@ -3,6 +3,9 @@ package org.project.shop.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 
@@ -12,13 +15,13 @@ public class OrderItem {
     private Long id;
 
     // N:1 (OrderItem : item)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
 
     // N:1 (OrderItem : order)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "orderItems")
     private Order order;
 
     private int orderPrice;
@@ -37,7 +40,12 @@ public class OrderItem {
     }
 
     public void setOrder(Order order) {
+        if (this.order != null) {
+            this.order.getOrderItems().remove(this);
+        }
         this.order = order;
+        order.getOrderItems().add(this);
+
     }
 
     // 생성 메소드
@@ -56,10 +64,21 @@ public class OrderItem {
         getItem().addStock(count);
     }
 
+    // 주문 아이템 조회
+    public static List<Item> findItems(List<OrderItem> orderItems) {
+        List<Item> findItems = new ArrayList<>();
+        for (OrderItem orderItem : orderItems) {
+            Item item = orderItem.getItem();
+            findItems.add(item);
+        }
+        return findItems;
+    }
+
     // 주문상품 가격 조회
     public int getTotalPrice(){
         return getOrderPrice() * getCount();
     }
+
 
     @Override
     public String toString() {

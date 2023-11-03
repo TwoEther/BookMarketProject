@@ -23,6 +23,7 @@ public class CartItem {
     private Cart cart;
 
     private int count;
+    private String isPayment;
 
     public void setItem(Item item) {
         if (this.item != null) {
@@ -50,7 +51,12 @@ public class CartItem {
         cartItem.setCart(cart);
         cartItem.setItem(item);
         cartItem.setCount(count);
+        cartItem.setIsPayment("X");
         return cartItem;
+    }
+
+    public void setIsPayment(String isPayment) {
+        this.isPayment = isPayment;
     }
 
     public static int getTotalPrice(List<CartItem> cartItemList) {

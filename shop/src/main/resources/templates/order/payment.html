@@ -114,6 +114,7 @@
                     var itemName = [[${cartItems[0].item.name}]];
                     var total_count = [[${totalCount}]];
                     var total_price = [[${totalPrice}]];
+                    var index = [[${index}]];
 
                     var token = $("meta[name='_csrf']").attr("content");
                     var header = $("meta[name='_csrf_header']").attr("content");
@@ -126,8 +127,8 @@
                     data = {"itemName" : itemName,
                             "total_count" : total_count,
                             "total_price" : total_price,
-                            "type" : type};
-
+                            "type" : type,
+                            "index" : index};
                     $.ajax({
                         url : "/kakaopay/ready",
                         type : "POST",

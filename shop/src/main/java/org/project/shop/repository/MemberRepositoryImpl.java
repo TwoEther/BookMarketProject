@@ -71,7 +71,7 @@ public class MemberRepositoryImpl implements MemberRepository{
     public Member findByUserId(String userId) {
         return queryFactory.select(member)
                 .from(member)
-                .where(member.userId.like(userId))
+                .where(member.userId.eq(userId))
                 .fetchOne();
     }
 

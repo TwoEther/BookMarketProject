@@ -37,11 +37,11 @@ public class ItemController {
         BufferedReader br = null;
         String path1 = "C:\\lee\\Java\\data.csv";
         String path2 = "C:\\lee\\Project\\Spring\\data.csv";
-        String imagePath1 = "C:\\lee\\Java\\bookImages";
+        String imagePath1 = "C:\\lee\\Java\\bookImages\\";
         String imagePath2 = "C:\\lee\\Project\\Spring\\bookImages\\";
 
         try{
-            br = Files.newBufferedReader(Paths.get(path2));
+            br = Files.newBufferedReader(Paths.get(path1));
             String line = "";
 
             while((line = br.readLine()) != null){
@@ -83,7 +83,7 @@ public class ItemController {
             }
             Category findCategory = categoryServiceImpl.findByCategoryName(category1, category2);
 
-            String fileRoot = imagePath2 + fileName+".png";
+            String fileRoot = imagePath1 + fileName+".png";
             Item item = new Item(title, price, stockQuantity, author, publisher, isbn, page, description);
             item.setCategory(findCategory);
             File imageFile = new File(fileRoot);
@@ -92,7 +92,6 @@ public class ItemController {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write( image, "png", baos );
             baos.flush();
-            System.out.println("item.toString() = " + item.toString());
             MultipartFile multipartFile = new MockMultipartFile(fileName, baos.toByteArray());
             itemServiceImpl.saveItem(item, multipartFile);
         }
