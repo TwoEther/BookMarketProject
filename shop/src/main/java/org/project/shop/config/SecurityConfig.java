@@ -1,6 +1,7 @@
 package org.project.shop.config;
 
 import org.project.shop.auth.CustomAuthenticationFailureHandler;
+import org.project.shop.domain.Role;
 import org.project.shop.service.PrincipalDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +30,7 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-                        .requestMatchers(new AntPathRequestMatcher("/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/admin")).hasAuthority(Role.ROLE_ADMIN.toString())
                         .anyRequest().permitAll())
                 // 로그인 처리
                 .formLogin((formLogin) -> formLogin

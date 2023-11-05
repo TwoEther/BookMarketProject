@@ -37,7 +37,7 @@ public class Member {
     @Embedded
     private Address address;
 
-    private Role role;
+    private String role;
 
     @Embedded
     private Grade grade;
@@ -96,8 +96,8 @@ public class Member {
         this.name = name;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setRole(String description) {
+        this.role = description;
     }
 
     public Member() {

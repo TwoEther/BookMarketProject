@@ -59,10 +59,18 @@ public class MemberController {
         String phoneNum = form.getPhoneNum();
         String email = form.getEmail();
         String roles = form.getRoles();
-
-
+        
         Member member = new Member(id, password, name, phoneNum, email);
+        if (roles.equals(Role.ROLE_ADMIN.toString())) {
+            member.setRole(Role.ROLE_ADMIN.toString());
+        } else if (roles.equals(Role.ROLE_ANONYMOUS)) {
+            member.setRole(Role.ROLE_ANONYMOUS.toString());
+        } else{
+            member.setRole(Role.ROLE_USER.toString());
+        }
 
+        System.out.println("member.toString() = " + member.toString());
+        
         if (memberServiceImpl.checkReqexId(id) && memberServiceImpl.checkReqexPw(password)) {
             result.reject("signupFailed", "아이디나 패스워드가 올바르지 않습니다");
             return "/member/createMemberForm";

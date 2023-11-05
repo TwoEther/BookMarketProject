@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +63,7 @@ public class CartController {
     }
 
     @GetMapping(value = "/list")
-    public String cartList(Model model) {
+    public String cartList(final Model model) {
         Object principal;
         principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserDetails userDetails = (UserDetails) principal;
@@ -70,20 +71,24 @@ public class CartController {
 
         Member findMember = memberServiceImpl.findByUserId(username);
         Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
+        int price = 0;
 
-        if (findCart == null) {
-            model.addAttribute("msg", "장바구니에 상품이 없습니다");
-            model.addAttribute("url", "home");
-        }else{
+        if (findCart != null) {
             List<CartItem> findCartItem = cartItemServiceImpl.findByCartId(findCart.getId());
-            int price = 0;
             for (CartItem cartItem : findCartItem) price += cartItem.getItem().getPrice() * cartItem.getCount();
-
-            model.addAttribute("msg", "장바구니");
-            model.addAttribute("url", "home");
             model.addAttribute("cartItems", findCartItem);
-            model.addAttribute("price", price);
+
+        }else{
+            List<CartItem> findCartItem = new ArrayList<>();
+            model.addAttribute("cartItems", findCartItem);
         }
+
+
+
+        model.addAttribute("msg", "장바구니");
+        model.addAttribute("url", "home");
+        model.addAttribute("price", price);
+
         return "cart/cartList";
     }
 
