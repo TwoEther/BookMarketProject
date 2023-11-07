@@ -185,4 +185,11 @@ public class MemberController {
 
         return "/member/memberList";
     }
+
+    @DeleteMapping(value = "/delete/{memberNum}")
+    @Transactional
+    @ResponseBody
+    public void deleteMemberById(@RequestParam String memberNum) {
+        memberServiceImpl.deleteMemberByMemberId(Long.valueOf(memberNum));
+    }
 }

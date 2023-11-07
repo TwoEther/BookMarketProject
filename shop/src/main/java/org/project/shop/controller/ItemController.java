@@ -9,6 +9,7 @@ import org.project.shop.web.ItemForm;
 import org.project.shop.web.SearchForm;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,7 +42,7 @@ public class ItemController {
         String imagePath2 = "C:\\lee\\Project\\Spring\\bookImages\\";
 
         try{
-            br = Files.newBufferedReader(Paths.get(path2));
+            br = Files.newBufferedReader(Paths.get(path1));
             String line = "";
 
             while((line = br.readLine()) != null){
@@ -83,7 +84,7 @@ public class ItemController {
             }
             Category findCategory = categoryServiceImpl.findByCategoryName(category1, category2);
 
-            String fileRoot = imagePath2 + fileName+".png";
+            String fileRoot = imagePath1 + fileName+".png";
             Item item = new Item(title, price, stockQuantity, author, publisher, isbn, page, description);
             item.setCategory(findCategory);
             File imageFile = new File(fileRoot);
@@ -173,5 +174,13 @@ public class ItemController {
                 form.getStockQuantity());
         return "redirect:/item";
     }
+
+    @DeleteMapping(value = "/delete/{itemNum}")
+    @Transactional
+    @ResponseBody
+    public void deleteItemById(@RequestParam String itemNum) {
+        itemServiceImpl.deleteByItemId(Long.valueOf(itemNum));
+    }
+
 
 }

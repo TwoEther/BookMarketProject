@@ -86,4 +86,11 @@ public class ItemRepositoryImpl implements ItemRepository{
                 .fetch();
 
     }
+
+    @Override
+    public void deleteByItemId(Long itemId) {
+        queryFactory.delete(item).
+                where(item.id.eq(itemId))
+                .execute();
+    }
 }

@@ -10,14 +10,14 @@
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
     <div class="container">
-        <div>
-            <div style="width:200px; display:inline;" id="infoArea">
+        <div class="row">
+            <div class="col-3" id="infoArea">
                 <p>비밀번호 재설정</p>
                 <a th:href="@{/member/address}">배송지 설정</a>
                 <p>회원 탈퇴</p>
             </div>
 
-            <div id="orderArea" style="display:inline;">
+            <div class="col-9" id="orderArea">
                 <h2>주문 목록</h2><hr>
                 <div th:each = "order : ${allOrder}"  class="itemArea">
                     <h2 th:text="${order.orderDate}"></h2>

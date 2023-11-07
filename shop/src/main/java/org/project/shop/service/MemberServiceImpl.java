@@ -1,7 +1,7 @@
 package org.project.shop.service;
 
 import lombok.RequiredArgsConstructor;
-import org.project.shop.repository.MemberRepository;
+import org.project.shop.repository.MemberRepositoryImpl;
 import org.project.shop.repository.MemberRepositoryImpl;
 import org.project.shop.domain.Member;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +24,11 @@ import java.util.regex.Pattern;
 @Service
 @Transactional
 public class MemberServiceImpl implements MemberService {
-    private final MemberRepositoryImpl memberRepository;
+    private final MemberRepositoryImpl memberRepositoryImpl;
     private final PasswordEncoder passwordEncoder;
 
-    public MemberServiceImpl(MemberRepositoryImpl memberRepository, PasswordEncoder passwordEncoder) {
-        this.memberRepository = memberRepository;
+    public MemberServiceImpl(MemberRepositoryImpl memberRepositoryImpl, PasswordEncoder passwordEncoder) {
+        this.memberRepositoryImpl = memberRepositoryImpl;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -36,34 +36,39 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public Long join(Member member) {
         member.setPassword(passwordEncoder.encode(member.getPassword()));
-        memberRepository.save(member);
+        memberRepositoryImpl.save(member);
         return member.getId();
     }
 
     @Override
     public List<Member> findAllMember(){
-        return memberRepository.findAllMember();
+        return memberRepositoryImpl.findAllMember();
     }
 
     @Override
     public Member findOneMember(Long memberId){
-        return memberRepository.findMember(memberId);
+        return memberRepositoryImpl.findMember(memberId);
     }
 
     @Override
     public Member findByUserId(String userId) {
-        return memberRepository.findByUserId(userId);
+        return memberRepositoryImpl.findByUserId(userId);
+    }
+
+    @Override
+    public void deleteMemberByMemberId(Long memberId) {
+        memberRepositoryImpl.deleteMemberByMemberId(memberId);
     }
 
     @Override
     public String findMemberIdByEmailAndPhoneNum(String email, String phoneNum) {
-        return memberRepository.findMemberIdByEmailAndPhoneNum(email, phoneNum);
+        return memberRepositoryImpl.findMemberIdByEmailAndPhoneNum(email, phoneNum);
     }
 
 
     @Override
     public Member findById(Long id) {
-        return memberRepository.findById(id);
+        return memberRepositoryImpl.findById(id);
     }
 
     @Override
@@ -81,7 +86,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public boolean checkPassword(String id, String pw) {
-        return passwordEncoder.matches(pw, memberRepository.findByUserId(id).getPassword());
+        return passwordEncoder.matches(pw, memberRepositoryImpl.findByUserId(id).getPassword());
     }
 
     @Override

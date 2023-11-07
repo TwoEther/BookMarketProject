@@ -22,5 +22,5 @@ public interface MemberRepository {
     public String findMemberIdByEmailAndPhoneNum(String email, String phoneNum);
     public Member findById(String id);
 
-
+    public void deleteMemberByMemberId(Long memberId);
 }

@@ -1,10 +1,168 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header" />
+
+<link rel="stylesheet" href="/static/css/detail.css">
+<style>
+    td {
+        margin : 0px 20px 0px 20px;
+    }
+
+    .selectArea , .manageArea{
+        display: inline-block;
+    }
+
+    .selectArea {
+        margin-left: 10px;
+    }
+
+    .selectArea > div{
+    }
+    .selectArea > div > a {
+        font-size: 20px;
+    }
+</style>
 <body>
-    <h1>admin</h1>
+<div class="container">
+    <div class="header" style="text-align: center; margin-top: 10px;">
+        <h2>관리자 페이지</h2>
+    </div>
+
+    <div class="selectArea" style="width: 200px;">
+        <div class="member">
+            <a th:href="@{/admin/member}">회원 관리</a>
+        </div>
+        <div class="item">
+            <a th:href="@{/admin/item}">상품 관리</a>
+        </div>
+        <div class="category">
+            <a href="">카테고리 관리</a>
+        </div>
+        <div class="other">
+            <a href="">기타 관리</a>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        function deleteMember(id){
+            var token = $("meta[name='_csrf']").attr("content");
+                        var header = $("meta[name='_csrf_header']").attr("content");
+                        $(function() {
+                            $(document).ajaxSend(function(e, xhr, options) {
+                                xhr.setRequestHeader(header, token);
+                            });
+                        });
+            var memberNum = (id).toString();
+            $.ajax({
+                url : "/member/delete/"+memberNum,
+                type : "DELETE",
+                beforeSend: function (xhr) {
+                  xhr.setRequestHeader(header, token);
+                },
+                data : {"memberNum": memberNum},
+                success : function(){
+                    alert("삭제에 성공하였습니다");
+                    location.reload();
+                },
+                error:function(request,status,error){
+                alert("code = "+ request.status + " message = " + request.responseText + " error = " + error); // 실패 시 처리
+               }
+            });
+        }
+
+        function deleteItem(id){
+            var token = $("meta[name='_csrf']").attr("content");
+                        var header = $("meta[name='_csrf_header']").attr("content");
+                        $(function() {
+                            $(document).ajaxSend(function(e, xhr, options) {
+                                xhr.setRequestHeader(header, token);
+                            });
+                        });
+            var itemNum = (id).toString();
+            $.ajax({
+                url : "/item/delete/"+itemNum,
+                type : "DELETE",
+                beforeSend: function (xhr) {
+                  xhr.setRequestHeader(header, token);
+                },
+                data : {"itemNum": itemNum},
+                success : function(){
+                    alert("삭제에 성공하였습니다");
+                    location.reload();
+                },
+                error:function(request,status,error){
+                alert("code = "+ request.status + " message = " + request.responseText + " error = " + error); // 실패 시 처리
+               }
+            });
+        }
+
+        function updateItem(id){
+            var token = $("meta[name='_csrf']").attr("content");
+                        var header = $("meta[name='_csrf_header']").attr("content");
+                        $(function() {
+                            $(document).ajaxSend(function(e, xhr, options) {
+                                xhr.setRequestHeader(header, token);
+                            });
+                        });
+            var itemNum = (id).toString();
+            $.ajax({
+                url : "/item/update/"+itemNum,
+                type : "PUT",
+                beforeSend: function (xhr) {
+                  xhr.setRequestHeader(header, token);
+                },
+                data : {"itemNum": itemNum},
+                success : function(){
+                },
+                error:function(request,status,error){
+                alert("code = "+ request.status + " message = " + request.responseText + " error = " + error); // 실패 시 처리
+               }
+            });
+        }
+
+
+
+    </script>
+
+    <div class="manageArea" style="width: max-content;">
+        <th:block th:switch="${type}">
+            <table th:case="member">
+                <tr>
+                    <td>회원 아이디</td>
+                    <td>회원 권한</td>
+                    <td>회원 현황</td>
+                    <td>회원 삭제</td>
+                </tr>
+
+                <tr th:each="member : ${allMember}">
+                    <td th:text="${member.userId}"></td>
+                    <td th:text="${member.getRole()}"></td>
+                    <td th:text="${member.email}"></td>
+                    <td><input th:id=${member.id} type="button" value="X" onclick="deleteMember(this.id)"></td>
+                </tr>
+            </table>
+
+            <table th:case="item">
+                <tr>
+                    <td>상품 이름</td>
+                    <td>상품 재고 현황</td>
+                    <td>상품 수정</td>
+                    <td>상품 삭제</td>
+                </tr>
+
+                <tr th:each="item : ${allItem}">
+                    <td th:text="${item.id}"></td>
+                    <td th:text="${item.name}"></td>
+                    <td><input th:id=${item.id} class="btn btn-primary" type="button" value="삭제" onclick="deleteItem(this.id)"></td>
+                    <td><input th:id=${item.isd} class="btn btn-primary" type="button" value="삭제" onclick="deleteItem(this.id)"></td>
+                </tr>
+            </table>
+
+
+
+    </div>
+
+    <div th:replace="fragments/footer :: footer"/>
+</div> <!-- /container -->
 </body>
 </html>

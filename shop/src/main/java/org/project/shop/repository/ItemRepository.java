@@ -21,4 +21,7 @@ public interface ItemRepository{
 
     public List<Item> orderByCategory();
 
+    public void deleteByItemId(Long itemId);
+
+
 }

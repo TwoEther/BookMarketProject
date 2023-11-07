@@ -29,8 +29,13 @@ public class Member {
     @NotBlank(message = "비밀번호는 필수 값 입니다.")
     private String password;
 
+    @NotBlank(message = "이름은 필수 값 입니다.")
     private String name;
+
+    @NotBlank(message = "핸드폰 번호는 필수 값 입니다.")
     private String phoneNum;
+
+    @NotBlank(message = "이메일은 필수 값 입니다.")
     private String email;
 
 //     정의 타입 사용

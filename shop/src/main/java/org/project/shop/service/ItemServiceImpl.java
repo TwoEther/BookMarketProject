@@ -89,5 +89,10 @@ public class ItemServiceImpl implements ItemService{
         return itemRepositoryImpl.orderByCategory();
     }
 
+    @Override
+    public void deleteByItemId(Long itemId) {
+        itemRepositoryImpl.deleteByItemId(itemId);
+    }
+
 
 }

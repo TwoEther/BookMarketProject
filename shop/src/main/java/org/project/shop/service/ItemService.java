@@ -20,4 +20,6 @@ public interface ItemService {
     public List<Item> findByItemWithCategory(String category2);
 
     public List<Item> orderByCategory();
+
+    public void deleteByItemId(Long itemId);
 }

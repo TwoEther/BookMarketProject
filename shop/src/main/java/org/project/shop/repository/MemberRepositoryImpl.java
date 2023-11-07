@@ -91,4 +91,11 @@ public class MemberRepositoryImpl implements MemberRepository{
                 .where(member.userId.eq(userId))
                 .fetchOne();
     }
+
+    @Override
+    public void deleteMemberByMemberId(Long memberId) {
+        queryFactory.delete(member)
+                .where(member.id.eq(memberId))
+                .execute();
+    }
 }
