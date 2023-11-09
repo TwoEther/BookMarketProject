@@ -54,7 +54,8 @@
 
                 <tr>
                     <td>배송 주소</td>
-                    <td th:text="${member.address.address1}"></td>
+                    <td th:if="${member.address == null}"></td>
+                    <td th:unless="${member.address == null}"><span th:text="${member.address.address1}+' ,'+${member.address.address2}"></span></td>
                 </tr>
 
                 <tr>

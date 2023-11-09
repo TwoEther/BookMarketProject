@@ -7,6 +7,7 @@
         width:150px;
     }
 </style>
+
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
     <div class="container">
@@ -28,18 +29,42 @@
                             <td style="width: 400px;">
 <!--                                <div style="display: inline-block;" ><img th:src="@{${order.orderItems[0].item.getFilePath()}}" width="100px" alt=""></div>-->
                                 <div style="display: inline-block;">
-                                    <p style="margin-bottom: 0px;">책 제목은 이것 입니다</p>
-                                    <p style="margin-bottom: 0px;">16,000원 </p>
+                                    <p style="margin-bottom: 0px;" th:text="${order.createOrderName()}"></p>
+                                    <p style="margin-bottom: 0px;" th:text="${order.getTotalPrice()}"></p>
                                 </div>
                             </td>
                             <td>
                                 <div style="" id="item_btn">
+                                    <!-- Button trigger modal -->
+                                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#orderModal">
+                                        주문 상세
+                                    </button>
+
+                                    <!-- Modal -->
+                                     <div class="modal fade" id="orderModal" role="dialog"> <!-- 사용자 지정 부분① : id명 -->
+                                         <div class="modal-dialog">
+                                             <!-- Modal content-->
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">×</button>
+                                                    <h4 class="modal-title">모달 창 타이틀</h4> <!-- 사용자 지정 부분② : 타이틀 -->
+                                                </div>
+
+                                                <div class="modal-body">
+                                                    <p>여기에 필요한 텍스트 메시지 넣기</p> <!-- 사용자 지정 부분③ : 텍스트 메시지 -->
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">창 닫기</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <a href="" class="btn btn-outline-primary" style="margin-bottom: 5px;">배송 조회</a>
                                     <a href="" class="btn btn-outline-secondary" style="margin-bottom: 5px;">교환 및 반품 신청</a>
                                     <a href="" class="btn btn-outline-secondary" style="margin-bottom: 5px;">리뷰 작성하기</a>
                                 </div>
-
                             </td>
+
                             </tbody>
                         </table>
                     </div>

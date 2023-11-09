@@ -76,16 +76,12 @@ public class Item {
 
     // 재고 관리를 위한 로직
     public void addStock(int stockQuantity) {
-        this.stockQuantity += stockQuantity;
+        this.stockQuantity = Math.max(this.stockQuantity + stockQuantity, 0);
     }
 
     // 재고 관리를 위한 로직
     public void removeStock(int stockQuantity) {
-        int resStock = this.stockQuantity - stockQuantity;
-        if(resStock < 0){
-            throw new NotEnoughStockException("more stock");
-        }
-        this.stockQuantity = resStock;
+        this.stockQuantity -= stockQuantity;
     }
 
 

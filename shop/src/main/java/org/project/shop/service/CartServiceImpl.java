@@ -53,6 +53,7 @@ public class CartServiceImpl implements CartService {
 
         CartItem savedItem = cartItemRepository.findByCartIdAndItemId(findCart.getId(), findItem.getId());
 
+        findItem.removeStock(quantity);
         // 이미 장바구니에 존재하는 아이템이라면?
         if (savedItem != null) {
             savedItem.addCount(quantity);
@@ -62,6 +63,7 @@ public class CartServiceImpl implements CartService {
             cartItemRepository.save(findCartItem);
             return findCartItem.getId();
         }
+
     }
 
     @Override

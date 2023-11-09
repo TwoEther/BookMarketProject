@@ -83,7 +83,6 @@ public class OrderController {
                 List<Item> findItems = OrderItem.findItems(allOrder);
                 paymentList.add(findItems);
             }
-            System.out.println("paymentList = " + paymentList);
 
             model.addAttribute("allOrder", findAllOrder);
         }

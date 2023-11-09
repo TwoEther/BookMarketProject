@@ -9,8 +9,9 @@ public interface MemberService {
     public Long join(Member member);
 
     public List<Member> findAllMember();
-    public Member findOneMember(Long memberId);
 
+    public List<Member> findAllGeneralMember();
+    public Member findOneMember(Long memberId);
     public Member findByUserId(String userId);
 
     public void deleteMemberByMemberId(Long memberId);

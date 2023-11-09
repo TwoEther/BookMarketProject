@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import org.project.shop.domain.Member;
+import org.project.shop.domain.Role;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -39,6 +40,13 @@ public class MemberRepositoryImpl implements MemberRepository{
                 .from(member)
                 .where(member.id.eq(id))
                 .fetchOne();
+    }
+
+    @Override
+    public List<Member> findAllGeneralMember() {
+        return queryFactory.selectFrom(member)
+                .where(member.role.eq(Role.ROLE_USER.toString()))
+                .fetch();
     }
 
     @Override

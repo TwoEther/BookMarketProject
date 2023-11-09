@@ -1,7 +1,9 @@
 package org.project.shop.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.project.shop.auth.PrincipalDetails;
+import org.project.shop.config.ScriptUtils;
 import org.project.shop.domain.Cart;
 import org.project.shop.domain.CartItem;
 import org.project.shop.domain.Item;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,10 +45,12 @@ public class CartController {
     @PostMapping(value = "/add")
     @ResponseBody
     @Transactional
-    public boolean addCartItem(@RequestParam HashMap<String, Object> params) {
+    public boolean addCartItem(@RequestParam HashMap<String, Object> params){
 
         long itemId = Long.parseLong((String) params.get("itemId"));
         int quantity = Integer.parseInt((String) params.get("quantity"));
+
+        System.out.println("quantity = " + quantity);
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserDetails userDetails = (UserDetails) principal;
@@ -54,12 +59,9 @@ public class CartController {
         Member findMember = memberServiceImpl.findByUserId(username);
         Item findItem = itemServiceImpl.findOneItem(itemId);
 
-        if (itemServiceImpl.checkStockQuantity(itemId, quantity)) {
-            Long id = cartServiceImpl.addCart(findMember, findItem, quantity);
-            return true;
-        } else {
-            return false;
-        }
+        quantity = Math.min(quantity, findItem.getStockQuantity());
+        Long id = cartServiceImpl.addCart(findMember, findItem, quantity);
+        return id != null;
     }
 
     @GetMapping(value = "/list")

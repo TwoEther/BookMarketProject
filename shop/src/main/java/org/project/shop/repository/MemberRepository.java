@@ -10,6 +10,8 @@ public interface MemberRepository {
 
     public void clear();
     public Member findMember(Long id);
+
+    public List<Member> findAllGeneralMember();
     public List<Member> findAllMember();
 
     public void mergeMember(Member member);

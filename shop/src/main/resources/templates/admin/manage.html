@@ -21,9 +21,26 @@
     .selectArea > div > a {
         font-size: 20px;
     }
+
+    #first_td {
+        background-color: #CCCC99;
+    }
+    table {
+      border: 1px #a39485 solid;
+      font-size: .9em;
+      box-shadow: 0 2px 5px rgba(0,0,0,.25);
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    td {
+        width:200px;
+        text-align:center;
+    }
 </style>
 <body>
-<div class="container">
+<div>
     <div class="header" style="text-align: center; margin-top: 10px;">
         <h2>관리자 페이지</h2>
     </div>
@@ -127,7 +144,7 @@
     <div class="manageArea" style="width: max-content;">
         <th:block th:switch="${type}">
             <table th:case="member">
-                <tr>
+                <tr id="first_td">
                     <td>회원 아이디</td>
                     <td>회원 권한</td>
                     <td>회원 현황</td>
@@ -143,7 +160,7 @@
             </table>
 
             <table th:case="item">
-                <tr>
+                <tr id="first_td">
                     <td>상품 이름</td>
                     <td>상품 재고 현황</td>
                     <td>상품 수정</td>
@@ -151,10 +168,10 @@
                 </tr>
 
                 <tr th:each="item : ${allItem}">
-                    <td th:text="${item.id}"></td>
                     <td th:text="${item.name}"></td>
+                    <td th:text="${item.getStockQuantity()}"></td>
                     <td><input th:id=${item.id} class="btn btn-primary" type="button" value="삭제" onclick="deleteItem(this.id)"></td>
-                    <td><input th:id=${item.isd} class="btn btn-primary" type="button" value="삭제" onclick="deleteItem(this.id)"></td>
+                    <td><input th:id=${item.id} class="btn btn-primary" type="button" value="삭제" onclick="deleteItem(this.id)"></td>
                 </tr>
             </table>
 

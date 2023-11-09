@@ -77,6 +77,10 @@ public class Order {
         return order;
     }
 
+    public String createOrderName() {
+        return this.orderItems.get(0).getItem().getName() + "포함 "+ this.orderItems.size()+"건";
+    }
+
     // 주문취소
     public void cancel(){
         if (delivery.getStatus() == DeliveryStatus.COMP) {

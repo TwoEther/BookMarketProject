@@ -27,9 +27,8 @@ public class AdminController {
 
     @GetMapping(value = "/member")
     public String adminMemberPage(Model model) {
-        List<Member> allMember = memberServiceImpl.findAllMember();
-
-        model.addAttribute("allMember", allMember);
+        List<Member> allGeneralMember = memberServiceImpl.findAllGeneralMember();
+        model.addAttribute("allMember", allGeneralMember);
         model.addAttribute("type", "member");
         return "admin/manage";
     }

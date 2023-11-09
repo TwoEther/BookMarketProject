@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.project.shop.config.ScriptUtils;
 import org.project.shop.domain.Address;
 import org.project.shop.domain.Member;
 import org.project.shop.domain.Role;
@@ -24,6 +25,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +50,7 @@ public class MemberController {
     }
 
     @PostMapping(value = "/new")
-    public String signUp(@Valid MemberForm form, BindingResult result) {
+    public String signUp(HttpServletResponse response, @Valid MemberForm form, BindingResult result) throws IOException {
         if (result.hasErrors()) {
             return "/member/createMemberForm";
         }
@@ -59,36 +61,41 @@ public class MemberController {
         String phoneNum = form.getPhoneNum();
         String email = form.getEmail();
         String roles = form.getRoles();
-        
-        Member member = new Member(id, password, name, phoneNum, email);
-        if (roles.equals(Role.ROLE_ADMIN.toString())) {
-            member.setRole(Role.ROLE_ADMIN.toString());
-        } else if (roles.equals(Role.ROLE_ANONYMOUS)) {
-            member.setRole(Role.ROLE_ANONYMOUS.toString());
-        } else{
-            member.setRole(Role.ROLE_USER.toString());
+
+        if (memberServiceImpl.findByUserId(id) != null) {
+            ScriptUtils.alert(response, "아이디가 존재합니다");
+            return "/member/createMemberForm";
+        } else {
+            Member member = new Member(id, password, name, phoneNum, email);
+            if (roles.equals(Role.ROLE_ADMIN.toString())) {
+                member.setRole(Role.ROLE_ADMIN.toString());
+            } else if (roles.equals(Role.ROLE_ANONYMOUS)) {
+                member.setRole(Role.ROLE_ANONYMOUS.toString());
+            } else{
+                member.setRole(Role.ROLE_USER.toString());
+            }
+
+            if (memberServiceImpl.checkReqexId(id) && memberServiceImpl.checkReqexPw(password)) {
+                result.reject("signupFailed", "아이디나 패스워드가 올바르지 않습니다");
+                return "/member/createMemberForm";
+            }
+
+            try {
+                memberServiceImpl.join(member);
+            } catch (DataIntegrityViolationException e) {
+                e.printStackTrace();
+                result.reject("signupFailed", "이미 등록된 사용자입니다.");
+                return "/member/createMemberForm";
+            } catch (Exception e) {
+                e.printStackTrace();
+                result.reject("signupFailed", e.getMessage());
+                return "/member/createMemberForm";
+            }
+
+            return "redirect:/";
         }
 
-        System.out.println("member.toString() = " + member.toString());
-        
-        if (memberServiceImpl.checkReqexId(id) && memberServiceImpl.checkReqexPw(password)) {
-            result.reject("signupFailed", "아이디나 패스워드가 올바르지 않습니다");
-            return "/member/createMemberForm";
-        }
 
-        try {
-            memberServiceImpl.join(member);
-        } catch (DataIntegrityViolationException e) {
-            e.printStackTrace();
-            result.reject("signupFailed", "이미 등록된 사용자입니다.");
-            return "/member/createMemberForm";
-        } catch (Exception e) {
-            e.printStackTrace();
-            result.reject("signupFailed", e.getMessage());
-            return "/member/createMemberForm";
-        }
-
-        return "redirect:/";
     }
 
     @PostMapping(value = "/idCheck")
