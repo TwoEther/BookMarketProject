@@ -32,17 +32,15 @@ public class Item {
     private String filePath;
     private String fileName;
 
-
-    @ManyToOne
-    @JoinColumn(name = "items", unique = true, insertable = false, updatable = false)
-    private Review review;
-
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     private List<CartItem> cartItem = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item")
     private Category category;
+
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
+    private List<Review> reviews = new ArrayList<>();
 
     public Item(String name, int price, int stockQuantity) {
         this.name = name;

@@ -95,11 +95,11 @@ public class MemberServiceTest {
         memberServiceImpl.join(member1);
         memberServiceImpl.join(member2);
 
-        member1.setRole(Role.ROLE_ADMIN);
-        member2.setRole(Role.ROLE_USER);
+        member1.setRole(Role.ROLE_ADMIN.toString());
+        member2.setRole(Role.ROLE_USER.toString());
 
-        assertThat(member1.getRole()).isEqualTo(Role.ROLE_ADMIN);
-        assertThat(member2.getRole()).isEqualTo(Role.ROLE_USER);
+        assertThat(member1.getRole()).isEqualTo(Role.ROLE_ADMIN.toString());
+        assertThat(member2.getRole()).isEqualTo(Role.ROLE_USER.toString());
 
         System.out.println("member1.toString() = " + member1.toString());
 

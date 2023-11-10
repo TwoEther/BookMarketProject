@@ -145,7 +145,11 @@ public class ItemController {
             model) {
 
         Item item = itemServiceImpl.findOneItem(itemId);
+        List<Item> sameCategoryItems = itemServiceImpl.findByItemWithCategory(item.getCategory().getCategory2());
+        sameCategoryItems.remove(item);
+
         model.addAttribute("item", item);
+        model.addAttribute("groupItem", sameCategoryItems);
         return "item/itemDetail";
     }
 

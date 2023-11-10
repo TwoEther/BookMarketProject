@@ -20,6 +20,7 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
+    @Transactional
     public void saveItemNoImage(Item item) {
         itemRepositoryImpl.save(item);
     }

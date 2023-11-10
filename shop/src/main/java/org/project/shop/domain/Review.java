@@ -14,10 +14,46 @@ public class Review {
     private int score;
     private String comment;
 
-    @ManyToOne
-    @JoinColumn(name = "review", unique = true)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "reviews", insertable = false, updatable=false)
     private Member member;
 
-    @OneToMany(mappedBy = "review")
-    private List<Item> items = new ArrayList<>();
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "reviews", insertable = false, updatable=false)
+    private Item item;
+
+    public Review() {
+    }
+
+    public void setMember(Member member) {
+        if (this.member != null) {
+            this.member.getReviews().remove(this);
+        }
+        member.getReviews().add(this);
+        this.member = member;
+    }
+
+    public void setItem(Item item) {
+        if (this.item != null) {
+            this.item.getReviews().remove(this);
+        }
+        item.getReviews().add(this);
+        this.item = item;
+    }
+
+    public Review(int score, String comment) {
+        this.score = score;
+        this.comment = comment;
+    }
+
+    @Override
+    public String toString() {
+        return "Review{" +
+                "id=" + id +
+                ", score=" + score +
+                ", comment='" + comment + '\'' +
+                ", member=" + member +
+                ", item=" + item +
+                '}';
+    }
 }

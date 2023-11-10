@@ -1,85 +1,65 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header"/>
-<body>
-<style>
-    #item_btn > a {
-        width:150px;
-    }
-</style>
+<link rel="stylesheet" href="/static/css/mypage.css">
 
+<body>
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-    <div class="container">
-        <div class="row">
-            <div class="col-3" id="infoArea">
-                <p>비밀번호 재설정</p>
-                <a th:href="@{/member/address}">배송지 설정</a>
-                <p>회원 탈퇴</p>
-            </div>
+    <div class="side_bar" id="side_bar" style="margin-top:10px">
+        <div class="banner">
+            <h3>Book</h3>
+        </div>
+        <div class="myOrder">
+            <h4>My 주문</h4>
+            <div><a th:href="@{/order/orderList}">주문 및 배송 조회</a></div>
+            <div><a>취소 및 반품 내역</a></div>
+            <div><a th:href="@{/review/manage}">리뷰 관리</a></div>
+        </div>
+        <div class="myAccout">
+            <h4>My 계정</h4>
+            <div><a>비밀번호 재설정</a></div>
+            <div><a th:href="@{/member/address}">배송지 설정</a></div>
+            <div><a>회원 탈퇴</a></div>
+        </div>
 
-            <div class="col-9" id="orderArea">
-                <h2>주문 목록</h2><hr>
-                <div th:each = "order : ${allOrder}"  class="itemArea">
-                    <h2 th:text="${order.orderDate}"></h2>
-                    <div class="itemDetailArea">
-                        <table>
-                            <tbody>
-                            <tr></tr>
-                            <td style="width: 400px;">
-<!--                                <div style="display: inline-block;" ><img th:src="@{${order.orderItems[0].item.getFilePath()}}" width="100px" alt=""></div>-->
-                                <div style="display: inline-block;">
-                                    <p style="margin-bottom: 0px;" th:text="${order.createOrderName()}"></p>
-                                    <p style="margin-bottom: 0px;" th:text="${order.getTotalPrice()}"></p>
-                                </div>
-                            </td>
-                            <td>
-                                <div style="" id="item_btn">
-                                    <!-- Button trigger modal -->
-                                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#orderModal">
-                                        주문 상세
-                                    </button>
+    </div>
 
-                                    <!-- Modal -->
-                                     <div class="modal fade" id="orderModal" role="dialog"> <!-- 사용자 지정 부분① : id명 -->
-                                         <div class="modal-dialog">
-                                             <!-- Modal content-->
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal">×</button>
-                                                    <h4 class="modal-title">모달 창 타이틀</h4> <!-- 사용자 지정 부분② : 타이틀 -->
-                                                </div>
-
-                                                <div class="modal-body">
-                                                    <p>여기에 필요한 텍스트 메시지 넣기</p> <!-- 사용자 지정 부분③ : 텍스트 메시지 -->
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-default" data-dismiss="modal">창 닫기</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <a href="" class="btn btn-outline-primary" style="margin-bottom: 5px;">배송 조회</a>
-                                    <a href="" class="btn btn-outline-secondary" style="margin-bottom: 5px;">교환 및 반품 신청</a>
-                                    <a href="" class="btn btn-outline-secondary" style="margin-bottom: 5px;">리뷰 작성하기</a>
-                                </div>
-                            </td>
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-
+    <div class="contextArea" id="contextArea">
+        <h2>주문 목록</h2><hr>
+        <div th:each = "order : ${allOrder}"  class="itemArea">
+            <h2 th:text="${order.orderDate}"></h2>
+            <div class="itemDetailArea">
+                <table>
+                    <tbody>
+                    <tr></tr>
+                    <td>
+                        <div th:each="orderItem : ${order.orderItems}" style="height:200px">
+                            <div class="imgArea" style="float:left; width:100px;">
+                                <img th:src="@{${orderItem.item.getFilePath()}}" width="100px" alt="">
+                            </div>
+                            <div class="contextArea" style="float:left; width:250px">
+                                <h4 th:text="${orderItem.item.getName()}"></h4>
+                                <p th:text="${orderItem.getTotalPrice()} +'원' +','+${orderItem.getCount()}+'건'"></p>
+                            </div>
+                            <div id="item_btn" style="float:right; width:150px;">
+                                <a href="" class="btn btn-outline-primary" style="margin-bottom: 5px;">배송 조회</a>
+                                <a href="" class="btn btn-outline-secondary" style="margin-bottom: 5px;">교환 및 반품 신청</a>
+                                <a href="" class="btn btn-outline-secondary" style="margin-bottom: 5px;">리뷰 작성하기</a>
+                            </div>
+                        </div>
+                    </td>
+                    </tbody>
+                </table>
             </div>
         </div>
 
     </div>
-    <div th:replace="fragments/footer :: footer"/>
 </div> <!-- /container -->
 </body>
 <script>
     function cancel(id) {
+    var con = "orderList";
     var form = document.createElement("form");
     form.setAttribute("method", "post");
     form.setAttribute("action", "/orders/" + id + "/cancel");

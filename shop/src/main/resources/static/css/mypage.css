@@ -1,0 +1,30 @@
+a {
+        text-decoration:none;
+        color:black;
+    }
+    #item_btn > a {
+        width:150px;
+    }
+    .contextArea > * {
+        text-align:center;
+    }
+
+    .container > #side_bar {
+        float:left;
+        width:20%;
+    }
+
+    .container > #contextArea {
+        float:left;
+        width:80%;
+    }
+    .banner {
+        background-color:#3333CC;
+        color:#FFFFFF;
+        text-align:center;
+        height: 40px;
+    }
+
+    .side_bar > div {
+        margin-bottom:20px;
+    }

@@ -1,5 +1,6 @@
 package org.project.shop.repository;
 
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -29,11 +30,7 @@ public class ItemRepositoryImpl implements ItemRepository{
 
     @Override
     public void save(Item item) {
-        if(item.getId() == null){
-            em.persist(item);
-        }else{
-            em.merge(item);
-        }
+        em.persist(item);
     }
 
     @Override
@@ -63,7 +60,6 @@ public class ItemRepositoryImpl implements ItemRepository{
                 .where(item.category.category2.eq(category2))
                 .limit(3)
                 .fetch();
-
     }
 
     @Override

@@ -50,8 +50,8 @@ public class OrderServiceTest {
 
     @BeforeEach
     public void setUp() {
-        Member member1 = new Member("id1", "pw1","user1", "010-2394-5911", "user1@test.com");
-        Member member2 = new Member("id2", "pw2", "user2","010-3952-1860", "user2@test.com");
+        Member member1 = new Member("id1", "pw1","nickname1", "user1", "010-2394-5911", "user1@test.com");
+        Member member2 = new Member("id2", "pw2", "nickname2", "user2","010-3952-1860", "user2@test.com");
         memberServiceImpl.join(member1);
         memberServiceImpl.join(member2);
 

@@ -34,6 +34,9 @@ public class HomeController {
     @RequestMapping("/")
     public String home(Model model){
         List<String> categories = categoryServiceImpl.findAllCategory2();
+        for (String category : categories) {
+            System.out.println("category = " + category);
+        }
         List<List<Item>> itemByCategory = new ArrayList<>();
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -46,8 +49,6 @@ public class HomeController {
             Member findMember = memberServiceImpl.findByUserId(username);
             model.addAttribute("member", findMember);
         }
-
-
 
         for (String category : categories) {
             List<Item> findItem = itemServiceImpl.findByItemWithCategory(category);

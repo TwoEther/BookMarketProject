@@ -71,6 +71,7 @@ public class OrderController {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserDetails userDetails = (UserDetails) principal;
         String username = ((UserDetails) principal).getUsername();
+        System.out.println("orderList called");
 
         Member findMember = memberServiceImpl.findByUserId(username);
         List<Order> findAllOrder = orderServiceImpl.findByMemberIdAfterPayment(findMember.getId());
@@ -78,7 +79,7 @@ public class OrderController {
             model.addAttribute("allOrder", findAllOrder);
         } else {
             List<List<Item>> paymentList = new ArrayList<>();
-            for (Order order : findAllOrder) {
+                for (Order order : findAllOrder) {
                 List<OrderItem> allOrder = orderItemServiceImpl.findOrderItemByOrderId(order.getId());
                 List<Item> findItems = OrderItem.findItems(allOrder);
                 paymentList.add(findItems);

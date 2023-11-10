@@ -58,15 +58,17 @@ public class MemberController {
         String id = form.getUserId();
         String password = form.getPassword1();
         String name = form.getName();
+        String nickname = form.getNickname();
         String phoneNum = form.getPhoneNum();
         String email = form.getEmail();
         String roles = form.getRoles();
+
 
         if (memberServiceImpl.findByUserId(id) != null) {
             ScriptUtils.alert(response, "아이디가 존재합니다");
             return "/member/createMemberForm";
         } else {
-            Member member = new Member(id, password, name, phoneNum, email);
+            Member member = new Member(id, password, nickname, name, phoneNum, email);
             if (roles.equals(Role.ROLE_ADMIN.toString())) {
                 member.setRole(Role.ROLE_ADMIN.toString());
             } else if (roles.equals(Role.ROLE_ANONYMOUS)) {

@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"/>
+<link rel="stylesheet" href="/static/css/mypage.css">
+<body>
+
+<div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <div class="side_bar" id="side_bar" style="margin-top:10px">
+        <div class="banner">
+            <h3>Book</h3>
+        </div>
+        <div class="myOrder">
+            <h4>My 주문</h4>
+                <div><a th:action="@{/order/orderList}">주문 및 배송 조회</a></div>
+            <div><a>취소 및 반품 내역</a></div>
+            <div><a th:action="@{/review/manage}">리뷰 관리</a></div>
+        </div>
+        <div class="myAccout">
+            <h4>My 계정</h4>
+            <div><a>비밀번호 재설정</a></div>
+            <div><a th:href="@{/member/address}">배송지 설정</a></div>
+            <div><a>회원 탈퇴</a></div>
+        </div>
+
+    </div>
+
+    <div class="contextArea" id="reviewArea">
+        <h2>리뷰 목록</h2><hr>
+
+        </div>
+
+    </div>
+</div> <!-- /container -->
+</body>
+<script>
+    function cancel(id) {
+    var con = "review";
+    var form = document.createElement("form");
+    form.setAttribute("method", "post");
+    form.setAttribute("action", "/orders/" + id + "/cancel");
+    document.body.appendChild(form);
+    form.submit();
+    }
+</script>
+</html>
