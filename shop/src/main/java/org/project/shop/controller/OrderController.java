@@ -71,7 +71,6 @@ public class OrderController {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserDetails userDetails = (UserDetails) principal;
         String username = ((UserDetails) principal).getUsername();
-        System.out.println("orderList called");
 
         Member findMember = memberServiceImpl.findByUserId(username);
         List<Order> findAllOrder = orderServiceImpl.findByMemberIdAfterPayment(findMember.getId());

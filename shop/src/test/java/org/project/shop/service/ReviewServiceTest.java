@@ -100,4 +100,10 @@ public class ReviewServiceTest {
         assertThat(allReviewByMemberId2.size()).isEqualTo(1);
     }
 
+    @DisplayName("구매 상품에 리뷰가 적용되는지 테스트")
+    @Test
+    public void paymentItemReviewTest() {
+
+    }
+
 }

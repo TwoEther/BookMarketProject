@@ -60,6 +60,17 @@ public class OrderItemRepositoryImpl implements OrderItemRepository{
     }
 
     @Override
+    public List<OrderItem> findByOrderAndItemAfterPayment(Long orderId, Long itemId) {
+        return queryFactory.selectFrom(orderItem)
+                .where(orderItem.order.id.eq(orderId).and(
+                        orderItem.item.id.eq(itemId).and(
+                                orderItem.order.status.eq(OrderStatus.SUCCESS)
+                        )
+                )).fetch();
+    }
+
+
+    @Override
     public List<OrderItem> findAllOrderItem() {
         return queryFactory.selectFrom(orderItem)
                 .fetch();

@@ -4,43 +4,47 @@
 <link rel="stylesheet" href="/static/css/mypage.css">
 <body>
 
+<style>
+    #btnArea > a {
+        width: 50%;
+        text-align:center;
+
+    }
+</style>
+
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-    <div class="side_bar" id="side_bar" style="margin-top:10px">
-        <div class="banner">
-            <h3>Book</h3>
-        </div>
-        <div class="myOrder">
-            <h4>My 주문</h4>
-                <div><a th:action="@{/order/orderList}">주문 및 배송 조회</a></div>
-            <div><a>취소 및 반품 내역</a></div>
-            <div><a th:action="@{/review/manage}">리뷰 관리</a></div>
-        </div>
-        <div class="myAccout">
-            <h4>My 계정</h4>
-            <div><a>비밀번호 재설정</a></div>
-            <div><a th:href="@{/member/address}">배송지 설정</a></div>
-            <div><a>회원 탈퇴</a></div>
+    <div th:replace="fragments/sideBar :: sideBar"/>
+
+    <div id="reviewArea">
+        <div class="btnArea">
+            <h2>리뷰 목록</h2><hr>
+            <a class="btn btn-primary" th:href="@{/review/notWritten}">리뷰 쓰기</a>
+            <a class="btn btn-primary" th:href="@{/review/written}">리뷰 관리</a>
         </div>
 
+        <div class="contextArea">
+            <div class="itemDetailArea">
+                <table>
+                    <tbody>
+                    <tr></tr>
+                    <td>
+                        <div th:each="item : ${reviewItems}" style="height:200px">
+                            <div class="imgArea" style="float:left; width:80px;">
+                                <img th:src="@{${orderItem.item.getFilePath()}}" width="80px" alt="">
+                            </div>
+                            <div class="" style="float:left; width:250px">
+                                <h4 th:text="${orderItem.order.createOrderName()}"></h4>
+                                <p th:text="${orderItem.order.createOrderName()}"></p>
+                            </div>
+                        </div>
+                    </td>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
-    <div class="contextArea" id="reviewArea">
-        <h2>리뷰 목록</h2><hr>
-        <a th:href="@{/review/"></a>
-        </div>
-
-    </div>
 </div> <!-- /container -->
 </body>
-<script>
-    function cancel(id) {
-    var con = "review";
-    var form = document.createElement("form");
-    form.setAttribute("method", "post");
-    form.setAttribute("action", "/orders/" + id + "/cancel");
-    document.body.appendChild(form);
-    form.submit();
-    }
-</script>
 </html>

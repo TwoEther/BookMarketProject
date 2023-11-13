@@ -41,6 +41,12 @@ public class OrderItemServiceImpl implements OrderItemService{
     }
 
     @Override
+    public List<OrderItem> findByOrderAndItemAfterPayment(Long orderId, Long itemId) {
+        return orderItemRepositoryImpl.findByOrderAndItemAfterPayment(orderId, itemId);
+    }
+
+
+    @Override
     public List<OrderItem> findAllOrderItem() {
         return orderItemRepositoryImpl.findAllOrderItem();
     }

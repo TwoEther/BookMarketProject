@@ -11,11 +11,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@Table(name="Member", uniqueConstraints = {
-        @UniqueConstraint(
-                name="EMAIL_PHONENUM_UNIQUE",
-                columnNames={"email","phoneNum"}
-        )})
+
 public class Member {
     @Id @GeneratedValue
     @Column(name = "member_id")

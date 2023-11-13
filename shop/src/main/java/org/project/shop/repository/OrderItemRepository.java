@@ -12,5 +12,8 @@ public interface OrderItemRepository {
     public List<OrderItem> findOrderItemByItemId(Long itemId);
 
     public List<OrderItem> findOrderItemByOrderAndItem(Long orderId, Long itemId);
+
+    public List<OrderItem> findByOrderAndItemAfterPayment(Long orderId, Long itemId);
+
     public List<OrderItem> findAllOrderItem();
 }

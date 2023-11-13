@@ -1,10 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"/>
+<link rel="stylesheet" href="/static/css/mypage.css">
+<style>
+    #btnArea > a {
+         width: 200px;
+         text-align:center;
+     }
+
+
+
+</style>
+
 <body>
-$END$
+    <div class="container">
+        <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+        <div th:replace="fragments/sideBar :: sideBar"/>
+
+        <div id="reviewArea">
+            <div class="btnArea">
+                <h2>리뷰 목록</h2><hr>
+                <a class="btn btn-primary" th:href="@{/review/notWritten}">리뷰 쓰기</a>
+                <a class="btn btn-primary" th:href="@{/review/written}">리뷰 관리</a>
+            </div>
+
+            <div class="contextArea">
+                <div class="itemDetailArea">
+                    <table>
+                        <tbody>
+                            <tr></tr>
+                            <td>
+                                <div th:each="orderItem : ${orderItems}">
+                                    <div class="imgArea" style="float:left; width:80px;">
+                                        <img th:src="@{${orderItem.item.getFilePath()}}" width="80px" alt="">
+                                    </div>
+                                    <div class="" style="float:left; width:250px">
+                                        <h4 th:text="${orderItem.order.createOrderName()}"></h4>
+                                        <p th:text="${orderItem.order.createOrderName()}"></p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

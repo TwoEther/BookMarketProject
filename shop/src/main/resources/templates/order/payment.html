@@ -54,7 +54,7 @@
 
                 <tr>
                     <td>배송 주소</td>
-                    <td th:if="${member.address == null}"></td>
+                    <td th:if="${member.address == null}"><a th:href="@{/member/address}">배송지가 없습니다, 배송지를 설정하세요</a></td>
                     <td th:unless="${member.address == null}"><span th:text="${member.address.address1}+' ,'+${member.address.address2}"></span></td>
                 </tr>
 
@@ -102,51 +102,55 @@
             </table>
         </div>
 
-        <div class="buttonArea">
+        <div th:if="${member.address == null}" class="buttonArea">
+            <input type="button" class="btn-secondary" value="뒤로 가기" >
+        </div>
+        <div th:unless="${member.address == null}" class="buttonArea">
             <input type="button" class="btn-secondary" value="뒤로 가기" >
             <input type="button" class="btn-secondary" value="결제 하기" onclick="executePayment()">
-            <script th:inline="javascript">
-                function executePayment(){
-                    var arr = document.getElementsByName('paymentMethod');
-                    var type = "";
-                    for(var i=0; i<arr.length; i++){
-                        if(arr[i].checked){type = arr[i].value;}
-                    }
-                    var itemName = [[${cartItems[0].item.name}]];
-                    var total_count = [[${totalCount}]];
-                    var total_price = [[${totalPrice}]];
-                    var index = [[${index}]];
-
-                    var token = $("meta[name='_csrf']").attr("content");
-                    var header = $("meta[name='_csrf_header']").attr("content");
-                    $(function() {
-                        $(document).ajaxSend(function(e, xhr, options) {
-                            xhr.setRequestHeader(header, token);
-                        });
-                    });
-
-                    data = {"itemName" : itemName,
-                            "total_count" : total_count,
-                            "total_price" : total_price,
-                            "type" : type,
-                            "index" : index};
-                    $.ajax({
-                        url : "/kakaopay/ready",
-                        type : "POST",
-                        beforeSend: function (xhr) {
-                                      xhr.setRequestHeader(header, token);
-                                    },
-                        data : data,
-                        success : function(data){
-                            location.href = data.next_redirect_pc_url;
-                        },
-                        error:function(request,status,error){
-                        alert("code = "+ request.status + " message = " + request.responseText + " error = " + error); // 실패 시 처리
-                       }
-                    });
-                }
-            </script>
         </div>
+
+        <script th:inline="javascript">
+            function executePayment(){
+                var arr = document.getElementsByName('paymentMethod');
+                var type = "";
+                for(var i=0; i<arr.length; i++){
+                    if(arr[i].checked){type = arr[i].value;}
+                }
+                var itemName = [[${cartItems[0].item.name}]];
+                var total_count = [[${totalCount}]];
+                var total_price = [[${totalPrice}]];
+                var index = [[${index}]];
+
+                var token = $("meta[name='_csrf']").attr("content");
+                var header = $("meta[name='_csrf_header']").attr("content");
+                $(function() {
+                    $(document).ajaxSend(function(e, xhr, options) {
+                        xhr.setRequestHeader(header, token);
+                    });
+                });
+
+                data = {"itemName" : itemName,
+                        "total_count" : total_count,
+                        "total_price" : total_price,
+                        "type" : type,
+                        "index" : index};
+                $.ajax({
+                    url : "/kakaopay/ready",
+                    type : "POST",
+                    beforeSend: function (xhr) {
+                                  xhr.setRequestHeader(header, token);
+                                },
+                    data : data,
+                    success : function(data){
+                        location.href = data.next_redirect_pc_url;
+                    },
+                    error:function(request,status,error){
+                    alert("code = "+ request.status + " message = " + request.responseText + " error = " + error); // 실패 시 처리
+                   }
+                });
+            }
+        </script>
     </div>
     <div th:replace="fragments/footer :: footer"/>
 </div> <!-- /container -->
