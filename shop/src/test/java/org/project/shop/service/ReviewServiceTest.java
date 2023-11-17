@@ -1,17 +1,18 @@
 package org.project.shop.service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.project.shop.domain.Item;
-import org.project.shop.domain.Member;
-import org.project.shop.domain.Review;
+import org.project.shop.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,12 +20,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Service
 @SpringBootTest
 public class ReviewServiceTest {
+    @PersistenceContext
+    EntityManager em;
+
     @Autowired
     private MemberServiceImpl memberServiceImpl;
     @Autowired
     private ItemServiceImpl itemServiceImpl;
     @Autowired
     private ReviewServiceImpl reviewServiceImpl;
+    @Autowired
+    private OrderServiceImpl orderServiceImpl;
+    @Autowired
+    private OrderItemServiceImpl orderItemServiceImpl;
 
     @BeforeEach
     @Transactional
@@ -45,9 +53,37 @@ public class ReviewServiceTest {
 
         Item item1 = new Item("item1", 20000, 30);
         Item item2 = new Item("item2", 34000, 15);
+        Item item3 = new Item("item3", 11000, 11);
+        Item item4 = new Item("item4", 59000, 9);
 
         itemServiceImpl.saveItemNoImage(item1);
         itemServiceImpl.saveItemNoImage(item2);
+        itemServiceImpl.saveItemNoImage(item3);
+        itemServiceImpl.saveItemNoImage(item4);
+
+        Order order1 = Order.createOrder(member1);
+        order1.setStatus(OrderStatus.SUCCESS);
+        orderServiceImpl.save(order1);
+
+        OrderItem orderItem1 = OrderItem.createOrderItem(item1, item1.getPrice(), 3);
+        OrderItem orderItem2 = OrderItem.createOrderItem(item2, item2.getPrice(), 3);
+        OrderItem orderItem3 = OrderItem.createOrderItem(item3, item3.getPrice(), 3);
+        orderItem1.setOrder(order1);
+        orderItem2.setOrder(order1);
+        orderItem3.setOrder(order1);
+
+        orderItemServiceImpl.save(orderItem1);
+        orderItemServiceImpl.save(orderItem2);
+        orderItemServiceImpl.save(orderItem3);
+
+        review1.setMember(member1);
+        review2.setMember(member1);
+        review3.setMember(member2);
+
+        review1.setItem(item1);
+        review2.setItem(item1);
+        review3.setItem(item2);
+
     }
 
 
@@ -59,7 +95,6 @@ public class ReviewServiceTest {
     }
 
     @DisplayName("특정 아이템에 리뷰가 적용되는지 테스트")
-    @Transactional
     @Test
     public void reviewItemTest() {
         List<Member> allMember = memberServiceImpl.findAllMember();
@@ -101,9 +136,36 @@ public class ReviewServiceTest {
     }
 
     @DisplayName("구매 상품에 리뷰가 적용되는지 테스트")
+    @Transactional
     @Test
     public void paymentItemReviewTest() {
+        List<Member> allMember = memberServiceImpl.findAllMember();
+        List<Item> items = itemServiceImpl.findItems();
+        List<Review> allReview = reviewServiceImpl.findAllReview();
 
+        Item item1 = items.get(0);
+        Item item2 = items.get(1);
+        Item item3 = items.get(2);
+        
+        Member member1 = allMember.get(0);
+        Review review1 = allReview.get(0);
+        Review review2 = allReview.get(1);
+
+
+        // 특정 Member가 구매한 전체 상품 목록
+        List<Order> byMemberIdAfterPayment = orderServiceImpl.findByMemberIdAfterPayment(member1.getId());
+        List<Item> paymentItemList = new ArrayList<>();
+        for (Order order : byMemberIdAfterPayment) {
+            List<Item> findItems = order.orderItemList();
+            paymentItemList.addAll(findItems);
+        }
+
+
+        List<Review> findAllReview = reviewServiceImpl.findAllReview();
+        assertThat(findAllReview.size()).isEqualTo(3);
+
+        List<Review> allReviewByItemId = reviewServiceImpl.findAllReviewByItemId(item1.getId());
+        assertThat(allReviewByItemId.size()).isEqualTo(2);
     }
 
 }

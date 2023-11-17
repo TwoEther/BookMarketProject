@@ -10,9 +10,22 @@ fit=no">
 ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
           crossorigin="anonymous">
     <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+
+    <!-- Slick -->
+    <link type="text/css" rel="stylesheet" href="/static/css/slick.css"/>
+    <link type="text/css" rel="stylesheet" href="/static/css/slick-theme.css"/>
+
+    <!-- nouislider -->
+    <link type="text/css" rel="stylesheet" href="/static/css/nouislider.min.css"/>
+
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <script src="https://kit.fontawesome.com/51d8d7560f.js" crossorigin="anonymous"></script>
+
+    <!-- Custom stlylesheet -->
+    <link type="text/css" rel="stylesheet" href="/static/css/style.css"/>
+
 
     <link rel="stylesheet" href="/static/css/style.css">
     <script src="/static/js/bootstrap.min.js"></script>
@@ -22,7 +35,15 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]><![endif]-->
+
+
     <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
     <!-- default header name is X-CSRF-TOKEN -->
     <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+    <!-- jQuery Plugins -->
+
 </head>

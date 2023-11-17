@@ -43,12 +43,12 @@
 </body>
 <script>
     function cancel(id) {
-    var con = "orderList";
-    var form = document.createElement("form");
-    form.setAttribute("method", "post");
-    form.setAttribute("action", "/orders/" + id + "/cancel");
-    document.body.appendChild(form);
-    form.submit();
+        var con = "orderList";
+        var form = document.createElement("form");
+        form.setAttribute("method", "post");
+        form.setAttribute("action", "/orders/" + id + "/cancel");
+        document.body.appendChild(form);
+        form.submit();
     }
 </script>
 </html>

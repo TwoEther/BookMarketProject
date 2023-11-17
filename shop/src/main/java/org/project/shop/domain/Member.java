@@ -55,7 +55,7 @@ public class Member {
     @JoinColumn(name = "member")
     private Cart cart;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "member")
     private List<Review> reviews = new ArrayList<>();
 

@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService{
     private final MemberRepositoryImpl memberRepository;
@@ -66,6 +65,7 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
+    @Transactional
     public void save(Order order) {
         orderRepositoryImpl.save(order);
     }

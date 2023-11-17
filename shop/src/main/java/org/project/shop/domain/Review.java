@@ -16,11 +16,11 @@ public class Review {
     private int score;
     private String comment;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reviews", insertable = false, updatable=false)
     private Member member;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reviews", insertable = false, updatable=false)
     private Item item;
 

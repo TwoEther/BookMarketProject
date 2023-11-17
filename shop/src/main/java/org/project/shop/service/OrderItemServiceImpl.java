@@ -4,6 +4,7 @@ import org.project.shop.domain.OrderItem;
 import org.project.shop.repository.OrderItemRepository;
 import org.project.shop.repository.OrderItemRepositoryImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class OrderItemServiceImpl implements OrderItemService{
     }
 
     @Override
+    @Transactional
     public void save(OrderItem orderItem) {
         orderItemRepositoryImpl.save(orderItem);
     }

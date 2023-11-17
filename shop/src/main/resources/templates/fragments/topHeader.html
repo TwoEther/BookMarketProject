@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorator="layout/root_layout"
+      lang="en">
+
+
+<div id="top-header" class="header" th:fragment="topHeader">
+    <div class="container">
+        <ul class="header-links pull-left">
+            <li><a href="#"><i class="fa fa-phone"></i> +010-0101-010</a></li>
+            <li><a href="#"><i class="fa fa-envelope-o"></i> comet202206@gmail.com</a></li>
+            <li><a href="#"><i class="fa fa-map-marker"></i> 대한민국</a></li>
+        </ul>
+        <ul class="header-links pull-right">
+            <li>
+                <a class="nav-link" th:href="@{/order/orderList}" sec:authorize="isAuthenticated()"><i class="fa fa-user-o"></i> 마이페이지</a>
+            </li>
+            <li><a class="" th:href="@{/member/login}" sec:authorize="isAnonymous()"><i class="fa fa-dollar"></i>로그인</a></li>
+            <li><a class="" th:href="@{/member/logout}" sec:authorize="isAuthenticated()"><i class="fa fa-dollar"></i>로그 아웃</a></li>
+        </ul>
+    </div>
+</div>
+
+
+

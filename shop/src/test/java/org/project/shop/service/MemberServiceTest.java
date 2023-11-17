@@ -100,8 +100,5 @@ public class MemberServiceTest {
 
         assertThat(member1.getRole()).isEqualTo(Role.ROLE_ADMIN.toString());
         assertThat(member2.getRole()).isEqualTo(Role.ROLE_USER.toString());
-
-        System.out.println("member1.toString() = " + member1.toString());
-
     }
 }

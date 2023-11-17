@@ -81,6 +81,13 @@ public class Order {
         return this.orderItems.get(0).getItem().getName() + "포함 "+ this.orderItems.size()+"건";
     }
 
+    public List<Item> orderItemList() {
+        List<Item> paymentItems = new ArrayList<>();
+        for (OrderItem orderItem : this.getOrderItems()) {
+            paymentItems.add(orderItem.getItem());
+        }
+        return paymentItems;
+    }
     // 주문취소
     public void cancel(){
         if (delivery.getStatus() == DeliveryStatus.COMP) {
