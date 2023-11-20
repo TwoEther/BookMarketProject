@@ -2,13 +2,15 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header"/>
 <link rel="stylesheet" href="/static/css/mypage.css">
-
+<style>
+    .contextArea {
+        float:left;
+    }
+</style>
 <body>
-<div class="container">
-    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-    <div th:replace="fragments/sideBar :: sideBar"/>
-
-
+    <div th:replace="fragments/topHeader :: topHeader"/>
+    <div th:replace="fragments/mainHeader :: mainHeader" />
+    <div th:replace="fragments/sideBar :: sideBar"/></div>
     <div class="contextArea" id="contextArea">
         <h2>주문 목록</h2><hr>
         <div th:each = "order : ${allOrder}"  class="itemArea">
@@ -37,9 +39,8 @@
                 </table>
             </div>
         </div>
-
-    </div>
-</div> <!-- /container -->
+    </div> <!-- /container -->
+    <div th:replace="fragments/footer :: footer"/>
 </body>
 <script>
     function cancel(id) {

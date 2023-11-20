@@ -37,7 +37,7 @@ public class Item {
     private List<CartItem> cartItem = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item")
+    @JoinColumn
     private Category category;
 
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
@@ -67,10 +67,10 @@ public class Item {
     }
     public void setCategory(Category category) {
         if (this.category != null) {
-            this.category.getItem().remove(this);
+            this.category.getItems().remove(this);
         }
         this.category = category;
-        category.getItem().add(this);
+        category.getItems().add(this);
     }
 
     // 재고 관리를 위한 로직

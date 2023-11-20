@@ -1,8 +1,6 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header"/>
-<body>
-
 <style>
     #sample3_postcode, #sample3_address, #sample3_detailAddress, #sample3_extraAddress {
         margin-bottom: 10px;
@@ -10,18 +8,12 @@
         width: 350px;
     }
 </style>
-
-<div class="container">
-    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+<body>
+    <div th:replace="fragments/topHeader :: topHeader"/>
     <div class="container">
         <div class="row">
-            <div class="col-3" id="infoArea">
-                <p>비밀번호 재설정</p>
-                <a th:href="@{/delivery/setting}">배송지 설정</a>
-                <p>회원 탈퇴</p>
-            </div>
-
-            <div class="col-9" id="orderArea">
+            <div class="col-3"><div th:replace="fragments/sideBar :: sideBar"/></div>
+            <div class="col-9">
                 <h2>배송지 설정</h2><hr>
                 <div class="itemArea">
                     <form th:action="@{/member/address}" th:object="${AddressForm}" method="POST">
@@ -120,18 +112,7 @@
 
             </div>
         </div>
-
-    </div>
-    <div th:replace="fragments/footer :: footer"/>
-</div> <!-- /container -->
+    </div> <!-- /container -->
 </body>
-<script>
-    function cancel(id) {
-    var form = document.createElement("form");
-    form.setAttribute("method", "post");
-    form.setAttribute("action", "/orders/" + id + "/cancel");
-    document.body.appendChild(form);
-    form.submit();
-    }
-</script>
+
 </html>

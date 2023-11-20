@@ -19,7 +19,7 @@ public class Category {
     private String category2;
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
-    private List<Item> item = new ArrayList<>();
+    private List<Item> items = new ArrayList<>();
 
     public Category(String category1, String category2) {
         this.category1 = category1;

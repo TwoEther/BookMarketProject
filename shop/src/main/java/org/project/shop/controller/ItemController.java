@@ -42,7 +42,7 @@ public class ItemController {
         String imagePath2 = "C:\\lee\\Project\\Spring\\bookImages\\";
 
         try{
-            br = Files.newBufferedReader(Paths.get(path1));
+            br = Files.newBufferedReader(Paths.get(path2));
             String line = "";
 
             while((line = br.readLine()) != null){
@@ -84,7 +84,7 @@ public class ItemController {
             }
             Category findCategory = categoryServiceImpl.findByCategoryName(category1, category2);
 
-            String fileRoot = imagePath1 + fileName+".png";
+            String fileRoot = imagePath2 + fileName+".png";
             Item item = new Item(title, price, stockQuantity, author, publisher, isbn, page, description);
             item.setCategory(findCategory);
             File imageFile = new File(fileRoot);

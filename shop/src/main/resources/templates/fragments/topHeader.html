@@ -18,8 +18,9 @@
             <li>
                 <a class="nav-link" th:href="@{/order/orderList}" sec:authorize="isAuthenticated()"><i class="fa fa-user-o"></i> 마이페이지</a>
             </li>
-            <li><a class="" th:href="@{/member/login}" sec:authorize="isAnonymous()"><i class="fa fa-dollar"></i>로그인</a></li>
-            <li><a class="" th:href="@{/member/logout}" sec:authorize="isAuthenticated()"><i class="fa fa-dollar"></i>로그 아웃</a></li>
+            <li><a class="" th:href="@{/member/login}" sec:authorize="isAnonymous()"><i class="fa-solid fa-right-to-bracket"></i>로그인</a></li>
+            <li><a class="" th:href="@{/member/logout}" sec:authorize="isAuthenticated()"><i class="fa-solid fa-right-to-bracket"></i>로그 아웃</a></li>
+            <li><a class="" th:href="@{/member/new}" sec:authorize="isAnonymous()"><i class="fa-solid fa-right-to-bracket"></i>회원 가입</a></li>
         </ul>
     </div>
 </div>

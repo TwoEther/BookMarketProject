@@ -165,14 +165,14 @@ public class MemberController {
     }
 
     @GetMapping(value = "/address")
-    public String setDeliveryMember(Model model) {
+    public String setDeliveryMember(Model model) throws IOException {
         model.addAttribute("AddressForm", new AddressForm());
         return "member/address";
     }
 
     @PostMapping(value = "/address")
     @Transactional
-    public String setDeliveryMemberPost(AddressForm addressForm) {
+    public String setDeliveryMemberPost(HttpServletRequest request, HttpServletResponse response, AddressForm addressForm) throws IOException {
         String zipcode = addressForm.getZipcode();
         String address1 = addressForm.getAddress1();
         String address2 = addressForm.getAddress2();
@@ -185,14 +185,16 @@ public class MemberController {
             UserDetails userDetails = (UserDetails) principal;
             String username = ((UserDetails) principal).getUsername();
         } catch (Exception e) {
+            ScriptUtils.alert(response, "올바르지 못한 접근입니다");
             return "redirect:/";
         }
 
         Member findMember = memberServiceImpl.findByUserId(((UserDetails) principal).getUsername());
         Address address = new Address(zipcode, address1, address2, reference);
         findMember.setAddress(address);
+        ScriptUtils.alert(response,"배송지가 설정 되었습니다");
 
-        return "/member/memberList";
+        return "/order/orderList";
     }
 
     @DeleteMapping(value = "/delete/{memberNum}")
