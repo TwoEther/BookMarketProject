@@ -3,12 +3,8 @@ package org.project.shop.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.el.stream.Optional;
-import org.project.shop.domain.Category;
-import org.project.shop.domain.Item;
-import org.project.shop.domain.Member;
-import org.project.shop.service.CategoryServiceImpl;
-import org.project.shop.service.ItemServiceImpl;
-import org.project.shop.service.MemberServiceImpl;
+import org.project.shop.domain.*;
+import org.project.shop.service.*;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,16 +25,17 @@ public class HomeController {
     private final ItemServiceImpl itemServiceImpl;
     private final CategoryServiceImpl categoryServiceImpl;
     private final MemberServiceImpl memberServiceImpl;
+    private final CartServiceImpl cartServiceImpl;
+    private final CartItemServiceImpl cartItemServiceImpl;
 
 
     @RequestMapping("/")
     public String home(Model model){
         List<String> categories = categoryServiceImpl.findAllCategory2();
-        for (String category : categories) {
-            System.out.println("category = " + category);
-        }
         List<List<Item>> itemByCategory = new ArrayList<>();
 
+
+        //로그인이 되어있는 경우
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -47,6 +44,12 @@ public class HomeController {
 
             Collection<? extends GrantedAuthority> authorities = ((UserDetails) principal).getAuthorities();
             Member findMember = memberServiceImpl.findByUserId(username);
+
+            Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
+            List<CartItem> findCartItems = cartItemServiceImpl.findByCartId(findCart.getId());
+
+            model.addAttribute("NOP", findCartItems.size());
+            model.addAttribute("cartItems", findCartItems);
             model.addAttribute("member", findMember);
         }
 
@@ -54,6 +57,7 @@ public class HomeController {
             List<Item> findItem = itemServiceImpl.findByItemWithCategory(category);
             itemByCategory.add(findItem);
         }
+
 
         model.addAttribute("allItems", itemByCategory);
         return "home";

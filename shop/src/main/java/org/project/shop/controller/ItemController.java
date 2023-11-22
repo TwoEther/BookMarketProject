@@ -1,13 +1,14 @@
 package org.project.shop.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.project.shop.domain.Category;
-import org.project.shop.domain.Item;
-import org.project.shop.service.CategoryServiceImpl;
-import org.project.shop.service.ItemServiceImpl;
+import org.project.shop.domain.*;
+import org.project.shop.service.*;
 import org.project.shop.web.ItemForm;
 import org.project.shop.web.SearchForm;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -29,8 +30,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping(value = "/item")
 public class ItemController {
+    private final MemberServiceImpl memberServiceImpl;
     private final ItemServiceImpl itemServiceImpl;
     private final CategoryServiceImpl categoryServiceImpl;
+    private final CartServiceImpl cartServiceImpl;
+    private final CartItemServiceImpl cartItemServiceImpl;
 
     @GetMapping(value = "/dbConfig")
     public String dbConfig(Model model) throws Exception {
@@ -131,9 +135,20 @@ public class ItemController {
     }
 
     @GetMapping(value = "")
-    public String list(Model model, SearchForm form) {
+    public String list(Model model, @AuthenticationPrincipal Member member, SearchForm form) {
+        if (member != null) {
+            System.out.println("member.toString() = " + member.toString());
+            Member findMember = memberServiceImpl.findByUserId(member.getUserId());
+            Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
+            List<CartItem> findCartItems = cartItemServiceImpl.findByCartId(findCart.getId());
+            model.addAttribute("NOP", findCartItems.size());
+        } else {
+            model.addAttribute("NOP", 0);
+        }
+
         String keyword = form.getKeyword();
         List<Item> findAllItem = itemServiceImpl.findByKeyword(keyword);
+
 
         model.addAttribute("items", findAllItem);
         model.addAttribute("keyword", keyword);
@@ -141,8 +156,18 @@ public class ItemController {
     }
 
     @GetMapping(value = "/{itemId}")
-    public String showItem(@PathVariable("itemId") Long itemId, Model
+    public String showItem(@PathVariable("itemId") Long itemId, @AuthenticationPrincipal Member member, Model
             model) {
+
+        if (member != null) {
+            System.out.println("member.toString() = " + member.toString());
+            Member findMember = memberServiceImpl.findByUserId(member.getUserId());
+            Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
+            List<CartItem> findCartItems = cartItemServiceImpl.findByCartId(findCart.getId());
+            model.addAttribute("NOP", findCartItems.size());
+        } else {
+            model.addAttribute("NOP", 0);
+        }
 
         Item item = itemServiceImpl.findOneItem(itemId);
         List<Item> sameCategoryItems = itemServiceImpl.findByItemWithCategory(item.getCategory().getCategory2());
@@ -158,6 +183,8 @@ public class ItemController {
     public String updateItemForm(@PathVariable("itemId") Long itemId, Model
             model) {
 
+
+
         Item item = itemServiceImpl.findOneItem(itemId);
         ItemForm form = new ItemForm();
         form.setId(item.getId());
@@ -166,6 +193,7 @@ public class ItemController {
         form.setStockQuantity(item.getStockQuantity());
         form.setAuthor(item.getAuthor());
         form.setIsbn(item.getIsbn());
+
         model.addAttribute("form", form);
         return "item/updateItemForm";
     }

@@ -1,6 +1,35 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head th:replace="fragments/header :: header" />
+<style>
+    ul.tabs{
+			margin: 0px;
+			padding: 0px;
+			list-style: none;
+		}
+		ul.tabs li{
+			background: none;
+			color: #222;
+			display: inline-block;
+			padding: 10px 15px;
+			cursor: pointer;
+		}
+
+		ul.tabs li.current{
+			background: #ededed;
+			color: #222;
+		}
+
+		.tab-content{
+			display: none;
+			background: #ededed;
+			padding: 15px;
+		}
+
+		.tab-content.current{
+			display: inherit;
+		}
+</style>
 <body>
 
 <script>
@@ -10,6 +39,56 @@
         console.log(new_money);
         $('.product-price').val(new_money);
     }
+
+    function clickedPlusButton(){
+        var quantity = Number($('#quantity').val());
+        $('#quantity').val(quantity+1);
+    }
+
+    function clickedMinusButton(){
+        var quantity = Number($('#quantity').val());
+        if(quantity > 0){ $('#quantity').val(quantity-1); }
+    }
+
+    function addToCart(){
+        var quantity = Number($('#quantity').val());
+        var token = $("meta[name='_csrf']").attr("content");
+	    var header = $("meta[name='_csrf_header']").attr("content");
+		var name = $("#userName").val();
+
+
+       $.ajax({
+            type: "POST",
+            url: "/cart/add",
+            beforeSend : function(xhr){
+				xhr.setRequestHeader(header, token);
+            },
+            data : {"itemId": [[${item.id}]],
+                    "quantity": quantity},
+            success: function () {
+                alert("장바구니에 담겼습니다");
+                location.reload();
+            },
+            error:function(request, status, error){
+        		alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error); }
+        });
+    }
+
+    $(document).ready(function(){
+        $('ul.tabs li').click(function(){
+            var tab_id = $(this).attr('data-tab');
+
+            $('ul.tabs li').removeClass('current');
+            $('.tab-content').removeClass('current');
+
+            $(this).addClass('current');
+            $("#"+tab_id).addClass('current');
+        })
+
+    })
+
+
+
 </script>
 
 <div>
@@ -77,8 +156,8 @@
                                 수량
                                 <div class="input-number">
                                     <input id="quantity" type="number" value="0">
-                                    <span class="qty-up">+</span>
-                                    <span class="qty-down">-</span>
+                                    <span class="qty-up" onclick="clickedPlusButton()">+</span>
+                                    <span class="qty-down" onclick="clickedMinusButton()">-</span>
                                 </div>
                             </div>
                             <button class="add-to-cart-btn" sec:authorize="isAuthenticated()" onclick="addToCart()"><i class="fa fa-shopping-cart"></i>장바구니 추가</button>
@@ -111,17 +190,17 @@
                 <div class="col-md-12">
                     <div id="product-tab">
                         <!-- product tab nav -->
-                        <ul class="tab-nav">
-                            <li class="active"><a data-toggle="tab" href="#tab1">Description</a></li>
-                            <li><a data-toggle="tab" href="#tab2">Details</a></li>
-                            <li><a data-toggle="tab" href="#tab3">Reviews (3)</a></li>
+                        <ul class="tabs">
+                            <li class="tab-link current" data-tab="tab-1">Description</li>
+                            <li class="tab-link" data-tab="tab-2">Description</li>
+                            <li class="tab-link" data-tab="tab-3">Description</li>
                         </ul>
                         <!-- /product tab nav -->
 
                         <!-- product tab content -->
-                        <div class="tab-content">
+                        <div class="tab-content-three">
                             <!-- tab1  -->
-                            <div id="tab1" class="tab-pane fade in active">
+                            <div id="tab-1" class="tab-content current">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <p th:text="${item.description}"></p>
@@ -131,7 +210,7 @@
                             <!-- /tab1  -->
 
                             <!-- tab2  -->
-                            <div id="tab2" class="tab-pane fade in">
+                            <div id="tab-2" class="tab-content">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
@@ -141,7 +220,7 @@
                             <!-- /tab2  -->
 
                             <!-- tab3  -->
-                            <div id="tab3" class="tab-pane fade in">
+                            <div id="tab-3" class="tab-content">
                                 <div class="row">
                                     <!-- Rating -->
                                     <div class="col-md-3">
