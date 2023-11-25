@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
 
+
 <!-- MAIN HEADER -->
 <div id="header" th:fragment="mainHeader" xmlns:th="http://www.w3.org/1999/xhtml"
      xmlns:sec="http://www.w3.org/1999/xhtml">
@@ -53,8 +54,7 @@
                             <div class="qty" th:text="${NOP}"></div>
                         </a>
                         <div class="cart-dropdown">
-                            <div th:each = "cartItem : ${cartItems}" class="cart-list">
-                                <div class="product-widget">
+                                <div th:each = "cartItem : ${cartItems}" class="product-widget">
                                     <div class="product-img">
                                         <img th:src="${cartItem.item.getFilePath()}" alt="">
                                     </div>
@@ -62,17 +62,40 @@
                                         <h3 class="product-name"><a href="#"><span th:text="${cartItem.item.name}"></span></a></h3>
                                         <h4 class="product-price"><span class="qty" th:text="${cartItem.count}+'x'"></span></h4>
                                     </div>
-                                    <button class="delete"><i class="fa fa-close"></i></button>
+                                    <button th:id="${cartItem.id}" class="delete" onclick="deleteCartItem(this.id)"><i class="fa fa-close"></i></button>
+
+                                    <script th:inline="javascript" xmlns:th="http://www.w3.org/1999/xhtml">
+                                        function deleteCartItem(cartItemId){
+                                            var header = $("meta[name='_csrf_header']").attr('content');
+                                            var token = $("meta[name='_csrf']").attr('content');
+
+                                            $.ajax({
+                                                    type: "DELETE",
+                                                    beforeSend: function(xhr){
+                                                        xhr.setRequestHeader(header, token);
+                                                    },
+                                                    url: "/cart/delete/"+cartItemId,
+                                                    data : {"cartItemId": cartItemId},
+                                                    success: function () {
+                                                        alert("상품이 삭제되었습니다");
+                                                        location.reload();
+                                                    },
+                                                    error:function(request, status, error){
+                                                        alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error); }
+                                            });
+                                        }
+                                    </script>
+                                </div>
+                                <div class="cart-summary">
+                                    <small th:text="${NOP}+' Item(s) selected'"></small>
+                                    <h5 th:text="'합계 : '+${totalPrice}"></h5>
+                                </div>
+                                <div class="cart-btns">
+                                    <a href="#">계속 쇼핑하기</a>
+                                    <a th:href="@{/order/payment}" >구매하기</a>
                                 </div>
                             </div>
-                            <div class="cart-summary">
-                                <small>3 Item(s) selected</small>
-                                <h5>SUBTOTAL: $2940.00</h5>
-                            </div>
-                            <div class="cart-btns">
-                                <a href="#">View Cart</a>
-                                <a href="#">Checkout <i class="fa fa-arrow-circle-right"></i></a>
-                            </div>
+
                         </div>
                     </div>
                     <!-- /Cart -->

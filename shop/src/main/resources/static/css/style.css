@@ -615,10 +615,10 @@ textarea.input {
   padding-bottom: 15px;
 }
 
-.cart-dropdown::hover {
-    display : block;
+.dropdown:hover > div{
+    opacity: 1;
+    visibility: visible;
 }
-
 /*=========================================================
 	03 -> Navigation
 ===========================================================*/

@@ -97,7 +97,7 @@ public class CartController {
     @DeleteMapping(value = "/delete/{cartItemId}")
     public String cartDelete(@PathVariable String cartItemId) {
         Long id = Long.parseLong(cartItemId);
-        cartServiceImpl.deleteById(id);
+        cartItemServiceImpl.deleteById(id);
         return "redirect:/";
     }
 

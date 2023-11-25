@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -33,7 +34,7 @@ public class HomeController {
     public String home(Model model){
         List<String> categories = categoryServiceImpl.findAllCategory2();
         List<List<Item>> itemByCategory = new ArrayList<>();
-
+        DecimalFormat decFormat = new DecimalFormat("###,###");
 
         //로그인이 되어있는 경우
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -45,12 +46,19 @@ public class HomeController {
             Collection<? extends GrantedAuthority> authorities = ((UserDetails) principal).getAuthorities();
             Member findMember = memberServiceImpl.findByUserId(username);
 
-            Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
-            List<CartItem> findCartItems = cartItemServiceImpl.findByCartId(findCart.getId());
+            if (cartServiceImpl.findByMemberId(findMember.getId()) == null) {
+                model.addAttribute("NOP", 0);
+            }else{
+                Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
+                List<CartItem> findCartItems = cartItemServiceImpl.findByCartId(findCart.getId());
 
-            model.addAttribute("NOP", findCartItems.size());
-            model.addAttribute("cartItems", findCartItems);
-            model.addAttribute("member", findMember);
+                String totalPrice = decFormat.format(CartItem.getTotalPrice(findCartItems));
+                model.addAttribute("NOP", findCartItems.size());
+                model.addAttribute("cartItems", findCartItems);
+                model.addAttribute("totalPrice", totalPrice);
+                model.addAttribute("member", findMember);
+
+            }
         }
 
         for (String category : categories) {

@@ -38,12 +38,6 @@ public class KakaoPayController {
         String total_price = (String) params.get("total_price");
         String total_count = (String) params.get("total_count");
         String itemName = (String) params.get("itemName")+" 포함 "+total_count+"건";
-        String index = (String) params.get("index");
-
-        List<Integer> newSplitList = new ArrayList<>();
-        List.of(index.split(",")).forEach(x -> {
-            newSplitList.add(Integer.parseInt(x));
-        });
 
         List<OrderItem> orderItems = new ArrayList<>();
 
@@ -63,13 +57,8 @@ public class KakaoPayController {
 
         orderServiceImpl.save(createdOrder);
 
-        List<CartItem> paymentCartItems = new ArrayList<>();
-        for (Integer i : newSplitList) {
-            findCartItems.get(i).setIsPayment("O");
-            paymentCartItems.add(findCartItems.get(i));
-        }
 
-        for (CartItem cartItem : paymentCartItems) {
+        for (CartItem cartItem : findCartItems) {
             Item item = cartItem.getItem();
             int count = cartItem.getCount();
 

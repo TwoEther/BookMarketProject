@@ -91,14 +91,10 @@ public class OrderController {
         return "order/orderList";
     }
 
-    @GetMapping(value = "/payment")
-    public String orderPaymentGet(){
-        return "/order/payment";
-    }
 
-    @PostMapping(value = "/payment")
+    @GetMapping(value = "/payment")
     @Transactional
-    public String orderPayment(HttpServletResponse response, HttpServletRequest request, @RequestParam("index") String temp, Model model) throws IOException{
+    public String orderPayment(Model model) throws IOException{
         /*
             view로 넘겨야 할 것들
             1. 구매자에 대한 정보(Member, Address)
@@ -111,42 +107,37 @@ public class OrderController {
 
         Member findMember = memberServiceImpl.findByUserId(username);
         Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
-
-        if (findCart == null) {
-            ScriptUtils.alertAndBackPage(response, "장바구니가 비었습니다");
-        }
-
         List<CartItem> findCartItems = cartItemServiceImpl.findByCartId(findCart.getId());
+        System.out.println("findCartItems = " + findCartItems);
 
         if (findCartItems.isEmpty()) {
-            ScriptUtils.alertAndBackPage(response, "장바구니가 비었습니다");
+            return "redirect:/";
+        } else {
+            List<Integer> newSplitList = new ArrayList<>();
+            List<CartItem> paymentCartItems = findCartItems;
+
+
+            int deliveryFee = Math.round(((float) CartItem.getTotalCount(findCartItems) / 5)) * 3500;
+            int totalPrice = CartItem.getTotalPrice(paymentCartItems);
+            int totalCount = CartItem.getTotalCount(paymentCartItems);
+            int paymentPrice = deliveryFee + totalPrice;
+
+            System.out.println("findMember.toString() = " + findMember.toString());
+            System.out.println("paymentCartItems = " + paymentCartItems);
+            
+            model.addAttribute("index", "te,st");
+            model.addAttribute("member", findMember);
+            model.addAttribute("cartItems", paymentCartItems);
+            model.addAttribute("deliveryFee", deliveryFee);
+            model.addAttribute("totalPrice", totalPrice);
+            model.addAttribute("totalCount", totalCount);
+            model.addAttribute("paymentPrice", paymentPrice);
+            model.addAttribute("totalPrice", totalPrice);
+            return "order/payment";
+
         }
 
-        List<Integer> newSplitList = new ArrayList<>();
-        List.of(temp.split(",")).forEach(x -> {
-            newSplitList.add(Integer.parseInt(x));
-        });
-
-        List<CartItem> paymentCartItems = new ArrayList<>();
-        for (Integer i : newSplitList) {
-            paymentCartItems.add(findCartItems.get(i));
-        }
 
 
-        int deliveryFee = Math.round(((float) CartItem.getTotalCount(findCartItems) / 5)) * 3500;
-        int totalPrice = CartItem.getTotalPrice(paymentCartItems);
-        int totalCount = CartItem.getTotalCount(paymentCartItems);
-        int paymentPrice = deliveryFee + totalPrice;
-
-        model.addAttribute("index", temp);
-        model.addAttribute("member", findMember);
-        model.addAttribute("cartItems", paymentCartItems);
-        model.addAttribute("deliveryFee", deliveryFee);
-        model.addAttribute("totalPrice", totalPrice);
-        model.addAttribute("totalCount", totalCount);
-        model.addAttribute("paymentPrice", paymentPrice);
-        model.addAttribute("totalPrice", totalPrice);
-
-        return "order/payment";
     }
 }

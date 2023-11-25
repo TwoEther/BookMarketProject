@@ -6,6 +6,9 @@ import org.project.shop.service.*;
 import org.project.shop.web.ItemForm;
 import org.project.shop.web.SearchForm;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,8 +25,10 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 @Controller
@@ -46,7 +51,7 @@ public class ItemController {
         String imagePath2 = "C:\\lee\\Project\\Spring\\bookImages\\";
 
         try{
-            br = Files.newBufferedReader(Paths.get(path2));
+            br = Files.newBufferedReader(Paths.get(path1));
             String line = "";
 
             while((line = br.readLine()) != null){
@@ -88,7 +93,7 @@ public class ItemController {
             }
             Category findCategory = categoryServiceImpl.findByCategoryName(category1, category2);
 
-            String fileRoot = imagePath2 + fileName+".png";
+            String fileRoot = imagePath1 + fileName+".png";
             Item item = new Item(title, price, stockQuantity, author, publisher, isbn, page, description);
             item.setCategory(findCategory);
             File imageFile = new File(fileRoot);
@@ -134,16 +139,29 @@ public class ItemController {
         return "redirect:/item";
     }
 
-    @GetMapping(value = "")
-    public String list(Model model, @AuthenticationPrincipal Member member, SearchForm form) {
-        if (member != null) {
-            System.out.println("member.toString() = " + member.toString());
-            Member findMember = memberServiceImpl.findByUserId(member.getUserId());
-            Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
-            List<CartItem> findCartItems = cartItemServiceImpl.findByCartId(findCart.getId());
-            model.addAttribute("NOP", findCartItems.size());
-        } else {
-            model.addAttribute("NOP", 0);
+    @GetMapping(value = "")    
+    public String list(Model model, SearchForm form) {
+        DecimalFormat decFormat = new DecimalFormat("###,###");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            UserDetails userDetails = (UserDetails) principal;
+            String username = ((UserDetails) principal).getUsername();
+
+            Member findMember = memberServiceImpl.findByUserId(username);
+
+            if (cartServiceImpl.findByMemberId(findMember.getId()) == null) {
+                model.addAttribute("NOP", 0);
+            } else {
+                Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
+                List<CartItem> findCartItems = cartItemServiceImpl.findByCartId(findCart.getId());
+
+                String totalPrice = decFormat.format(CartItem.getTotalPrice(findCartItems));
+                model.addAttribute("NOP", findCartItems.size());
+                model.addAttribute("cartItems", findCartItems);
+                model.addAttribute("totalPrice", totalPrice);
+            }
         }
 
         String keyword = form.getKeyword();
@@ -158,15 +176,27 @@ public class ItemController {
     @GetMapping(value = "/{itemId}")
     public String showItem(@PathVariable("itemId") Long itemId, @AuthenticationPrincipal Member member, Model
             model) {
+        DecimalFormat decFormat = new DecimalFormat("###,###");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (member != null) {
-            System.out.println("member.toString() = " + member.toString());
-            Member findMember = memberServiceImpl.findByUserId(member.getUserId());
-            Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
-            List<CartItem> findCartItems = cartItemServiceImpl.findByCartId(findCart.getId());
-            model.addAttribute("NOP", findCartItems.size());
-        } else {
-            model.addAttribute("NOP", 0);
+        if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            UserDetails userDetails = (UserDetails) principal;
+            String username = ((UserDetails) principal).getUsername();
+
+            Member findMember = memberServiceImpl.findByUserId(username);
+
+            if (cartServiceImpl.findByMemberId(findMember.getId()) == null) {
+                model.addAttribute("NOP", 0);
+            } else {
+                Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
+                List<CartItem> findCartItems = cartItemServiceImpl.findByCartId(findCart.getId());
+
+                String totalPrice = decFormat.format(CartItem.getTotalPrice(findCartItems));
+                model.addAttribute("NOP", findCartItems.size());
+                model.addAttribute("cartItems", findCartItems);
+                model.addAttribute("totalPrice", totalPrice);
+            }
         }
 
         Item item = itemServiceImpl.findOneItem(itemId);

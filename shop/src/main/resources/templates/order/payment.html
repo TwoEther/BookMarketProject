@@ -8,19 +8,45 @@
     }
 
     table {
-        width: 100%;
-        border-top: 1px solid #444444;
-        border-collapse: collapse;
+      border: 1px #a39485 solid;
+      font-size: .9em;
+      box-shadow: 0 2px 5px rgba(0,0,0,.25);
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 5px;
+      overflow: hidden;
     }
-    th, td {
-        border-bottom: 1px solid #444444;
-        padding: 10px;
+
+    th {
+      text-align: left;
     }
+    tr > td:first-child {
+        background-color:#CCCCCC;
+        width:150px;
+    }
+
+    thead {
+      font-weight: bold;
+      color: #fff;
+      background: #73685d;
+    }
+
+     td, th {
+      padding: 1em .5em;
+      vertical-align: middle;
+    }
+
+     td {
+      border-bottom: 1px solid rgba(0,0,0,.1);
+      background: #fff;
+    }
+
 </style>
-<div class="container">
-    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+<div class="">
+    <div th:replace="fragments/topHeader :: topHeader"/>
+    <div th:replace="fragments/mainHeader :: mainHeader"/>
     <div class="container" id="body">
-        <div class="header">
+        <div class="header" style="margin-top:40px;">
             <h2>주문 및 결제</h2><hr>
         </div>
 
@@ -54,7 +80,7 @@
 
                 <tr>
                     <td>배송 주소</td>
-                    <td th:if="${member.address == null}"><a th:href="@{/member/address}">배송지가 없습니다, 배송지를 설정하세요</a></td>
+                    <td th:if="${member.address == null}"><a th:href="@{/member/address}"><span style="color:red;">배송지가 없습니다, 배송지를 설정하세요</span></a></td>
                     <td th:unless="${member.address == null}"><span th:text="${member.address.address1}+' ,'+${member.address.address2}"></span></td>
                 </tr>
 
@@ -69,6 +95,7 @@
             <h3>배송 상품 정보</h3>
             <table th:each ="cartItem : ${cartItems}">
                 <tr>
+                    <td>상품 명</td>
                     <td th:text ="${cartItem.item.name} + ',' + ${cartItem.count} + '개'"></td>
                 </tr>
             </table>
@@ -133,8 +160,7 @@
                 data = {"itemName" : itemName,
                         "total_count" : total_count,
                         "total_price" : total_price,
-                        "type" : type,
-                        "index" : index};
+                        "type" : type};
                 $.ajax({
                     url : "/kakaopay/ready",
                     type : "POST",
