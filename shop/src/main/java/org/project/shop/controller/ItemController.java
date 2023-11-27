@@ -140,7 +140,7 @@ public class ItemController {
     }
 
     @GetMapping(value = "")    
-    public String list(Model model, SearchForm form) {
+    public String listByKeyWord(Model model, SearchForm form) {
         DecimalFormat decFormat = new DecimalFormat("###,###");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -172,6 +172,7 @@ public class ItemController {
         model.addAttribute("keyword", keyword);
         return "item/itemList";
     }
+
 
     @GetMapping(value = "/{itemId}")
     public String showItem(@PathVariable("itemId") Long itemId, @AuthenticationPrincipal Member member, Model

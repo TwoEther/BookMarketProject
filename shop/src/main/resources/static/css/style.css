@@ -785,6 +785,11 @@ textarea.input {
   text-transform: uppercase;
 }
 
+.cta-btn {
+    background-color: #D10024;
+    border-style: none;
+}
+
 /*=========================================================
 	05 -> HOT DEAL
 ===========================================================*/
