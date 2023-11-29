@@ -8,7 +8,6 @@ import org.project.shop.web.SearchForm;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,10 +25,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -167,9 +163,34 @@ public class ItemController {
         String keyword = form.getKeyword();
         List<Item> findAllItem = itemServiceImpl.findByKeyword(keyword);
 
-
-        model.addAttribute("items", findAllItem);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("items", findAllItem);
+        model.addAttribute("number", findAllItem.size());
+        model.addAttribute("keyword", keyword);
+
+        // 국내 도서
+        List<Item> koreanList = itemServiceImpl.findByKeyword("국내");
+        // 외국 도서
+        List<Item> foreignList = itemServiceImpl.findByKeyword("외국");
+
+        // 카테고리 목록
+        Map<String, List<Integer>> categoryList = new HashMap<>();
+        List<String> categories = categoryServiceImpl.findAllCategory2();
+
+        for (int i=0; i<categories.size(); i++) {
+            String category = categories.get(i);
+            List<Item> byItemWithCategory = itemServiceImpl.findByItemWithCategory(category);
+            List<Integer> temp = new ArrayList<>();
+            temp.add(byItemWithCategory.size());
+            temp.add(i);
+
+            categoryList.put((category), temp);
+        }
+
+
+        model.addAttribute("koreanNum", koreanList.size());
+        model.addAttribute("foreignNum", foreignList.size());
+        model.addAttribute("categoryList", categoryList);
         return "item/itemList";
     }
 

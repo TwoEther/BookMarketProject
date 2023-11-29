@@ -50,18 +50,23 @@ public class CartController {
         long itemId = Long.parseLong((String) params.get("itemId"));
         int quantity = Integer.parseInt((String) params.get("quantity"));
 
-        System.out.println("quantity = " + quantity);
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserDetails userDetails = (UserDetails) principal;
         String username = ((UserDetails) principal).getUsername();
 
         Member findMember = memberServiceImpl.findByUserId(username);
-        Item findItem = itemServiceImpl.findOneItem(itemId);
+        if (findMember != null) {
+            Item findItem = itemServiceImpl.findOneItem(itemId);
 
-        quantity = Math.min(quantity, findItem.getStockQuantity());
-        Long id = cartServiceImpl.addCart(findMember, findItem, quantity);
-        return id != null;
+            quantity = Math.min(quantity, findItem.getStockQuantity());
+            Long id = cartServiceImpl.addCart(findMember, findItem, quantity);
+            return true;
+        } else {
+            Long id = null;
+            return false;
+        }
+
     }
 
     @GetMapping(value = "/list")

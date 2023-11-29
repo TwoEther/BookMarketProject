@@ -33,49 +33,16 @@ public class KakaoPayController {
     @PostMapping(value = "/ready")
     @ResponseBody
     @Transactional
-    public KakaoReadyResponse payMethodPost(@RequestParam HashMap<String, Object> params) {
+    public KakaoReadyResponse beforePayRequest(@RequestParam HashMap<String, Object> params) {
         String type = (String) params.get("type");
         String total_price = (String) params.get("total_price");
         String total_count = (String) params.get("total_count");
         String itemName = (String) params.get("itemName")+" 포함 "+total_count+"건";
 
-        List<OrderItem> orderItems = new ArrayList<>();
-
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserDetails userDetails = (UserDetails) principal;
-        String username = ((UserDetails) principal).getUsername();
-
-        Member findMember = memberServiceImpl.findByUserId(username);
-        Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
-        List<CartItem> findCartItems = cartItemServiceImpl.findByCartId(findCart.getId());
-
-        //OrderItem에 추가
-        Order createdOrder = Order.createOrder(findMember);
-        Delivery delivery = new Delivery();
-        delivery.setAddress(findMember.getAddress());
-        createdOrder.setDelivery(delivery);
-
-        orderServiceImpl.save(createdOrder);
-
-
-        for (CartItem cartItem : findCartItems) {
-            Item item = cartItem.getItem();
-            int count = cartItem.getCount();
-
-            OrderItem orderItem = OrderItem.createOrderItem(item, item != null ? item.getPrice() : 0, count);
-
-            // 똑같은 주문
-            List<OrderItem> allOrderItemByOrderAndItem = orderItemServiceImpl.findOrderItemByOrderAndItem(createdOrder.getId(), item.getId());
-            if (allOrderItemByOrderAndItem.isEmpty()) {
-                OrderItem createOrderItem = OrderItem.createOrderItem(item, item.getPrice(), count);
-                createOrderItem.setOrder(createdOrder);
-                orderItems.add(orderItem);
-                orderItemServiceImpl.save(createOrderItem);
-            }
-        }
         return kakaoPayService.kakaoPayReady(itemName, total_count, total_price);
     }
-
+    
+    // 주문 정보를 결제가 성공시에만 저장하게끔 하면 어떨까요
     @GetMapping("/paySuccess")
     public String afterPayRequest(@RequestParam("pg_token") String pgToken, Model model) {
         KakaoApproveResponse kakaoApprove = kakaoPayService.ApproveResponse(pgToken);
@@ -87,23 +54,33 @@ public class KakaoPayController {
         Member findMember = memberServiceImpl.findByUserId(username);
         Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
         List<CartItem> findCartItems = cartItemServiceImpl.findByCartId(findCart.getId());
+        List<OrderItem> paymentsItemList = new ArrayList<>();
 
-        Order findOrder = orderServiceImpl.findByMemberIdBeforePayment(findMember.getId());
-        findOrder.setStatus(OrderStatus.SUCCESS);
-        findOrder.setTid(kakaoApprove.getTid());
+        // 완료된 주문 건에 대해 주문을 저장
+        Order paymentOrder = Order.createOrder(findMember);
+        Delivery delivery = new Delivery();
+        delivery.setAddress(findMember.getAddress());
 
-        List<OrderItem> findOrderItems = orderItemServiceImpl.findOrderItemByOrderId(findOrder.getId());
-        for (OrderItem findOrderItem : findOrderItems) {
-            Item findItem = findOrderItem.getItem();
-            CartItem findCartItem = cartItemServiceImpl.findByCartIdAndItemId(findCart.getId(), findItem.getId());
-            if (findCartItem != null) {
-                cartItemServiceImpl.deleteById(findCartItem.getId());
-            }
+        paymentOrder.setDelivery(delivery);
+        paymentOrder.setStatus(OrderStatus.SUCCESS);
+        paymentOrder.setTid(kakaoApprove.getTid());
+        orderServiceImpl.save(paymentOrder);
+
+        // 장바구니에 있는 상품들을 OrderItem에 넣음
+        for (CartItem cartItem : findCartItems) {
+            Item item = cartItem.getItem();
+            int count = cartItem.getCount();
+
+            OrderItem orderItem = OrderItem.createOrderItem(item, item != null ? item.getPrice() : 0, count);
+            orderItem.setOrder(paymentOrder);
+            paymentsItemList.add(orderItem);
+            orderItemServiceImpl.save(orderItem);
+
+            cartItemServiceImpl.deleteById(cartItem.getId());
         }
 
-
         model.addAttribute("kakaoApprove", kakaoApprove);
-        model.addAttribute("orderItems", findOrderItems);
+        model.addAttribute("paymentsItemList", paymentsItemList);
         return "order/payComplete";
     }
 }
