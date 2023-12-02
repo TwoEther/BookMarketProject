@@ -2,6 +2,8 @@ package org.project.shop.service;
 
 import org.project.shop.domain.Category;
 import org.project.shop.domain.Item;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -10,13 +12,15 @@ public interface ItemService {
     public void saveItemNoImage(Item item);
     public void saveItem(Item Item, MultipartFile file) throws Exception;
     public Item findOneItem(Long itemId);
-    public List<Item> findItems();
+    public Page<Item> findAllItem(PageRequest pageRequest);
     public void updateItem(Long itemId, String name, int price, int stockQuantity);
+
+    public int getAllItemNum();
 
     public void orderItem(Long itemId, int quantity);
     public boolean checkStockQuantity(Long itemId, int quantity);
 
-    public List<Item> findByKeyword(String keyword);
+    public Page<Item> findByKeyword(PageRequest pageRequest, String keyword);
     public List<Item> findByItemWithCategory(String category2);
 
     public List<Item> orderByCategory();

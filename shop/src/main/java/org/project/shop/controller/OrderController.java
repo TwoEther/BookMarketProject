@@ -1,13 +1,14 @@
 package org.project.shop.controller;
 
-import com.querydsl.core.Tuple;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.project.shop.config.ScriptUtils;
+import org.project.shop.custom.CustomPageRequest;
 import org.project.shop.domain.*;
 import org.project.shop.service.KakaoPayService;
 import org.project.shop.service.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -16,11 +17,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
-import static org.project.shop.domain.QCartItem.cartItem;
 
 
 @Controller
@@ -37,8 +36,10 @@ public class OrderController {
 
     @GetMapping(value = "")
     public String createForm(Model model) {
+        PageRequest pageRequest = CustomPageRequest.customPageRequest();
+
         List<Member> members = memberServiceImpl.findAllMember();
-        List<Item> items = itemServiceImpl.findItems();
+        Page<Item> items = itemServiceImpl.findAllItem(pageRequest);
         model.addAttribute("members", members);
         model.addAttribute("items", items);
         return "order/orderForm";
@@ -80,8 +81,8 @@ public class OrderController {
             List<List<Item>> paymentList = new ArrayList<>();
                 for (Order order : findAllOrder) {
                 List<OrderItem> allOrder = orderItemServiceImpl.findOrderItemByOrderId(order.getId());
-                List<Item> findItems = OrderItem.findItems(allOrder);
-                paymentList.add(findItems);
+                List<Item> findAllItem = OrderItem.findAllItem(allOrder);
+                paymentList.add(findAllItem);
             }
 
             model.addAttribute("allOrder", findAllOrder);
@@ -94,7 +95,7 @@ public class OrderController {
 
     @GetMapping(value = "/payment")
     @Transactional
-    public String orderPayment(Model model) throws IOException{
+    public String orderPayment(Model model, HttpServletResponse response) throws IOException{
         /*
             view로 넘겨야 할 것들
             1. 구매자에 대한 정보(Member, Address)
@@ -107,6 +108,12 @@ public class OrderController {
 
         Member findMember = memberServiceImpl.findByUserId(username);
         Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
+
+        // 장바구니가 비어있는 상태에서 구매를 시도한 경우
+        if (findCart == null) {
+            ScriptUtils.alertAndBackPage(response, "장바구니가 비었습니다");
+        }
+
         List<CartItem> findCartItems = cartItemServiceImpl.findByCartId(findCart.getId());
         System.out.println("findCartItems = " + findCartItems);
 

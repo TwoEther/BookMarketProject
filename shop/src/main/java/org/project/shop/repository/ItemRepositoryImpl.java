@@ -11,6 +11,9 @@ import org.project.shop.config.QuerydslConfig;
 import org.project.shop.domain.Category;
 import org.project.shop.domain.QCategory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 import org.project.shop.domain.Item;
 
@@ -48,10 +51,13 @@ public class ItemRepositoryImpl implements ItemRepository{
     }
 
     @Override
-    public List<Item> findAllItem(){
-        return queryFactory.select(item)
+    public Page<Item> findAllItem(PageRequest pageRequest){
+        List<Item> result = queryFactory.select(item)
                 .from(item)
+                .offset(pageRequest.getOffset())
+                .limit(pageRequest.getPageSize())
                 .fetch();
+        return new PageImpl<>(result);
     }
 
     @Override
@@ -63,8 +69,15 @@ public class ItemRepositoryImpl implements ItemRepository{
     }
 
     @Override
-    public List<Item> findByKeyword(String keyword) {
-        return queryFactory.selectFrom(item)
+    public int getAllItemNum() {
+        List<Item> allItem = queryFactory.selectFrom(item)
+                .fetch();
+        return allItem.size();
+    }
+
+    @Override
+    public Page<Item> findByKeyword(PageRequest pageRequest, String keyword) {
+        List<Item> result = queryFactory.selectFrom(item)
                 .where(item.name.like("%" + keyword + "%").or(
                         item.author.like("%" + keyword + "%").or(
                                 item.category.category1.like("%" + keyword + "%").or(
@@ -72,7 +85,10 @@ public class ItemRepositoryImpl implements ItemRepository{
                                 ))
                         )
                 )
+                .offset(pageRequest.getOffset())
+                .limit(pageRequest.getPageSize())
                 .fetch();
+        return new PageImpl<>(result);
     }
 
     @Override

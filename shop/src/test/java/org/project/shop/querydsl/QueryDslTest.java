@@ -1,30 +1,26 @@
 package org.project.shop.querydsl;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.project.shop.custom.CustomPageRequest;
 import org.project.shop.domain.*;
 import org.project.shop.repository.*;
-import org.project.shop.repository.CartItemRepository;
 import org.project.shop.repository.CartItemRepositoryImpl;
 import org.project.shop.repository.ItemRepositoryImpl;
 import org.project.shop.repository.MemberRepositoryImpl;
 import org.project.shop.service.ItemServiceImpl;
 import org.project.shop.service.MemberServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.project.shop.domain.QMember.member;
 
 @SpringBootTest
 @Transactional
@@ -160,13 +156,14 @@ public class QueryDslTest {
     @DisplayName("모든 아이템 조회")
     @Test
     public void findAllItemTest() {
+        PageRequest pageRequest = CustomPageRequest.customPageRequest();
         List<Item> items = createItem();
         for (Item item : items) {
             itemRepositoryImpl.save(item);
         }
-        List<Item> findAllItems = itemRepositoryImpl.findAllItem();
+        Page<Item> findAllItems = itemRepositoryImpl.findAllItem(pageRequest);
 
-        assertThat(items.size()).isEqualTo(findAllItems.size());
+        assertThat(items.size()).isEqualTo(findAllItems.getTotalElements());
     }
 
 }

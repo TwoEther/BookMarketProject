@@ -1,10 +1,13 @@
 package org.project.shop.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.project.shop.custom.CustomPageRequest;
 import org.project.shop.domain.*;
 import org.project.shop.service.*;
 import org.project.shop.web.ItemForm;
 import org.project.shop.web.SearchForm;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -135,11 +138,21 @@ public class ItemController {
         return "redirect:/item";
     }
 
+
     @GetMapping(value = "")    
-    public String listByKeyWord(Model model, SearchForm form) {
+    public String listByKeyWord(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "keyword", required = false) String keyword) {
+        // 3자리 콤마를 위한 format
         DecimalFormat decFormat = new DecimalFormat("###,###");
+        // 페이지 사이즈
+        int size = 6;
+        // 전체 상품 개수
+        int allItemNum = itemServiceImpl.getAllItemNum();
+
+        // 1페이지당 6개의 상품 호출
+        PageRequest pageRequest = PageRequest.of(page, size);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        // 로그인이 되어있는 경우
         if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             UserDetails userDetails = (UserDetails) principal;
@@ -147,6 +160,7 @@ public class ItemController {
 
             Member findMember = memberServiceImpl.findByUserId(username);
 
+            // 장바구니에 상품을 담지 않았다면
             if (cartServiceImpl.findByMemberId(findMember.getId()) == null) {
                 model.addAttribute("NOP", 0);
             } else {
@@ -160,18 +174,18 @@ public class ItemController {
             }
         }
 
-        String keyword = form.getKeyword();
-        List<Item> findAllItem = itemServiceImpl.findByKeyword(keyword);
 
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("items", findAllItem);
-        model.addAttribute("number", findAllItem.size());
-        model.addAttribute("keyword", keyword);
+        Page<Item> findAllItem = itemServiceImpl.findByKeyword(pageRequest, keyword);
+        int pageNum = Math.floorDiv(allItemNum, size);
+        int startPage = Math.max(page - 1, 0);
+        int endPage = Math.min(page + 1, allItemNum);
 
+        System.out.println("startPage = " + startPage);
+        System.out.println("endPage = " + endPage);
         // 국내 도서
-        List<Item> koreanList = itemServiceImpl.findByKeyword("국내");
+        Page<Item> koreanList = itemServiceImpl.findByKeyword(pageRequest, "국내");
         // 외국 도서
-        List<Item> foreignList = itemServiceImpl.findByKeyword("외국");
+        Page<Item> foreignList = itemServiceImpl.findByKeyword(pageRequest,"외국");
 
         // 카테고리 목록
         Map<String, List<Integer>> categoryList = new HashMap<>();
@@ -187,9 +201,19 @@ public class ItemController {
             categoryList.put((category), temp);
         }
 
+        List<Item> content = findAllItem.getContent();
 
-        model.addAttribute("koreanNum", koreanList.size());
-        model.addAttribute("foreignNum", foreignList.size());
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("paging", findAllItem);
+        model.addAttribute("total_count", findAllItem.getTotalElements());
+
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("currentPage", page);
+
+
+        model.addAttribute("koreanNum", koreanList.getSize());
+        model.addAttribute("foreignNum", foreignList.getSize());
         model.addAttribute("categoryList", categoryList);
         return "item/itemList";
     }

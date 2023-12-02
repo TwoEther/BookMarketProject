@@ -1,6 +1,18 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header" />
+
+<style>
+    input[type="submit"]{
+        font-family: FontAwesome;
+    }
+
+    .page-left, .page-right{
+        border:none;
+        width:100%;
+        background-color:white;
+    }
+</style>
 <body>
 
 <script>
@@ -69,7 +81,7 @@
                         <li><a href="#">Home</a></li>
                         <li><a href="#">All Categories</a></li>
                         <li><a href="#">Accessories</a></li>
-                        <li class="active" th:text="${keyword}+' ('+${number}+')건'"></li>
+                        <li class="active" th:text="${keyword}+' ('+${total_count}+')건'"></li>
                     </ul>
                 </div>
             </div>
@@ -199,7 +211,7 @@
                     <!-- store products -->
                     <div class="row">
                         <!-- product -->
-                        <div th:each="item : ${items}" class="col-md-4 col-xs-6">
+                        <div th:each="item : ${paging}" class="col-md-4 col-xs-6">
                             <div class="product">
                                 <div class="product-img">
 <!--                                    <a th:href="@{/item/{param1}(param1=${item.id})"></a>-->
@@ -235,14 +247,31 @@
                     <!-- /store products -->
 
                     <!-- store bottom filter -->
-                    <div class="store-filter clearfix">
+                    <div th:if="${!paging.isEmpty()}" class="store-filter clearfix">
                         <span class="store-qty">Showing 20-100 products</span>
                         <ul class="store-pagination">
-                            <li class="active">1</li>
-                            <li><a href="#">2</a></li>
-                            <li><a href="#">3</a></li>
-                            <li><a href="#">4</a></li>
-                            <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
+                            <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
+                                <form th:action="@{/item}">
+                                    <input type="hidden" name="page" th:value="${currentPage-1}">
+                                    <input class="input" th:value="${keyword}" type="hidden" name="keyword">
+                                    <input class="page-left" type="submit" value="&#xf359;">
+                                </form>
+                            </li>
+                            <li th:each="page: ${#numbers.sequence(startPage, endPage)}"
+                                class="page-item">
+                                <a th:text="${page}" class="page-link" th:href="@{|?page=${page}|}"></a>
+                            </li>
+                            <li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
+                                <form th:action="@{/item}">
+                                    <input type="hidden" name="page" th:value="${currentPage+1}">
+                                    <input class="input" th:value="${keyword}" type="hidden" name="keyword">
+                                    <input class="page-right" type="submit" value="&#xf35a;">
+                                </form>
+<!--                                <a class="page-link"-->
+<!--                                   th:href="@{|?paging=${paging.number+1}|}">-->
+<!--                                    <i class="fa fa-angle-right"></i>-->
+<!--                                </a>-->
+                            </li>
                         </ul>
                     </div>
                     <!-- /store bottom filter -->

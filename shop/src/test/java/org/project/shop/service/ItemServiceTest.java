@@ -3,12 +3,13 @@ package org.project.shop.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.project.shop.custom.CustomPageRequest;
 import org.project.shop.domain.Category;
 import org.project.shop.domain.Item;
 import org.project.shop.repository.ItemRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -94,7 +95,7 @@ public class ItemServiceTest {
         categoryServiceImpl.save(category3);
         categoryServiceImpl.save(category4);
 
-        List<Item> findAllitem = itemServiceImpl.findItems();
+        List<Item> findAllitem = itemServiceImpl.findAllItem();
         Item item1 = findAllitem.get(0);
         item1.setCategory(category1);
         Category findCategory = item1.getCategory();
@@ -136,7 +137,8 @@ public class ItemServiceTest {
     @DisplayName("GroupByCategory 테스트")
     @Test
     public void groupByCategoryTest() {
-        List<Item> savedItems = itemServiceImpl.findItems();
+        PageRequest pageRequest = CustomPageRequest.customPageRequest();
+        List<Item> savedItems = (List<Item>) itemServiceImpl.findAllItem(pageRequest);
         List<Category> savedCategory = categoryServiceImpl.findAllCategory();
 
         for (int i = 0; i < savedItems.size(); i++) {

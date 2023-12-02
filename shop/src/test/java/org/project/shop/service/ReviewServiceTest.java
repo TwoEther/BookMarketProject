@@ -2,13 +2,14 @@ package org.project.shop.service;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.project.shop.custom.CustomPageRequest;
 import org.project.shop.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -97,8 +98,9 @@ public class ReviewServiceTest {
     @DisplayName("특정 아이템에 리뷰가 적용되는지 테스트")
     @Test
     public void reviewItemTest() {
+        PageRequest pageRequest = CustomPageRequest.customPageRequest();
         List<Member> allMember = memberServiceImpl.findAllMember();
-        List<Item> allItems = itemServiceImpl.findItems();
+        List<Item> allItems = (List<Item>) itemServiceImpl.findAllItem(pageRequest);
         List<Review> allReview = reviewServiceImpl.findAllReview();
 
         Member member1 = allMember.get(0);
@@ -139,8 +141,9 @@ public class ReviewServiceTest {
     @Transactional
     @Test
     public void paymentItemReviewTest() {
+        PageRequest pageRequest = CustomPageRequest.customPageRequest();
         List<Member> allMember = memberServiceImpl.findAllMember();
-        List<Item> items = itemServiceImpl.findItems();
+        List<Item> items = (List<Item>) itemServiceImpl.findAllItem(pageRequest);
         List<Review> allReview = reviewServiceImpl.findAllReview();
 
         Item item1 = items.get(0);
@@ -156,8 +159,8 @@ public class ReviewServiceTest {
         List<Order> byMemberIdAfterPayment = orderServiceImpl.findByMemberIdAfterPayment(member1.getId());
         List<Item> paymentItemList = new ArrayList<>();
         for (Order order : byMemberIdAfterPayment) {
-            List<Item> findItems = order.orderItemList();
-            paymentItemList.addAll(findItems);
+            List<Item> findAllItem = order.orderItemList();
+            paymentItemList.addAll(findAllItem);
         }
 
 

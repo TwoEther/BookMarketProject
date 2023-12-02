@@ -1,11 +1,14 @@
 package org.project.shop.controller;
 
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.project.shop.config.ScriptUtils;
 import org.project.shop.domain.*;
 import org.project.shop.kakaopay.KakaoApproveResponse;
 import org.project.shop.service.*;
 import org.project.shop.kakaopay.KakaoReadyResponse;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,8 +46,12 @@ public class KakaoPayController {
 
         return kakaoPayService.kakaoPayReady(itemName, total_count, total_price);
     }
-    
-    // 주문 정보를 결제가 성공시에만 저장하게끔 하면 어떨까요
+
+    @GetMapping(value = "/payCancel")
+    public void failPayRequest(HttpServletResponse response) throws IOException {
+        ScriptUtils.alertAndBackPage(response, "결제가 취소 되었습니다");
+    }
+
     @GetMapping("/paySuccess")
     public String afterPayRequest(@RequestParam("pg_token") String pgToken, Model model) {
         KakaoApproveResponse kakaoApprove = kakaoPayService.ApproveResponse(pgToken);

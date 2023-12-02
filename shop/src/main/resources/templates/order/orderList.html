@@ -63,11 +63,16 @@
         <div class="contextArea" id="contextArea">
             <h2>주문 목록</h2><hr>
             <div th:each = "order : ${allOrder}"  class="itemArea">
-                <h2 th:text="${order.orderDate}"></h2>
+                <div class="headerArea">
+                    <h2 th:text="${order.orderDate}"></h2>
+                    <a href="">구매 상세 내역</a>
+                </div>
+
                 <div class="itemDetailArea">
                     <table>
                         <tbody>
-                        <tr></tr>
+                        <tr>
+                        </tr>
                         <td>
                             <div th:each="orderItem : ${order.orderItems}" style="height:200px">
                                 <div class="imgArea" style="float:left; width:100px;">

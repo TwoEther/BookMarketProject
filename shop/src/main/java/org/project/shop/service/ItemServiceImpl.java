@@ -3,6 +3,8 @@ package org.project.shop.service;
 import org.project.shop.domain.Category;
 import org.project.shop.domain.Item;
 import org.project.shop.repository.ItemRepositoryImpl;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,8 +50,8 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public List<Item> findItems() {
-        return itemRepositoryImpl.findAllItem();
+    public Page<Item> findAllItem(PageRequest pageRequest) {
+        return itemRepositoryImpl.findAllItem(pageRequest);
     }
 
     @Override
@@ -58,6 +60,11 @@ public class ItemServiceImpl implements ItemService{
         item.setName(name);
         item.setPrice(price);
         item.setStockQuantity(stockQuantity);
+    }
+
+    @Override
+    public int getAllItemNum() {
+        return itemRepositoryImpl.getAllItemNum();
     }
 
     @Override
@@ -73,11 +80,11 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public List<Item> findByKeyword(String keyword) {
+    public Page<Item> findByKeyword(PageRequest pageRequest, String keyword) {
         if (keyword == null) {
-            return itemRepositoryImpl.findAllItem();
+            return itemRepositoryImpl.findAllItem(pageRequest);
         }
-        return itemRepositoryImpl.findByKeyword(keyword);
+        return itemRepositoryImpl.findByKeyword(pageRequest, keyword);
     }
 
     @Override

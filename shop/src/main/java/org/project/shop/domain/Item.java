@@ -1,6 +1,7 @@
 package org.project.shop.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -43,6 +44,7 @@ public class Item {
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     private List<Review> reviews = new ArrayList<>();
 
+    @Builder
     public Item(String name, int price, int stockQuantity) {
         this.name = name;
         this.price = price;
