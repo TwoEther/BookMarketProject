@@ -39,6 +39,7 @@ public class ItemController {
     private final CategoryServiceImpl categoryServiceImpl;
     private final CartServiceImpl cartServiceImpl;
     private final CartItemServiceImpl cartItemServiceImpl;
+    private final ReviewServiceImpl reviewServiceImpl;
 
     @GetMapping(value = "/dbConfig")
     public String dbConfig(Model model) throws Exception {
@@ -249,6 +250,13 @@ public class ItemController {
         List<Item> sameCategoryItems = itemServiceImpl.findByItemWithCategory(item.getCategory().getCategory2());
         sameCategoryItems.remove(item);
 
+        // 리뷰 처리
+        // 해당 아이템에 해당하는 리뷰를 가져옴
+        List<Review> findAllReviewByItemId = reviewServiceImpl.findAllReviewByItemId(itemId);
+        double avgScore = Review.calculateAvgScore(findAllReviewByItemId);
+
+        model.addAttribute("allReview", findAllReviewByItemId);
+        model.addAttribute("avgScore", avgScore);
         model.addAttribute("item", item);
         model.addAttribute("groupItem", sameCategoryItems);
         return "item/itemDetail";

@@ -41,8 +41,16 @@ public class Item {
     @JoinColumn
     private Category category;
 
-    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
-    private List<Review> reviews = new ArrayList<>();
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Review> reviewItems = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "items")
+    private LikeItem likeItem;
+
+    public void setLikeItem(LikeItem likeItem) {
+        this.likeItem = likeItem;
+    }
 
     @Builder
     public Item(String name, int price, int stockQuantity) {

@@ -86,6 +86,7 @@ public class Order {
         for (OrderItem orderItem : this.getOrderItems()) {
             paymentItems.add(orderItem.getItem());
         }
+        
         return paymentItems;
     }
     // 주문취소

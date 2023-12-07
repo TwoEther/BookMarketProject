@@ -60,6 +60,13 @@ public class Member {
     @JoinColumn(name = "member")
     private List<Review> reviews = new ArrayList<>();
 
+    @OneToOne(mappedBy = "member")
+    private LikeItem likeItem;
+
+    public void setLikeItems(LikeItem likeItem) {
+        this.likeItem = likeItem;
+    }
+
     public void setAddress(Address address) {
         this.address = address;
     }

@@ -135,17 +135,17 @@ public class MemberController {
     @GetMapping("/findId")
     public String findId(Model model) {
         model.addAttribute("findIDForm", new findIDForm());
-        return "/member/idForm";
+        return "/member/findUserId";
     }
     @PostMapping("/findId")
-    public String findIdPost(findIDForm form, Model model) {
-        String email = form.getEmail();
-        String phoneNum = form.getPhoneNum();
+    public String findIdPost(HttpServletResponse response, @RequestParam String phoneNum, @RequestParam String email, Model model) throws IOException {
         String findMemberID = memberServiceImpl.findMemberIdByEmailAndPhoneNum(email, phoneNum);
+
         if (findMemberID != null) {
             model.addAttribute("userId", findMemberID);
             return "/member/resultId";
         }else{
+            ScriptUtils.alert(response, "핸드폰 번호 또는 이메일이 다릅니다");
             return "/member/idForm";
         }
 

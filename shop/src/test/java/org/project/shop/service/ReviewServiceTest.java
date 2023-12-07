@@ -9,7 +9,9 @@ import org.project.shop.custom.CustomPageRequest;
 import org.project.shop.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -141,15 +143,25 @@ public class ReviewServiceTest {
     @Transactional
     @Test
     public void paymentItemReviewTest() {
-        PageRequest pageRequest = CustomPageRequest.customPageRequest();
+        for (int i = 0; i < 50; i++) {
+            itemServiceImpl.saveItemNoImage(
+                Item.builder()
+                        .name("name" + i)
+                        .price(20000)
+                        .stockQuantity(30)
+                        .build());
+        }
+
+
+        PageRequest pageRequest = PageRequest.of(0, 50);
         List<Member> allMember = memberServiceImpl.findAllMember();
-        List<Item> items = (List<Item>) itemServiceImpl.findAllItem(pageRequest);
+        Page<Item> allItem = itemServiceImpl.findAllItem(pageRequest);
         List<Review> allReview = reviewServiceImpl.findAllReview();
 
-        Item item1 = items.get(0);
-        Item item2 = items.get(1);
-        Item item3 = items.get(2);
-        
+        Item item1 = allItem.getContent().get(0);
+        Item item2 = allItem.getContent().get(1);
+        Item item3 = allItem.getContent().get(2);
+
         Member member1 = allMember.get(0);
         Review review1 = allReview.get(0);
         Review review2 = allReview.get(1);

@@ -1,34 +1,34 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head th:replace="fragments/header :: header" />
+
 <style>
     ul.tabs{
-			margin: 0px;
-			padding: 0px;
-			list-style: none;
-		}
-		ul.tabs li{
-			background: none;
-			color: #222;
-			display: inline-block;
-			padding: 10px 15px;
-			cursor: pointer;
-		}
+        margin: 0px;
+        padding: 0px;
+        list-style: none;
+    }
+    ul.tabs li{
+        background: none;
+        color: #222;
+        display: inline-block;
+        padding: 10px 15px;
+        cursor: pointer;
+    }
 
-		ul.tabs li.current{
-			background: #ededed;
-			color: #222;
-		}
+    ul.tabs li.current{
+        color: #222;
+    }
 
-		.tab-content{
-			display: none;
-			background: #ededed;
-			padding: 15px;
-		}
+    .tab-content{
+        display: none;
+        padding: 15px;
+    }
 
-		.tab-content.current{
-			display: inherit;
-		}
+    .tab-content.current{
+        display: inherit;
+    }
+
 </style>
 <body>
 
@@ -73,6 +73,7 @@
         		alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error); }
         });
     }
+
 
     $(document).ready(function(){
         $('ul.tabs li').click(function(){
@@ -153,8 +154,11 @@
                         </div>
 
                         <ul class="product-btns">
-                            <li><a href="#"><i class="fa fa-heart-o"></i> 찜하기</a></li>
+                            <li><a href="javascript:void(0);" onclick="javascript:likeItemForm.submit();"><i class="fa fa-heart-o"></i> 찜하기</a></li>
                             <li><a href="#"><i class="fa fa-exchange"></i> add to compare</a></li>
+                            <form th:action="@{/like/add}" method="post" name="likeItemForm" style="display:hidden;">
+                                <input type="hidden" name="itemId" th:value="${item.id}">
+                            </form>
                         </ul>
 
                         <ul class="product-links">
@@ -180,10 +184,11 @@
                     <div id="product-tab">
                         <!-- product tab nav -->
                         <ul class="tabs">
-                            <li class="tab-link current" data-tab="tab-1">Description</li>
-                            <li class="tab-link" data-tab="tab-2">Description</li>
-                            <li class="tab-link" data-tab="tab-3">review</li>
+                            <li class="tab-link current" data-tab="tab-1">정보</li>
+                            <li class="tab-link" data-tab="tab-2">리뷰</li>
+                            <li class="tab-link" data-tab="tab-3">문의</li>
                         </ul>
+                        <hr>
                         <!-- /product tab nav -->
 
                         <!-- product tab content -->
@@ -201,21 +206,11 @@
                             <!-- tab2  -->
                             <div id="tab-2" class="tab-content">
                                 <div class="row">
-                                    <div class="col-md-12">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- /tab2  -->
-
-                            <!-- tab3  -->
-                            <div id="tab-3" class="tab-content">
-                                <div class="row">
                                     <!-- Rating -->
                                     <div class="col-md-3">
                                         <div id="rating">
                                             <div class="rating-avg">
-                                                <span>4.5</span>
+                                                <span th:text="${avgScore}">4.5</span>
                                                 <div class="rating-stars">
                                                     <i class="fa fa-star"></i>
                                                     <i class="fa fa-star"></i>
@@ -299,54 +294,28 @@
                                     <div class="col-md-6">
                                         <div id="reviews">
                                             <ul class="reviews">
-                                                <li>
+                                                <li th:each = "review : ${allReview}">
                                                     <div class="review-heading">
-                                                        <h5 class="name">John</h5>
-                                                        <p class="date">27 DEC 2018, 8:0 PM</p>
-                                                        <div class="review-rating">
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star-o empty"></i>
+                                                        <h5 class="name" th:text="${review.member.name}"></h5>
+                                                        <p class="date" th:text="${review.created_at}">27 DEC 2018, 8:0 PM</p>
+                                                        <div th:if="${review.score} >= 5" class="review-rating">
+                                                            <i th:each="page: ${#numbers.sequence(1, review.score)}" class="fa fa-star"></i>
+                                                        </div>
+                                                        <div th:unless="${review.score} >= 5" class="review-rating">
+                                                            <i th:each="page: ${#numbers.sequence(1, review.score)}" class="fa fa-star"></i>
+                                                            <i th:each="page: ${#numbers.sequence(review.score + 1, 5)}" class="fa fa-star-o empty"></i>
                                                         </div>
                                                     </div>
                                                     <div class="review-body">
-                                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</p>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div class="review-heading">
-                                                        <h5 class="name">John</h5>
-                                                        <p class="date">27 DEC 2018, 8:0 PM</p>
-                                                        <div class="review-rating">
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star-o empty"></i>
+                                                        <div class="review-text">
+                                                            <p th:text="${review.text}"></p>
+                                                        </div>
+                                                        <div class="review-btn">
+                                                            <a href=""><s>삭제</s></a>
                                                         </div>
                                                     </div>
-                                                    <div class="review-body">
-                                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</p>
-                                                    </div>
                                                 </li>
-                                                <li>
-                                                    <div class="review-heading">
-                                                        <h5 class="name">John</h5>
-                                                        <p class="date">27 DEC 2018, 8:0 PM</p>
-                                                        <div class="review-rating">
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star-o empty"></i>
-                                                        </div>
-                                                    </div>
-                                                    <div class="review-body">
-                                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</p>
-                                                    </div>
-                                                </li>
+
                                             </ul>
                                             <ul class="reviews-pagination">
                                                 <li class="active">1</li>
@@ -362,8 +331,8 @@
                                     <!-- Review Form -->
                                     <div class="col-md-3">
                                         <div id="review-form">
-                                            <form class="review-form">
-                                                <textarea class="input" placeholder="리뷰를 작성해주세요"></textarea>
+                                            <form th:action="@{/review/add}" method="post" class="review-form">
+                                                <textarea class="review_box" name="review" placeholder="리뷰를 작성해주세요"></textarea>
                                                 <div class="input-rating">
                                                     <span>별점: </span>
                                                     <div class="stars">
@@ -374,14 +343,53 @@
                                                         <input id="star1" name="rating" value="1" type="radio"><label for="star1"></label>
                                                     </div>
                                                 </div>
-                                                <button class="primary-btn" sec:authorize="isAuthenticated()">작성하기</button>
+                                                <input type="hidden" th:value="${item.id}" name="itemId">
+                                                <button class="primary-btn" onclick="createReview()">작성하기</button>
+
                                             </form>
+
+                                            <div class="modal" id="modal"  role="dialog" aria-labelledby="remoteModalLabel" aria-hidden="true" >
+                                                <div class="modal-dialog" style="width:850px;">
+                                                    <div class="modal-content" >
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                                                ×
+                                                            </button>
+                                                            <h4 class="modal-title" id="myModalLabel">타이틀</h4>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-4" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false" data-widget-togglebutton="false">
+                                                                <div role="content">
+                                                                    <div class="widget-body">
+                                                                        내용 입력
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+                                                            <button type="button" class="btn btn-primary" id="btn_save">저장</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                         </div>
                                     </div>
                                     <!-- /Review Form -->
                                 </div>
+                            <!-- /tab2  -->
+
+                            <!-- tab3  -->
+                            <div id="tab-3" class="tab-content">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                                    </div>
+                                </div>
                             </div>
-                            <!-- /tab3  -->z
+                            <!-- /tab3  -->
+
                         </div>
                         <!-- /product tab content  -->
                     </div>

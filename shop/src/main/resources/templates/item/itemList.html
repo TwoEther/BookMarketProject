@@ -29,9 +29,13 @@
             },
             data : {"itemId": id,
                     "quantity": quantity},
-            success: function () {
-                alert("장바구니에 담겼습니다");
-                location.reload();
+            success: function (flag) {
+                if(flag){
+                    alert("장바구니에 담겼습니다");
+                }else{
+                    alert("알 수 없는 이유로 실패 했습니다");
+                }
+
             },
             error:function(request, status, error){
         		alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error); }

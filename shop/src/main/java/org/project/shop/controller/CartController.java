@@ -45,15 +45,13 @@ public class CartController {
     @PostMapping(value = "/add")
     @ResponseBody
     @Transactional
-    public boolean addCartItem(@RequestParam HashMap<String, Object> params){
+    public boolean addCartItem(@RequestParam HashMap<String, Object> params, @AuthenticationPrincipal PrincipalDetails principalDetails){
 
         long itemId = Long.parseLong((String) params.get("itemId"));
         int quantity = Integer.parseInt((String) params.get("quantity"));
 
-
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserDetails userDetails = (UserDetails) principal;
-        String username = ((UserDetails) principal).getUsername();
+        if(principalDetails == null) return false;
+        String username = principalDetails.getUsername();
 
         Member findMember = memberServiceImpl.findByUserId(username);
         if (findMember != null) {
