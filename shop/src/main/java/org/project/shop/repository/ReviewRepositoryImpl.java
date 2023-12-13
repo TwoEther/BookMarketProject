@@ -53,4 +53,11 @@ public class ReviewRepositoryImpl implements ReviewRepository{
         return queryFactory.selectFrom(review)
                 .fetch();
     }
+
+    @Override
+    public void deleteReview(Long reviewId) {
+         queryFactory.delete(review)
+                .where(review.id.eq(reviewId))
+                .execute();
+    }
 }

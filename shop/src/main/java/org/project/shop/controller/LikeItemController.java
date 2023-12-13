@@ -39,16 +39,13 @@ public class LikeItemController {
         String username = principalDetails.getUsername();
         Member findMember = memberServiceImpl.findByUserId(username);
         Item findItem = itemServiceImpl.findOneItem(id);
-        LikeItem findLikeItem = likeItemServiceImpl.findLikeItemByMemberId(username);
+        List<LikeItem> findLikeItem = likeItemServiceImpl.findLikeItemByMemberId(findMember.getId());
 
-        if (findLikeItem == null) {
-            LikeItem likeItem = new LikeItem();
-            likeItem.setMember(findMember);
-            likeItem.addItem(findItem);
-            likeItemServiceImpl.save(likeItem);
-        } else {
-            findLikeItem.addItem(findItem);
-        }
+        LikeItem likeItem = new LikeItem();
+        likeItem.setMember(findMember);
+        likeItem.addItem(findItem);
+        likeItemServiceImpl.save(likeItem);
+
 
         ScriptUtils.alertAndBackPage(response, "찜하기에 추가 되었습니다.");
     }

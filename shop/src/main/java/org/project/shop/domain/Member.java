@@ -63,6 +63,9 @@ public class Member {
     @OneToOne(mappedBy = "member")
     private LikeItem likeItem;
 
+    @OneToMany(mappedBy = "member")
+    private List<LikeReview> likeReviews = new ArrayList<>();
+
     public void setLikeItems(LikeItem likeItem) {
         this.likeItem = likeItem;
     }

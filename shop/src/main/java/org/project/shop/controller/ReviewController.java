@@ -32,6 +32,7 @@ public class ReviewController {
     private final OrderItemServiceImpl orderItemServiceImpl;
     private final ItemServiceImpl itemServiceImpl;
     private final ReviewServiceImpl reviewServiceImpl;
+    private final LikeReviewServiceImpl likeReviewServiceImpl;
     
 
     @GetMapping(value = "/manage")
@@ -40,6 +41,7 @@ public class ReviewController {
     }
 
     @PostMapping(value = "/add")
+    @Transactional
     public void addReview(HttpServletRequest httpServletRequest, HttpServletResponse response, @AuthenticationPrincipal PrincipalDetails principalDetails) throws IOException {
         /*
             1단계 : form 으로 부터 리뷰 내용과 별점을 받아서 저장 (성공)
@@ -67,7 +69,7 @@ public class ReviewController {
         String create_time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분 ss초"));
 
         Review review = new Review(score, review_detail, create_time);
-        Member findMember =memberServiceImpl.findByUserId(username);
+        Member findMember = memberServiceImpl.findByUserId(username);
 
         Item findItem = itemServiceImpl.findOneItem(itemId);
         review.setItem(findItem);
@@ -85,15 +87,66 @@ public class ReviewController {
         if (paymentItems.contains(findItem)){review.setType("구매자");}
         else {review.setType("비구매자");}
 
-        System.out.println("review.toString() = " + review.toString());
         reviewServiceImpl.save(review);
         ScriptUtils.alertAndBackPage(response, "리뷰가 작성 되었습니다");
 
     }
 
-    @PutMapping
-    public void updateReview() {
+    @DeleteMapping(value = "/delete/{reviewId}")
+    @ResponseBody
+    @Transactional
+    public boolean deleteReview(HttpServletResponse response, @RequestParam String reviewId, @AuthenticationPrincipal PrincipalDetails principalDetails){
+        if (principalDetails == null) {
+            return false;
+        }else{
+            Long id = Long.valueOf(reviewId);
+            String username = principalDetails.getUsername();
+            Member findMember = memberServiceImpl.findByUserId(username);
+            Review findReview = reviewServiceImpl.findOneReview(id);
 
+            if (!findReview.getMember().getUserId().equals(username)) {
+                return false;
+            }else{
+                reviewServiceImpl.deleteReview(id);
+                return true;
+            }
+        }
+    }
+
+    @PostMapping(value = "/like/{reviewId}")
+    @ResponseBody
+    @Transactional
+    public int addLikeReview(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestParam String reviewId) {
+        Long id = Long.valueOf(reviewId);
+        Review findReview = reviewServiceImpl.findOneReview(id);
+
+        // 로그인이 안된 경우
+        if (principalDetails == null) {
+            return 0;
+        }
+
+        String username = principalDetails.getUsername();
+        Member findMember = memberServiceImpl.findByUserId(username);
+        LikeReview findLikeReview = likeReviewServiceImpl.findByReviewIdAndMemberId(findReview.getId(), findMember.getId());
+        System.out.println("findLikeReview = " + findLikeReview);
+
+        // 좋아요를 누르지 않았다면
+        if (findLikeReview == null) {
+            LikeReview likeReview = new LikeReview();
+            likeReview.setMember(findMember);
+            likeReview.setReview(findReview);
+            likeReviewServiceImpl.save(likeReview);
+
+            findReview.addLike();
+            return 1;
+
+        } else{
+            System.out.println("findLikeReview.toString() = " + findLikeReview.toString());
+            findLikeReview.setStatus(false);
+            findReview.cancelLike();
+            likeReviewServiceImpl.deleteLikeReview(findLikeReview.getId());
+            return 2;
+        }
     }
 
     @GetMapping(value = "/written")

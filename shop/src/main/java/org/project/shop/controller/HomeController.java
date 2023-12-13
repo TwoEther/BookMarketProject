@@ -28,6 +28,7 @@ public class HomeController {
     private final MemberServiceImpl memberServiceImpl;
     private final CartServiceImpl cartServiceImpl;
     private final CartItemServiceImpl cartItemServiceImpl;
+    private final LikeItemServiceImpl likeItemServiceImpl;
 
 
     @RequestMapping("/")
@@ -47,13 +48,16 @@ public class HomeController {
             Member findMember = memberServiceImpl.findByUserId(username);
 
             if (cartServiceImpl.findByMemberId(findMember.getId()) == null) {
+                model.addAttribute("totalPrice", 0);
                 model.addAttribute("NOP", 0);
             }else{
                 Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
+                List<LikeItem> findAllLikeItem = likeItemServiceImpl.findLikeItemByMemberId(findMember.getId());
                 List<CartItem> findCartItems = cartItemServiceImpl.findByCartId(findCart.getId());
 
                 String totalPrice = decFormat.format(CartItem.getTotalPrice(findCartItems));
                 model.addAttribute("NOP", findCartItems.size());
+
                 model.addAttribute("cartItems", findCartItems);
                 model.addAttribute("totalPrice", totalPrice);
                 model.addAttribute("member", findMember);

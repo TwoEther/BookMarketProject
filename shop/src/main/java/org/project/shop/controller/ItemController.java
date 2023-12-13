@@ -164,6 +164,7 @@ public class ItemController {
             // 장바구니에 상품을 담지 않았다면
             if (cartServiceImpl.findByMemberId(findMember.getId()) == null) {
                 model.addAttribute("NOP", 0);
+                model.addAttribute("totalPrice", 0);
             } else {
                 Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
                 List<CartItem> findCartItems = cartItemServiceImpl.findByCartId(findCart.getId());
@@ -177,12 +178,13 @@ public class ItemController {
 
 
         Page<Item> findAllItem = itemServiceImpl.findByKeyword(pageRequest, keyword);
-        int pageNum = Math.floorDiv(allItemNum, size);
+        int pageNum = Math.floorDiv(allItemNum, size) - 1;
         int startPage = Math.max(page - 1, 0);
-        int endPage = Math.min(page + 1, allItemNum);
+        int endPage = Math.min(page, pageNum);
 
-        System.out.println("startPage = " + startPage);
-        System.out.println("endPage = " + endPage);
+        System.out.println("page = " + page);
+        System.out.println("findAllItem.hasNext() = " + findAllItem.hasNext());
+
         // 국내 도서
         Page<Item> koreanList = itemServiceImpl.findByKeyword(pageRequest, "국내");
         // 외국 도서
@@ -202,7 +204,6 @@ public class ItemController {
             categoryList.put((category), temp);
         }
 
-        List<Item> content = findAllItem.getContent();
 
         model.addAttribute("keyword", keyword);
         model.addAttribute("paging", findAllItem);
@@ -212,9 +213,8 @@ public class ItemController {
         model.addAttribute("endPage", endPage);
         model.addAttribute("currentPage", page);
 
-
-        model.addAttribute("koreanNum", koreanList.getSize());
-        model.addAttribute("foreignNum", foreignList.getSize());
+        model.addAttribute("koreanNum", koreanList.getTotalPages());
+        model.addAttribute("foreignNum", foreignList.getTotalPages());
         model.addAttribute("categoryList", categoryList);
         return "item/itemList";
     }
@@ -235,6 +235,7 @@ public class ItemController {
 
             if (cartServiceImpl.findByMemberId(findMember.getId()) == null) {
                 model.addAttribute("NOP", 0);
+                model.addAttribute("totalPrice", 0);
             } else {
                 Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
                 List<CartItem> findCartItems = cartItemServiceImpl.findByCartId(findCart.getId());
@@ -253,9 +254,19 @@ public class ItemController {
         // 리뷰 처리
         // 해당 아이템에 해당하는 리뷰를 가져옴
         List<Review> findAllReviewByItemId = reviewServiceImpl.findAllReviewByItemId(itemId);
+
+        // 점수별 리뷰 개수
+        int[] reviewCountByScore = Review.countByScore(findAllReviewByItemId);
+
+
+        System.out.println("reviewCountByScore = " + Arrays.toString(reviewCountByScore));
+
+        // 평균 점수
         double avgScore = Review.calculateAvgScore(findAllReviewByItemId);
 
+
         model.addAttribute("allReview", findAllReviewByItemId);
+        model.addAttribute("reviewCount", reviewCountByScore);
         model.addAttribute("avgScore", avgScore);
         model.addAttribute("item", item);
         model.addAttribute("groupItem", sameCategoryItems);

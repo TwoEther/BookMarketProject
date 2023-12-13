@@ -57,6 +57,18 @@ public class Item {
         this.name = name;
         this.price = price;
         this.stockQuantity = stockQuantity;
+        this.createDate = LocalDateTime.now();
+    }
+
+    public double calculateAvgScore() {
+        int total_score =  0;
+        for (Review review : this.reviewItems) {
+            int score = review.getScore();
+            total_score += score;
+        }
+        // 소수점 첫 째자리 까지
+        return Math.round((double) total_score / this.reviewItems.size() * 10) / 10.0;
+
     }
 
 
@@ -70,6 +82,7 @@ public class Item {
         this.isbn = isbn;
         this.pages = pages;
         this.description = description;
+        this.createDate = LocalDateTime.now();
     }
 
     public Item() {

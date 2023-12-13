@@ -17,6 +17,13 @@
 
 <script>
     function addToCart(id){
+        var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
+        $(function() {
+            $(document).ajaxSend(function(e, xhr, options) {
+                xhr.setRequestHeader(header, token);
+            });
+        });
         var quantity = 1;
         var token = $("meta[name='_csrf']").attr("content");
 	    var header = $("meta[name='_csrf_header']").attr("content");
@@ -32,8 +39,9 @@
             success: function (flag) {
                 if(flag){
                     alert("장바구니에 담겼습니다");
+                    location.reload();
                 }else{
-                    alert("알 수 없는 이유로 실패 했습니다");
+                    alert("로그인 후 이용 가능합니다");
                 }
 
             },
@@ -225,16 +233,22 @@
 <!--                                        <span class="new">NEW</span>-->
                                     </div>
                                 </div>
-                                <div class="product-body">
+
+                                <div class="product-body" th:with="avg = ${T(java.lang.Math).floor(item.calculateAvgScore())}">
                                     <p class="product-category">Category</p>
                                     <h3 class="product-name">
                                         <a th:href="@{/item/{param1}(param1=${item.id})}"><span th:text="${item.name}"></span></a>
                                     </h3>
-                                    <h4 class="product-price" th:text="${item.price}"></h4>
-                                    <div class="product-rating">
-                                        <i class="fa fa-star"></i>
-
+                                    <h4 class="product-price" th:text="${#numbers.formatInteger(item.price, 3,'COMMA')}"></h4>
+                                    <div th:if="${avg >= 5}" class="review-rating">
+                                        <i th:each="page: ${#numbers.sequence(1, avg)}" class="fa fa-star"></i>
                                     </div>
+                                    <div th:unless="${avg >= 5}" class="review-rating">
+                                        <i th:each="page: ${#numbers.sequence(1, avg, 1)}" class="fa fa-star"></i>
+                                        <i th:each="page: ${#numbers.sequence(avg + 1, 5,1)}" class="fa fa-star-o empty"></i>
+                                    </div>
+0
+
                                     <div class="product-btns">
                                         <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
                                         <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
@@ -263,7 +277,7 @@
                             </li>
                             <li th:each="page: ${#numbers.sequence(startPage, endPage)}"
                                 class="page-item">
-                                <a th:text="${page}" class="page-link" th:href="@{|?page=${page}|}"></a>
+                                <a th:text="${page}" class="page-link" th:href="@{|?page=${page}&keyword=${keyword}|}"></a>
                             </li>
                             <li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
                                 <form th:action="@{/item}">

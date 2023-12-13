@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface LikeItemRepository {
     public void save(LikeItem likeItem);
-    public LikeItem findLikeItemByMemberId(String userId);
+    public List<LikeItem> findLikeItemByMemberId(Long memberId);
 
     public List<LikeItem> findAllLikeItem();
 }

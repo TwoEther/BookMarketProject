@@ -28,10 +28,10 @@ public class LikeItemRepositoryImpl implements LikeItemRepository{
     }
 
     @Override
-    public LikeItem findLikeItemByMemberId(String userId) {
+    public List<LikeItem> findLikeItemByMemberId(Long memberId) {
         return queryFactory.selectFrom(likeItem)
-                .where(likeItem.member.userId.eq(userId))
-                .fetchOne();
+                .where(likeItem.member.id.eq(memberId))
+                .fetch();
     }
 
     @Override

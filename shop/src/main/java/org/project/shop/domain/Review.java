@@ -3,6 +3,7 @@ package org.project.shop.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -23,6 +24,12 @@ public class Review {
 
     @Column(length = 500)
     private String text;
+
+    @Column(name = "like_num")
+    @ColumnDefault(value = "0")
+    private int likeNum;
+
+    // ?
     private String type;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -33,7 +40,28 @@ public class Review {
     @JoinColumn(name = "reviewItems")
     private Item item;
 
+    @OneToOne(mappedBy = "review")
+    private LikeReview reviewLikeReview;
+
     public Review() {
+        this.likeNum = 0;
+    }
+
+    public void addLike() {
+        this.likeNum += 1;
+    }
+    public void cancelLike() {
+        this.likeNum -= 1;
+    }
+
+    public static int[] countByScore(List<Review> reviews) {
+        int[] countArray = new int[6];
+        for (Review review : reviews) {
+            int score = review.score;
+            System.out.println("score = " + score);
+            countArray[score] += 1;
+        }
+        return countArray;
     }
 
     public static double calculateAvgScore(List<Review> reviews) {
@@ -68,6 +96,7 @@ public class Review {
 
 
     public Review(int score, String text, String create_time) {
+        this.likeNum = 0;
         this.score = score;
         this.text = text;
         this.created_at = create_time;

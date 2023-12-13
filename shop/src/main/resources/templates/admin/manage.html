@@ -63,12 +63,12 @@
     <script th:inline="javascript">
         function deleteMember(id){
             var token = $("meta[name='_csrf']").attr("content");
-                        var header = $("meta[name='_csrf_header']").attr("content");
-                        $(function() {
-                            $(document).ajaxSend(function(e, xhr, options) {
-                                xhr.setRequestHeader(header, token);
-                            });
-                        });
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(function() {
+                $(document).ajaxSend(function(e, xhr, options) {
+                    xhr.setRequestHeader(header, token);
+                });
+            });
             var memberNum = (id).toString();
             $.ajax({
                 url : "/member/delete/"+memberNum,

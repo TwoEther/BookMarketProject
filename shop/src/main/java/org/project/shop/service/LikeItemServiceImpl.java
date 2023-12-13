@@ -21,8 +21,8 @@ public class LikeItemServiceImpl implements LikeItemService{
     }
 
     @Override
-    public LikeItem findLikeItemByMemberId(String userId) {
-        return likeItemRepositoryimpl.findLikeItemByMemberId(userId);
+    public List<LikeItem> findLikeItemByMemberId(Long memberId) {
+        return likeItemRepositoryimpl.findLikeItemByMemberId(memberId);
     }
 
     @Override

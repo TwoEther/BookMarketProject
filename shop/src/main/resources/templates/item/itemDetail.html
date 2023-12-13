@@ -29,6 +29,16 @@
         display: inherit;
     }
 
+    .review-btn > * {
+        float:right;
+    }
+
+    button {
+        border : none;
+        background-color: rgba(0,0,0,0);
+    }
+
+
 </style>
 <body>
 
@@ -74,6 +84,97 @@
         });
     }
 
+    $(document).ready(function(){
+        $('ul.tabs li').click(function(){
+            var tab_id = $(this).attr('data-tab');
+
+            $('ul.tabs li').removeClass('current');
+            $('.tab-content').removeClass('current');
+
+            $(this).addClass('current');
+            $("#"+tab_id).addClass('current');
+        })
+
+    })
+
+    function deleteReview(temp){
+        var reviewId = temp.split('-')[1];
+        var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
+           $.ajax({
+                type: "DELETE",
+                url: "/review/delete/"+reviewId,
+                data : {"reviewId": reviewId},
+                beforeSend: function (xhr) {
+                      xhr.setRequestHeader(header, token);
+                    },
+                success: function (flag) {
+                    if(!flag){alert("접근 권한이 없습니다");}
+                    else{alert("삭제 되었습니다");}
+                    location.reload();
+                },
+                error:function(request, status, error){
+                    alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error); }
+            });
+        }
+
+    function addLikeReview(id){
+        var reviewId = id;
+        var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
+
+        $.ajax({
+            type: "POST",
+            url: "/review/like/"+reviewId,
+            data : {"reviewId": reviewId},
+            beforeSend: function (xhr) {
+                  xhr.setRequestHeader(header, token);
+                },
+            success: function (data) {
+                if(data == 0){
+                    alert("로그인 후 이용가능 합니다");
+                }else if(data == 1){
+                    var element = document.getElementById("likeNum-"+reviewId);
+                    element.innerText = Number(element.innerText)+1;
+                    document.querySelector("#likeBtn-"+reviewId).className="fa-solid fa-thumbs-up";
+
+                }else if(data == 2){
+                    var element = document.getElementById("likeNum-"+reviewId);
+                    element.innerText = Number(element.innerText)-1;
+                    document.querySelector("#likeBtn-"+reviewId).className="fa-regular fa-thumbs-up";
+
+                }else{}
+            },
+            error:function(request, status, error){
+                alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error); }
+        });
+    }
+
+    $('#openModalBtn').on('click', function(){
+        $('#modalBox').modal('show');
+        console.log("click open");
+    });
+
+    $('#closeModalBtn').on('click', function(){
+        $('#modalBox').modal('hide');
+        console.log("click close");
+    });
+
+    $('#modalBox').on('show.bs.modal', function (e) {
+        console.log("show.bs.modal");
+        });
+
+    $('#modalBox').on('shown.bs.modal', function (e) {
+        console.log("shown.bs.modal");
+    });
+
+    $('#modalBox').on('hide.bs.modal', function (e) {
+        console.log("hide.bs.modal");
+    });
+
+    $('#modalBox').on('hidden.bs.modal', function (e) {
+        console.log("hidden.bs.modal");
+    });
 
     $(document).ready(function(){
         $('ul.tabs li').click(function(){
@@ -133,10 +234,10 @@
                                 <i class="fa fa-star"></i>
                                 <i class="fa fa-star-o"></i>
                             </div>
-                            <a class="review-link" href="#">10 Review(s) | Add your review</a>
+                            <a class="review-link" href="#"><span th:text="${allReview.size()}+' Review(s) '"></span></a>
                         </div>
                         <div>
-                            <h3 class="product-price" th:text="${item.price}"><del class="product-old-price">$990.00</del></h3>
+                            <h3 class="product-price" th:text="${#numbers.formatInteger(item.price, 3,'COMMA')}"><del class="product-old-price">$990.00</del></h3>
                             <span class="product-available">In Stock</span>
                         </div>
                         <p th:text="${item.description}"></p>
@@ -199,6 +300,27 @@
                                     <div class="col-md-12">
                                         <p th:text="${item.description}"></p>
                                     </div>
+
+                                    <!-- 모달을 열기 위한 버튼 -->
+                                    <button type="button" class="btn btn-primary btn-lg" id="openModalBtn">	모달 보기 버튼</button>
+                                    <!-- 모달 영역 -->
+                                    <div id="modalBox" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">×</span>
+                                                    </button>
+                                                    <h4 class="modal-title" id="myModalLabel">모달 타이틀</h4>
+                                                </div>
+                                                <div class="modal-body">내용</div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-primary">확인</button>
+                                                    <button type="button" class="btn btn-default" id="closeModalBtn">취소</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <!-- /tab1  -->
@@ -210,13 +332,15 @@
                                     <div class="col-md-3">
                                         <div id="rating">
                                             <div class="rating-avg">
-                                                <span th:text="${avgScore}">4.5</span>
+                                                <span th:text="${avgScore}"></span>
                                                 <div class="rating-stars">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star-o"></i>
+                                                    <div th:if="${avgScore} >= 5" class="review-rating">
+                                                        <i th:each="page: ${#numbers.sequence(1, avgScore, 1)}" class="fa fa-star"></i>
+                                                    </div>
+                                                    <div th:unless="${avgScore} >= 5" class="review-rating">
+                                                        <i th:each="page: ${#numbers.sequence(1, avgScore, 1)}" class="fa fa-star"></i>
+                                                        <i th:each="page: ${#numbers.sequence(avgScore + 1, 5, 1)}" class="fa fa-star-o empty"></i>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <ul class="rating">
@@ -231,7 +355,7 @@
                                                     <div class="rating-progress">
                                                         <div style="width: 80%;"></div>
                                                     </div>
-                                                    <span class="sum">3</span>
+                                                    <span class="sum" th:text="${reviewCount[5]}">3</span>
                                                 </li>
                                                 <li>
                                                     <div class="rating-stars">
@@ -244,7 +368,7 @@
                                                     <div class="rating-progress">
                                                         <div style="width: 60%;"></div>
                                                     </div>
-                                                    <span class="sum">2</span>
+                                                    <span class="sum" th:text="${reviewCount[4]}">3</span>
                                                 </li>
                                                 <li>
                                                     <div class="rating-stars">
@@ -257,7 +381,7 @@
                                                     <div class="rating-progress">
                                                         <div></div>
                                                     </div>
-                                                    <span class="sum">0</span>
+                                                    <span class="sum" th:text="${reviewCount[3]}">3</span>
                                                 </li>
                                                 <li>
                                                     <div class="rating-stars">
@@ -270,7 +394,7 @@
                                                     <div class="rating-progress">
                                                         <div></div>
                                                     </div>
-                                                    <span class="sum">0</span>
+                                                    <span class="sum" th:text="${reviewCount[2]}">3</span>
                                                 </li>
                                                 <li>
                                                     <div class="rating-stars">
@@ -283,7 +407,7 @@
                                                     <div class="rating-progress">
                                                         <div></div>
                                                     </div>
-                                                    <span class="sum">0</span>
+                                                    <span class="sum" th:text="${reviewCount[1]}">3</span>
                                                 </li>
                                             </ul>
                                         </div>
@@ -299,11 +423,11 @@
                                                         <h5 class="name" th:text="${review.member.name}"></h5>
                                                         <p class="date" th:text="${review.created_at}">27 DEC 2018, 8:0 PM</p>
                                                         <div th:if="${review.score} >= 5" class="review-rating">
-                                                            <i th:each="page: ${#numbers.sequence(1, review.score)}" class="fa fa-star"></i>
+                                                            <i th:each="page: ${#numbers.sequence(1, review.score, 1)}" class="fa fa-star"></i>
                                                         </div>
                                                         <div th:unless="${review.score} >= 5" class="review-rating">
-                                                            <i th:each="page: ${#numbers.sequence(1, review.score)}" class="fa fa-star"></i>
-                                                            <i th:each="page: ${#numbers.sequence(review.score + 1, 5)}" class="fa fa-star-o empty"></i>
+                                                            <i th:each="page: ${#numbers.sequence(1, review.score, 1)}" class="fa fa-star"></i>
+                                                            <i th:each="page: ${#numbers.sequence(review.score + 1, 5, 1)}" class="fa fa-star-o empty"></i>
                                                         </div>
                                                     </div>
                                                     <div class="review-body">
@@ -311,7 +435,10 @@
                                                             <p th:text="${review.text}"></p>
                                                         </div>
                                                         <div class="review-btn">
-                                                            <a href=""><s>삭제</s></a>
+                                                            <button type="button" th:id="${review.id}" onclick="addLikeReview(this.id)"><i th:id="'likeBtn-'+${review.id}" class="fa-regular fa-thumbs-up"></i></button>
+                                                            <p th:id="'likeNum-'+${review.id}" th:text="${review.likeNum}"></p>
+                                                            <button type="submit" th:id="'delete-'+${review.id}" onclick="deleteReview(this.id)">삭제</button>
+
                                                         </div>
                                                     </div>
                                                 </li>
