@@ -80,11 +80,18 @@ public class KakaoPayController {
             Item item = cartItem.getItem();
             int count = cartItem.getCount();
 
+            // 구매 처리
             OrderItem orderItem = OrderItem.createOrderItem(item, item != null ? item.getPrice() : 0, count);
             orderItem.setOrder(paymentOrder);
             paymentsItemList.add(orderItem);
             orderItemServiceImpl.save(orderItem);
 
+            // 아이템 판매개수 증가
+            if (item != null) {
+                item.addTotalPurchase(count);
+            }
+
+            // 장바구니 에서 삭제
             cartItemServiceImpl.deleteById(cartItem.getId());
         }
 

@@ -17,12 +17,20 @@ public interface ItemService {
 
     public int getAllItemNum();
 
-    public void orderItem(Long itemId, int quantity);
+
     public boolean checkStockQuantity(Long itemId, int quantity);
 
     public Page<Item> findByKeyword(PageRequest pageRequest, String keyword);
+    public Page<Item> findByKeyword(PageRequest pageRequest, String keyword, String country);
+
+    public Page<Item> findByCountry(PageRequest pageRequest, String country);
+    
     public List<Item> findByItemWithCategory(String category2);
 
+    public List<Item> findBySortedTotalPurchase();
+
+
+    public void orderItem(Long itemId, int quantity);
     public List<Item> orderByCategory();
 
     public void deleteByItemId(Long itemId);

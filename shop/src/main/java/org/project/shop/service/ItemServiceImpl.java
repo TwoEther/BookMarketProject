@@ -88,8 +88,35 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
+    public Page<Item> findByKeyword(PageRequest pageRequest, String keyword, String country) {
+        if (keyword != null && country != null) {
+            return itemRepositoryImpl.findByKeyword(pageRequest, keyword, country);
+        }
+        if (keyword == null && country != null) {
+            return itemRepositoryImpl.findByCountry(pageRequest, country);
+        }
+        if (keyword != null) {
+            return itemRepositoryImpl.findByKeyword(pageRequest, keyword);
+        }
+        return itemRepositoryImpl.findAllItem(pageRequest);
+
+    }
+
+
+    @Override
+    public Page<Item> findByCountry(PageRequest pageRequest, String country) {
+        return null;
+    }
+
+
+    @Override
     public List<Item> findByItemWithCategory(String category2) {
         return itemRepositoryImpl.findByItemWithCategory(category2);
+    }
+
+    @Override
+    public List<Item> findBySortedTotalPurchase() {
+        return itemRepositoryImpl.findBySortedTotalPurchase();
     }
 
     @Override

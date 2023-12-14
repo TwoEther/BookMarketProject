@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,6 +31,10 @@ public class Item {
     private int pages;
     private String description;
 
+    @ColumnDefault(value = "0")
+    private Integer total_purchase;
+
+    // 이미지 저장을 위한 변수
     private String filePath;
     private String fileName;
 
@@ -52,12 +57,9 @@ public class Item {
         this.likeItem = likeItem;
     }
 
-    @Builder
-    public Item(String name, int price, int stockQuantity) {
-        this.name = name;
-        this.price = price;
-        this.stockQuantity = stockQuantity;
-        this.createDate = LocalDateTime.now();
+    public void addTotalPurchase(int volume) {
+        if(volume < 0) volume = 0;
+        this.total_purchase += volume;
     }
 
     public double calculateAvgScore() {
@@ -71,7 +73,14 @@ public class Item {
 
     }
 
-
+    @Builder
+    public Item(String name, int price, int stockQuantity) {
+        this.name = name;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
+        this.createDate = LocalDateTime.now();
+        this.total_purchase = 0;
+    }
 
     public Item(String name, int price, int stockQuantity, String author, String publisher, int isbn, int pages, String description) {
         this.name = name;
@@ -83,6 +92,7 @@ public class Item {
         this.pages = pages;
         this.description = description;
         this.createDate = LocalDateTime.now();
+        this.total_purchase = 0;
     }
 
     public Item() {

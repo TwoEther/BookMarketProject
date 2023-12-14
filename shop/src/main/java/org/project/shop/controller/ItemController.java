@@ -51,7 +51,7 @@ public class ItemController {
         String imagePath2 = "C:\\lee\\Project\\Spring\\bookImages\\";
 
         try{
-            br = Files.newBufferedReader(Paths.get(path1));
+            br = Files.newBufferedReader(Paths.get(path2));
             String line = "";
 
             while((line = br.readLine()) != null){
@@ -93,7 +93,7 @@ public class ItemController {
             }
             Category findCategory = categoryServiceImpl.findByCategoryName(category1, category2);
 
-            String fileRoot = imagePath1 + fileName+".png";
+            String fileRoot = imagePath2 + fileName+".png";
             Item item = new Item(title, price, stockQuantity, author, publisher, isbn, page, description);
             item.setCategory(findCategory);
             File imageFile = new File(fileRoot);
@@ -141,14 +141,17 @@ public class ItemController {
 
 
     @GetMapping(value = "")    
-    public String listByKeyWord(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "keyword", required = false) String keyword) {
+    public String listByKeyWord(Model model, @RequestParam(value = "page", defaultValue = "0") int page,
+                                @RequestParam(value = "type", required = false) String type,
+                                @RequestParam(value = "keyword", required = false) String keyword) {
         // 3자리 콤마를 위한 format
         DecimalFormat decFormat = new DecimalFormat("###,###");
         // 페이지 사이즈
         int size = 6;
         // 전체 상품 개수
         int allItemNum = itemServiceImpl.getAllItemNum();
-
+        // 
+        
         // 1페이지당 6개의 상품 호출
         PageRequest pageRequest = PageRequest.of(page, size);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -176,14 +179,25 @@ public class ItemController {
             }
         }
 
+        String country;
+        int num = 0;
+        // 0 : 전체, 1 : 국내, 2 : 외국
+        if (type != null) {
+            num = Integer.parseInt(type);
+        }
 
-        Page<Item> findAllItem = itemServiceImpl.findByKeyword(pageRequest, keyword);
+        if (num == 0) country = "";
+        else if(num == 1) country = "국내 도서";
+        else country = "외국 도서";
+
+
+
+        Page<Item> findAllItem = itemServiceImpl.findByKeyword(pageRequest, keyword, country);
+
         int pageNum = Math.floorDiv(allItemNum, size) - 1;
         int startPage = Math.max(page - 1, 0);
         int endPage = Math.min(page, pageNum);
 
-        System.out.println("page = " + page);
-        System.out.println("findAllItem.hasNext() = " + findAllItem.hasNext());
 
         // 국내 도서
         Page<Item> koreanList = itemServiceImpl.findByKeyword(pageRequest, "국내");
@@ -206,6 +220,7 @@ public class ItemController {
 
 
         model.addAttribute("keyword", keyword);
+
         model.addAttribute("paging", findAllItem);
         model.addAttribute("total_count", findAllItem.getTotalElements());
 

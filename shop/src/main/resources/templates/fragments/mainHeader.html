@@ -21,11 +21,11 @@
             <!-- SEARCH BAR -->
             <div class="col-md-6">
                 <div class="header-search">
-                    <form th:action="@{/item}" th:object="${form}">
-                        <select class="input-select">
+                    <form th:action="@{/item}">
+                        <select class="input-select" name="type">
                             <option value="0">전체 도서</option>
                             <option value="1">국내 도서</option>
-                            <option value="1">외국 도서</option>
+                            <option value="2">외국 도서</option>
                         </select>
                         <input class="input" type="search" name="keyword" placeholder="검색어를 입력하세요" aria-label="Search">
                         <button class="search-btn">Search</button>

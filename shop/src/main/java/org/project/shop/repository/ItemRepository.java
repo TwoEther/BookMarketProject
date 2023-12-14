@@ -21,6 +21,10 @@ public interface ItemRepository {
     public int getAllItemNum();
 
     public Page<Item> findByKeyword(PageRequest pageRequest, String keyword);
+    public Page<Item> findByKeyword(PageRequest pageRequest, String keyword, String country);
+
+    public Page<Item> findByCountry(PageRequest pageRequest, String country);
+
 //    public void deleteOneItem(Long id);
 
     public List<Item> orderByCategory();
@@ -28,4 +32,5 @@ public interface ItemRepository {
     public void deleteByItemId(Long itemId);
 
 
+    List<Item> findBySortedTotalPurchase();
 }

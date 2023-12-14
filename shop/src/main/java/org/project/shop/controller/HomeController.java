@@ -71,6 +71,14 @@ public class HomeController {
         }
 
 
+        // 베스트 셀러 처리
+
+        List<Item> bySortedTotalPurchase = itemServiceImpl.findBySortedTotalPurchase();
+        if (!bySortedTotalPurchase.isEmpty()) {
+            List<Item> bestSeller = bySortedTotalPurchase.subList(0, 6);
+            model.addAttribute("bestSeller", bestSeller);
+        }
+
         model.addAttribute("allItems", itemByCategory);
         return "home";
     }

@@ -57,29 +57,8 @@
         <div th:replace="fragments/mainHeader :: mainHeader" />
     </header>
 
+    <nav th:replace="fragments/navbar :: navbar" />
     <!-- NAVIGATION -->
-    <nav id="navigation">
-        <!-- container -->
-        <div class="container">
-            <!-- responsive-nav -->
-            <div id="responsive-nav">
-                <!-- NAV -->
-                <ul class="main-nav nav navbar-nav">
-                    <li class="active"><a th:href="@{/}">Home</a></li>
-                    <li><a href="#">지금 뜨는 상품</a></li>
-                    <li><a href="#">카테고리</a></li>
-                    <li><a href="#">도서</a></li>
-                    <li><a href="#">음반</a></li>
-                    <li><a href="#"></a></li>
-                    <li><a href="#">Accessories</a></li>
-                </ul>
-                <!-- /NAV -->
-            </div>
-            <!-- /responsive-nav -->
-        </div>
-        <!-- /container -->
-    </nav>
-    <!-- /NAVIGATION -->
 
 
     <!-- BREADCRUMB -->
@@ -247,7 +226,6 @@
                                         <i th:each="page: ${#numbers.sequence(1, avg, 1)}" class="fa fa-star"></i>
                                         <i th:each="page: ${#numbers.sequence(avg + 1, 5,1)}" class="fa fa-star-o empty"></i>
                                     </div>
-0
 
                                     <div class="product-btns">
                                         <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>

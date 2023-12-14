@@ -92,6 +92,35 @@ public class ItemRepositoryImpl implements ItemRepository{
     }
 
     @Override
+    public Page<Item> findByKeyword(PageRequest pageRequest, String keyword, String country) {
+        List<Item> result = queryFactory.selectFrom(item)
+                .where(item.name.like("%" + keyword + "%").or(
+                                item.author.like("%" + keyword + "%").or(
+                                        item.category.category1.like("%" + keyword + "%").or(
+                                                item.category.category2.like("%" + keyword + "%")
+                                        ))
+                        ).and(
+                                item.category.category1.like("%" + country + "%")
+                        )
+                )
+                .offset(pageRequest.getOffset())
+                .limit(pageRequest.getPageSize())
+                .fetch();
+        return new PageImpl<>(result);
+    }
+
+    @Override
+    public Page<Item> findByCountry(PageRequest pageRequest, String country) {
+        List<Item> result = queryFactory.selectFrom(item)
+                .where(item.category.category1.like("%" + country + "%")
+                )
+                .offset(pageRequest.getOffset())
+                .limit(pageRequest.getPageSize())
+                .fetch();
+        return new PageImpl<>(result);
+    }
+
+    @Override
     public List<Item> orderByCategory() {
         return queryFactory.selectFrom(item)
                 .orderBy(item.category.category2.asc())
@@ -104,5 +133,12 @@ public class ItemRepositoryImpl implements ItemRepository{
         queryFactory.delete(item).
                 where(item.id.eq(itemId))
                 .execute();
+    }
+
+    @Override
+    public List<Item> findBySortedTotalPurchase() {
+        return queryFactory.selectFrom(item)
+                .orderBy(item.total_purchase.desc(), Expressions.numberTemplate(Double.class, "function('rand')").asc())
+                .fetch();
     }
 }
