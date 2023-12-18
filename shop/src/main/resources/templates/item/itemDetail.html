@@ -38,6 +38,24 @@
         background-color: rgba(0,0,0,0);
     }
 
+    textarea {
+        width: 100%;
+        height: 100px;
+        padding: 12px 14px;
+        color: #000;
+        border: 1px solid #d5d5d5;
+        border-radius: 6px;
+        font-size: 14px;
+        line-height: 22px;
+        letter-spacing: -0.01em;
+        font-family: "Noto Sans KR", sans-serif;
+        background-color: #fff;
+        box-sizing: border-box;
+        transition: background 0.2s ease-out, border-color 0.2s ease-out;
+        outline: 0;
+        overflow-y: auto;
+        resize: none;
+
 
 </style>
 <body>
@@ -150,31 +168,16 @@
         });
     }
 
+
     $('#openModalBtn').on('click', function(){
         $('#modalBox').modal('show');
-        console.log("click open");
     });
 
+    // 모달 안의 취소 버튼에 이벤트를 건다.
     $('#closeModalBtn').on('click', function(){
         $('#modalBox').modal('hide');
-        console.log("click close");
     });
 
-    $('#modalBox').on('show.bs.modal', function (e) {
-        console.log("show.bs.modal");
-        });
-
-    $('#modalBox').on('shown.bs.modal', function (e) {
-        console.log("shown.bs.modal");
-    });
-
-    $('#modalBox').on('hide.bs.modal', function (e) {
-        console.log("hide.bs.modal");
-    });
-
-    $('#modalBox').on('hidden.bs.modal', function (e) {
-        console.log("hidden.bs.modal");
-    });
 
     $(document).ready(function(){
         $('ul.tabs li').click(function(){
@@ -300,20 +303,18 @@
                                     <div class="col-md-12">
                                         <p th:text="${item.description}"></p>
                                     </div>
-
-                                    <!-- 모달을 열기 위한 버튼 -->
                                     <button type="button" class="btn btn-primary btn-lg" id="openModalBtn">	모달 보기 버튼</button>
                                     <!-- 모달 영역 -->
                                     <div id="modalBox" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                                         <div class="modal-dialog" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">×</span>
-                                                    </button>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                                                     <h4 class="modal-title" id="myModalLabel">모달 타이틀</h4>
                                                 </div>
-                                                <div class="modal-body">내용</div>
+                                                <div class="modal-body">
+                                                    내용
+                                                </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-primary">확인</button>
                                                     <button type="button" class="btn btn-default" id="closeModalBtn">취소</button>
@@ -321,6 +322,8 @@
                                             </div>
                                         </div>
                                     </div>
+
+
                                 </div>
                             </div>
                             <!-- /tab1  -->
@@ -412,9 +415,34 @@
                                             </ul>
                                         </div>
                                     </div>
-                                    <!-- /Rating -->
-
+                                    <!-- Review Form -->
+                                    <div class="col-md-9">
+                                        <div id="review-form">
+                                            <form th:action="@{/review/add}" method="post" class="review-form">
+                                                <div class="col-md-9">
+                                                    <textarea class="review_box" name="review" placeholder="리뷰를 작성해주세요"></textarea>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="input-rating">
+                                                    <span>별점: </span>
+                                                    <div class="stars">
+                                                        <input id="star5" name="rating" value="5" type="radio"><label for="star5"></label>
+                                                        <input id="star4" name="rating" value="4" type="radio"><label for="star4"></label>
+                                                        <input id="star3" name="rating" value="3" type="radio"><label for="star3"></label>
+                                                        <input id="star2" name="rating" value="2" type="radio"><label for="star2"></label>
+                                                        <input id="star1" name="rating" value="1" type="radio"><label for="star1"></label>
+                                                    </div>
+                                                </div>
+                                                    <input type="hidden" th:value="${item.id}" name="itemId">
+                                                    <button class="primary-btn" onclick="createReview()">작성하기</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
                                     <!-- Reviews -->
+                                    <div class="col-md-3"></div>
                                     <div class="col-md-6">
                                         <div id="reviews">
                                             <ul class="reviews">
@@ -453,65 +481,40 @@
                                             </ul>
                                         </div>
                                     </div>
+                                    <div class="col-md-3"></div>
                                     <!-- /Reviews -->
-
-                                    <!-- Review Form -->
-                                    <div class="col-md-3">
-                                        <div id="review-form">
-                                            <form th:action="@{/review/add}" method="post" class="review-form">
-                                                <textarea class="review_box" name="review" placeholder="리뷰를 작성해주세요"></textarea>
-                                                <div class="input-rating">
-                                                    <span>별점: </span>
-                                                    <div class="stars">
-                                                        <input id="star5" name="rating" value="5" type="radio"><label for="star5"></label>
-                                                        <input id="star4" name="rating" value="4" type="radio"><label for="star4"></label>
-                                                        <input id="star3" name="rating" value="3" type="radio"><label for="star3"></label>
-                                                        <input id="star2" name="rating" value="2" type="radio"><label for="star2"></label>
-                                                        <input id="star1" name="rating" value="1" type="radio"><label for="star1"></label>
-                                                    </div>
-                                                </div>
-                                                <input type="hidden" th:value="${item.id}" name="itemId">
-                                                <button class="primary-btn" onclick="createReview()">작성하기</button>
-
-                                            </form>
-
-                                            <div class="modal" id="modal"  role="dialog" aria-labelledby="remoteModalLabel" aria-hidden="true" >
-                                                <div class="modal-dialog" style="width:850px;">
-                                                    <div class="modal-content" >
-                                                        <div class="modal-header">
-                                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                                                                ×
-                                                            </button>
-                                                            <h4 class="modal-title" id="myModalLabel">타이틀</h4>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-4" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false" data-widget-togglebutton="false">
-                                                                <div role="content">
-                                                                    <div class="widget-body">
-                                                                        내용 입력
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
-                                                            <button type="button" class="btn btn-primary" id="btn_save">저장</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                    <!-- /Review Form -->
                                 </div>
+                            </div>
                             <!-- /tab2  -->
 
                             <!-- tab3  -->
                             <div id="tab-3" class="tab-content">
                                 <div class="row">
-                                    <div class="col-md-12">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                                    <!-- Rating -->
+                                    <div class="col-md-3">
+                                        <p>문의</p>
+                                    </div>
+                                    <!-- Review Form -->
+                                    <div class="col-md-9">
+                                        <div id="inquiry_form">
+                                            <form th:action="@{/inquiry/add}" method="post" class="review-form">
+                                                <div class="col-md-9">
+                                                    <textarea class="inquiry_box" name="inquiry_text" placeholder="문의를 자유롭게 작성해주세요, 단 비방이나 욕설의 경우 경고없이 삭제 될 수 있습니다."></textarea>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <button type="submit" class="primary-btn">작성하기</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div th:each="inquiry : ${allInquiry}">
+                                        <div class="col-3"></div>
+                                        <div class="col-6">
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>

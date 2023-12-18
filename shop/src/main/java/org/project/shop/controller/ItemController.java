@@ -40,6 +40,7 @@ public class ItemController {
     private final CartServiceImpl cartServiceImpl;
     private final CartItemServiceImpl cartItemServiceImpl;
     private final ReviewServiceImpl reviewServiceImpl;
+    private final InquiryServiceImpl inquiryServiceImpl;
 
     @GetMapping(value = "/dbConfig")
     public String dbConfig(Model model) throws Exception {
@@ -273,6 +274,9 @@ public class ItemController {
         // 점수별 리뷰 개수
         int[] reviewCountByScore = Review.countByScore(findAllReviewByItemId);
 
+        // 문의 처리
+        List<Inquiry> allInquiry = inquiryServiceImpl.findAllInquiry();
+        model.addAttribute("allInquiry", allInquiry);
 
         System.out.println("reviewCountByScore = " + Arrays.toString(reviewCountByScore));
 
