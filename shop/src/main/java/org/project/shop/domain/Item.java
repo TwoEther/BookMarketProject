@@ -53,6 +53,9 @@ public class Item {
     @JoinColumn(name = "items")
     private LikeItem likeItem;
 
+    @OneToMany(mappedBy = "item")
+    private List<Inquiry> inquiries = new ArrayList<>();
+
     public void setLikeItem(LikeItem likeItem) {
         this.likeItem = likeItem;
     }

@@ -25,6 +25,8 @@ public class Inquiry {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Member member;
 
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Item item;
     @Column(length = 300)
     private String content;
 
@@ -52,12 +54,24 @@ public class Inquiry {
         this.member = member;
     }
 
+    public void setItem(Item item) {
+        if (this.item != null) {
+            this.item.getInquiries().remove(this);
+        }
+        item.getInquiries().add(this);
+        this.item = item;
+    }
+
     @Override
     public String toString() {
         return "Inquiry{" +
                 "id=" + id +
                 ", created_at=" + created_at +
-                ", content= "+content +
+                ", parent=" + parent +
+                ", child=" + child +
+                ", member=" + member +
+                ", item=" + item +
+                ", content='" + content + '\'' +
                 '}';
     }
 }

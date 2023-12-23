@@ -31,6 +31,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
                         .requestMatchers(new AntPathRequestMatcher("/admin")).hasAuthority(Role.ROLE_ADMIN.toString())
+                        .requestMatchers(new AntPathRequestMatcher("/admin/*")).hasAuthority(Role.ROLE_ADMIN.toString())
                         .requestMatchers(new AntPathRequestMatcher("/item/edit")).hasAuthority(Role.ROLE_ADMIN.toString())
                         .anyRequest().permitAll())
                 // 로그인 처리

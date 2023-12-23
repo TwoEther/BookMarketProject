@@ -35,6 +35,13 @@ public class InquiryRepositoryImpl implements InquiryRepository{
     }
 
     @Override
+    public List<Inquiry> findByItemId(Long id) {
+        return queryFactory.selectFrom(inquiry)
+                .where(inquiry.item.id.eq(id))
+                .fetch();
+    }
+
+    @Override
     public List<Inquiry> findAllInquiry() {
         return queryFactory.selectFrom(inquiry)
                 .fetch();

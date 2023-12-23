@@ -11,6 +11,9 @@ public interface InquiryRepository {
 
     public Inquiry findById(Long id);
 
+    public List<Inquiry> findByItemId(Long id);
+
+
     public List<Inquiry> findAllInquiry();
     public void delete(Long id);
 }

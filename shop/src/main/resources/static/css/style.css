@@ -72,6 +72,7 @@ a {
   font-weight: 500;
   -webkit-transition: 0.2s color;
   transition: 0.2s color;
+  text-decoration:none;
 }
 
 a:hover, a:focus {
@@ -1465,9 +1466,13 @@ textarea.input {
 #product-imgs .slick-next:before {
   content: "\f107";
 }
+.product-preview {
+    display: flex;
+    justify-content: center;
+}
 
 .product-preview img {
-  width: 100%;
+  width: 60%;
 }
 
 /*----------------------------*\
@@ -1848,6 +1853,44 @@ textarea.input {
   content: "\f005";
   color: #D10024;
 }
+
+#inquiryModalBtn {
+    margin-top:0px !important
+}
+
+.inquiry-header > div.header-text {
+    float:left;
+}
+
+.inquiry-header > div.modal-area {
+    float:right;
+}
+
+.inquiry-header > div.em-label, div.inquiry_name, div.inquiry_item_name {
+    float:left;
+}
+
+.inquiry-header > div.inquiry_time {
+    float:right;
+}
+
+.inquiry-header > div.modal-area {
+    float:right;
+}
+
+.inquiry-body {
+    clear:center;
+}
+
+
+.inquiry-label {
+    background-color:lightBlue;
+    font-color:white;
+}
+
+
+
+
 
 /*=========================================================
 	09 -> CHECKOUT PAGE

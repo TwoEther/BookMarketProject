@@ -53,6 +53,7 @@ public class MemberRepositoryImpl implements MemberRepository{
     public List<Member> findAllMember(){
         return queryFactory.select(member)
                 .from(member)
+                .orderBy(member.created_at.asc())
                 .fetch();
     }
 

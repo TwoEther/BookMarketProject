@@ -275,15 +275,17 @@ public class ItemController {
         int[] reviewCountByScore = Review.countByScore(findAllReviewByItemId);
 
         // 문의 처리
-        List<Inquiry> allInquiry = inquiryServiceImpl.findAllInquiry();
-        model.addAttribute("allInquiry", allInquiry);
+        List<Inquiry> allInquiry = inquiryServiceImpl.findByItemId(itemId);
+        for (Inquiry inquiry : allInquiry) {
+            System.out.println("inquiry.toString() = " + inquiry.toString());
+        }
 
         System.out.println("reviewCountByScore = " + Arrays.toString(reviewCountByScore));
 
         // 평균 점수
         double avgScore = Review.calculateAvgScore(findAllReviewByItemId);
 
-
+        model.addAttribute("allInquiry", allInquiry);
         model.addAttribute("allReview", findAllReviewByItemId);
         model.addAttribute("reviewCount", reviewCountByScore);
         model.addAttribute("avgScore", avgScore);

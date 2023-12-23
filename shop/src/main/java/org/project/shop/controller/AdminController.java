@@ -29,36 +29,32 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping(value = "/admin")
+@Secured("ROLE_ADMIN")
 public class AdminController {
     private final MemberServiceImpl memberServiceImpl;
     private final ItemServiceImpl itemServiceImpl;
 
-    @Secured("ROLE_ADMIN")
-    @GetMapping(value = "")
-    public String adminPage(Model model) {
-        model.addAttribute("type", "member");
-        return "admin/manage";
-    }
-//    @PreAuthorize("hasRole('ROLE_USER')")
-//    @GetMapping(value = "")
-//    public void denyToAdminPageGeneralUser(HttpServletResponse response) throws IOException {
-//        ScriptUtils.alertAndBackPage(response, "접근권한이 없습니다.");
-//    }
 
+    public String adminPage(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
+        List<Member> memberList = memberServiceImpl.findAllGeneralMember();
+        int size = Math.min(memberList.size(), 2);
+
+        model.addAttribute("type", "member");
+        model.addAttribute("memberList", memberList.subList(0, size));
+        return "admin/adminHome";
+    }
     @GetMapping(value = "/member")
     public String adminMemberPage(Model model) {
         List<Member> allGeneralMember = memberServiceImpl.findAllGeneralMember();
         model.addAttribute("allMember", allGeneralMember);
         model.addAttribute("type", "member");
-        return "admin/manage";
+        return "admin/adminHome";
     }
 
     @GetMapping(value = "/item")
     public String adminMemberItem(Model model) {
-        PageRequest pageRequest = CustomPageRequest.customPageRequest();
-        Page<Item> allItem = itemServiceImpl.findAllItem(pageRequest);
+        Page<Item> allItem = itemServiceImpl.findAllItem(PageRequest.of(0, 6));
         model.addAttribute("allItem", allItem);
-        model.addAttribute("type", "item");
-        return "admin/manage";
+        return "admin/adminHome";
     }
 }

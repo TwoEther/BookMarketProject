@@ -5,6 +5,41 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 
+<script>
+    function addToCart(id){
+        var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
+        $(function() {
+            $(document).ajaxSend(function(e, xhr, options) {
+                xhr.setRequestHeader(header, token);
+            });
+        });
+        var quantity = 1;
+        var token = $("meta[name='_csrf']").attr("content");
+	    var header = $("meta[name='_csrf_header']").attr("content");
+
+       $.ajax({
+            type: "POST",
+            url: "/cart/add",
+            beforeSend : function(xhr){
+				xhr.setRequestHeader(header, token);
+            },
+            data : {"itemId": id,
+                    "quantity": quantity},
+            success: function (flag) {
+                if(flag){
+                    alert("장바구니에 담겼습니다");
+                    location.reload();
+                }else{
+                    alert("로그인 후 이용 가능합니다");
+                }
+
+            },
+            error:function(request, status, error){
+        		alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error); }
+        });
+    }
+</script>
 
 <body>
 <div>
@@ -122,17 +157,20 @@
                                                 <span class="new">NEW</span>
                                             </div>
                                         </div>
-                                        <div class="product-body">
+                                        <div class="product-body" th:with="avg = ${T(java.lang.Math).floor(item.calculateAvgScore())}">
                                             <p class="product-category">Category</p>
-                                            <h3 class="product-name"><a href="#"><span th:text="${item.name}"></span></a></h3>
-                                            <h4 class="product-price" th:text="${item.price}"></h4>
-                                            <div class="product-rating">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
+                                            <h3 class="product-name">
+                                                <a th:href="@{/item/{param1}(param1=${item.id})}"><span th:text="${item.name}"></span></a>
+                                            </h3>
+                                            <h4 class="product-price" th:text="${#numbers.formatInteger(item.price, 3,'COMMA')}"></h4>
+                                            <div th:if="${avg >= 5}" class="review-rating">
+                                                <i th:each="page: ${#numbers.sequence(1, avg)}" class="fa fa-star"></i>
                                             </div>
+                                            <div th:unless="${avg >= 5}" class="review-rating">
+                                                <i th:each="page: ${#numbers.sequence(1, avg, 1)}" class="fa fa-star"></i>
+                                                <i th:each="page: ${#numbers.sequence(avg + 1, 5,1)}" class="fa fa-star-o empty"></i>
+                                            </div>
+
                                             <div class="product-btns">
                                                 <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
                                                 <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
@@ -140,7 +178,7 @@
                                             </div>
                                         </div>
                                         <div class="add-to-cart">
-                                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                                            <button th:id="${item.id}" class="add-to-cart-btn" onclick="addToCart(this.id)"><i class="fa fa-shopping-cart"></i> add to cart</button>
                                         </div>
                                     </div>
                                     <!-- /product -->
@@ -158,14 +196,7 @@
         <!-- /container -->
     </div>
     <!-- /SECTION -->
-
-    <script src="/static/js/jquery.min.js"></script>
-    <script src="/static/js/bootstrap.min.js"></script>
-    <script src="/static/js/slick.min.js"></script>
-    <script src="/static/js/nouislider.min.js"></script>
-    <script src="/static/js/jquery.zoom.min.js"></script>
     <script src="/static/js/main.js"></script>
-
     <div th:replace="fragments/footer :: footer" /></div> <!-- /container -->
 </body>
 </html>

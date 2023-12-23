@@ -7,7 +7,9 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -37,6 +39,8 @@ public class Member {
 
     @NotBlank(message = "이메일은 필수 값 입니다.")
     private String email;
+
+    private LocalDateTime created_at;
 
 //     정의 타입 사용
     @Embedded
@@ -96,6 +100,8 @@ public class Member {
     public Member(String userId, String password) {
         this.userId = userId;
         this.password = password;
+        this.created_at = LocalDateTime.now();
+
     }
 
     @Builder
@@ -103,6 +109,8 @@ public class Member {
         this.userId = userId;
         this.password = password;
         this.name = name;
+        this.created_at = LocalDateTime.now();
+
     }
 
     public Member(String userId, String password, String nickname, String name, String phoneNum, String email) {
@@ -112,6 +120,7 @@ public class Member {
         this.name = name;
         this.phoneNum = phoneNum;
         this.email = email;
+        this.created_at = LocalDateTime.now();
     }
 
     public Member(String name) {

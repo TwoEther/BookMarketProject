@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="fragments/header :: header" />
+<link rel="stylesheet" href="/static/css/admincss.css">
+<style>
+
+    #mainArea {
+        height: 605px;
+        font-size:large;
+    }
+
+    div.row {
+        height: 45%;
+        margin-bottom: 30px;
+    }
+    div.row > div.col-5{
+        background-color:#F4EDEC;
+        margin: 30px 30px 30px 30px;
+    }
+
+    table > * {
+        text-align: center;
+    }
+
+    td {
+        padding-right: 10px;
+    }
+</style>
+<body class="sb-nav-fixed">
+<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+    <!-- Navbar Brand-->
+    <a class="navbar-brand ps-3" th:href="@{/admin}">관리자 페이지</a>
+    <!-- Sidebar Toggle-->
+    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+    <!-- Navbar Search-->
+    <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+        <div class="input-group">
+            <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+            <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+        </div>
+    </form>
+    <!-- Navbar-->
+    <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" th:href="@{/}">홈으로 이동</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li><a class="dropdown-item" th:href="@{/member/logout}">로그아웃</a></li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+<div id="layoutSidenav">
+    <div id="layoutSidenav_nav">
+        <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+            <div class="sb-sidenav-menu">
+                <div class="nav">
+                    <div class="sb-sidenav-menu-heading">Core</div>
+                    <a class="nav-link" th:href="@{/admin}">
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        Dashboard
+                    </a>
+                    <div class="sb-sidenav-menu-heading">Interface</div>
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                        상품 및 주문
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" th:href="@{/admin/item}">상품</a>
+                            <a class="nav-link" href="layout-sidenav-light.html">주문</a>
+                        </nav>
+                    </div>
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
+                        <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                        리뷰 및 문의
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" href="layout-static.html">리뷰</a>
+                            <a class="nav-link" href="layout-sidenav-light.html">문의</a>
+                        </nav>
+                    </div>
+
+                </div>
+            </div>
+            <div class="sb-sidenav-footer">
+                <div class="small">Logged in as:</div>
+                Start Bootstrap
+            </div>
+        </nav>
+    </div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4" id="mainArea">
+                <div class="row">
+                    <div class="col-5">
+                        <p><strong>최근 가입한 회원</strong><p>
+                        <table>
+                            <thead>
+                            <th>아이디</th>
+                            <th>이메일</th>
+                            <th>핸드폰 번호</th>
+                            <th>가입일</th>
+                            </thead>
+                            <tbody>
+                            <tr th:each = "member : ${memberList}">
+                                <td th:text="${member.userId}"></td>
+                                <td th:text="${member.email}"></td>
+                                <td th:text="${member.phoneNum}"></td>
+                                <td th:text="${member.created_at}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-5">
+                        <p><strong>최근 결제된 주문</strong><p>
+                        <table>
+                            <thead>
+                            <th>주문 번호</th>
+                            <th>상품</th>
+                            <th>개수</th>
+                            <th>금액</th>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>t39423420340</td>
+                                <td>나의 사춘기에게</td>
+                                <td>5</td>
+                                <td>42,000</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-5">
+                        <p><strong>최근 문의 내용</strong><p>
+                        <table>
+                            <thead>
+                            <th>상품</th>
+                            <th>문의 내용</th>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>admin123</td>
+                                <td>상품에 스크래치가 있네요</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-5">
+                        <p><strong>최근 작성된 리뷰</strong><p>
+                        <table>
+                            <thead>
+                            <th>상품 번호</th>
+                            <th>상품 링크</th>
+                            <th>리뷰 내용</th>
+                            <th>별점</th>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>t39423420340</td>
+                                <td>나의 사춘기에게</td>
+                                <td>5</td>
+                                <td>42,000</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+        <footer class="py-4 bg-light mt-auto">
+            <div class="container-fluid px-4">
+                <div class="d-flex align-items-center justify-content-between small">
+                    <div class="text-muted">Copyright &copy; Your Website 2023</div>
+                    <div>
+                        <a href="#">Privacy Policy</a>
+                        &middot;
+                        <a href="#">Terms &amp; Conditions</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+</body>
+</html>

@@ -146,7 +146,7 @@ public class MemberController {
             return "/member/resultId";
         }else{
             ScriptUtils.alert(response, "핸드폰 번호 또는 이메일이 다릅니다");
-            return "/member/idForm";
+            return "/member/findUserId";
         }
 
     }
