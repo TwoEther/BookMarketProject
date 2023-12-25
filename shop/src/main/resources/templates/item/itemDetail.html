@@ -405,7 +405,8 @@
                                             <ul class="reviews">
                                                 <li th:each = "review : ${allReview}">
                                                     <div class="review-heading">
-                                                        <h5 class="name" th:text="${review.member.name}"></h5>
+                                                        <p class="name"><strong><span th:text="${review.member.name}"></span></strong></p>
+                                                        <p class="name" th:text="${review.member.orders.orderItems}"><strong><span>else</span></strong></p>
                                                         <p class="date" th:text="${review.created_at}">27 DEC 2018, 8:0 PM</p>
                                                         <div th:if="${review.score} >= 5" class="review-rating">
                                                             <i th:each="page: ${#numbers.sequence(1, review.score, 1)}" class="fa fa-star"></i>

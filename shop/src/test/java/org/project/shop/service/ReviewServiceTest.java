@@ -171,7 +171,7 @@ public class ReviewServiceTest {
         List<Order> byMemberIdAfterPayment = orderServiceImpl.findByMemberIdAfterPayment(member1.getId());
         List<Item> paymentItemList = new ArrayList<>();
         for (Order order : byMemberIdAfterPayment) {
-            List<Item> findAllItem = order.orderItemList();
+            List<Item> findAllItem = order.findOrderItemList();
             paymentItemList.addAll(findAllItem);
         }
 

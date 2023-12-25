@@ -27,7 +27,7 @@ public class Order {
     private Member member;
 
     // 1:N (Order : OrderItem)
-    @OneToMany(mappedBy = "order", cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "order")
     private List<OrderItem> orderItems = new ArrayList<>();
 
     // 1:N (Order : Delivery)
@@ -81,7 +81,7 @@ public class Order {
         return this.orderItems.get(0).getItem().getName() + "포함 "+ this.orderItems.size()+"건";
     }
 
-    public List<Item> orderItemList() {
+    public List<Item> findOrderItemList() {
         List<Item> paymentItems = new ArrayList<>();
         for (OrderItem orderItem : this.getOrderItems()) {
             paymentItems.add(orderItem.getItem());

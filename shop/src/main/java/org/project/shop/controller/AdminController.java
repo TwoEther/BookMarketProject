@@ -34,7 +34,7 @@ public class AdminController {
     private final MemberServiceImpl memberServiceImpl;
     private final ItemServiceImpl itemServiceImpl;
 
-
+    @GetMapping(value = "")
     public String adminPage(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
         List<Member> memberList = memberServiceImpl.findAllGeneralMember();
         int size = Math.min(memberList.size(), 2);
@@ -43,6 +43,7 @@ public class AdminController {
         model.addAttribute("memberList", memberList.subList(0, size));
         return "admin/adminHome";
     }
+
     @GetMapping(value = "/member")
     public String adminMemberPage(Model model) {
         List<Member> allGeneralMember = memberServiceImpl.findAllGeneralMember();

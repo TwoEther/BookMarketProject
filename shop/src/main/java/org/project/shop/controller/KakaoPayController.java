@@ -67,6 +67,8 @@ public class KakaoPayController {
 
         // 완료된 주문 건에 대해 주문을 저장
         Order paymentOrder = Order.createOrder(findMember);
+        List<Item> orderItemList = paymentOrder.findOrderItemList();
+
         Delivery delivery = new Delivery();
         delivery.setAddress(findMember.getAddress());
 

@@ -129,8 +129,6 @@ public class OrderController {
             int totalCount = CartItem.getTotalCount(paymentCartItems);
             int paymentPrice = deliveryFee + totalPrice;
 
-            System.out.println("findMember.toString() = " + findMember.toString());
-            System.out.println("paymentCartItems = " + paymentCartItems);
             
             model.addAttribute("index", "te,st");
             model.addAttribute("member", findMember);

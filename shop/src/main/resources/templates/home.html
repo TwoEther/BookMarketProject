@@ -152,10 +152,10 @@
                                     <div th:each = "item : ${bestSeller}" class="product">
                                         <div class="product-img">
                                             <img th:src="${item.getFilePath()}" alt="">
-                                            <div class="product-label">
-                                                <span class="sale">-30%</span>
-                                                <span class="new">NEW</span>
-                                            </div>
+<!--                                            <div class="product-label">-->
+<!--                                                <span class="sale">-30%</span>-->
+<!--                                                <span class="new">NEW</span>-->
+<!--                                            </div>-->
                                         </div>
                                         <div class="product-body" th:with="avg = ${T(java.lang.Math).floor(item.calculateAvgScore())}">
                                             <p class="product-category">Category</p>
