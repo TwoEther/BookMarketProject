@@ -6,18 +6,49 @@
       layout:decorator="layout/root_layout"
       lang="en">
 
-<div class="bar" th:fragment="sideBar">
-    <div class="myOrder" style="margin-bottom:20px;">
-        <h4>My 주문</h4>
-        <div><a th:href="@{/order/orderList}">주문 및 배송 조회</a></div>
-        <div><a>취소 및 반품 내역</a></div>
-        <div><a th:href="@{/review/manage}">리뷰 관리</a></div>
+<div id="sidenav" th:fragment="sideBar" style="float:left;">
+    <div class="wrapper">
+        <div class="logo">
+            <a th:href="@{/order/orderList}">마이 페이지</a>
+            <a href="#" class="nav-icon pull-right"><i class="fa fa-bars"></i></a>
+        </div>
+        <div class="menu">
+            <ul>
+                <li>
+                    <a href="#">계정 관리</a>
+                    <ul>
+                        <li><a th:href="@{/member/address}">배송지 설정</a></li>
+                        <li><a href="#">비밀번호 변경</a></li>
+                        <li><a href="#">이메일 변경</a></li>
+                        <li><a href="#">회원 탈퇴</a></li>
+                    </ul>
+                </li>
+                <!-- End If login as admin -->
+                <li>
+                    <a href="#">주문 관리</a>
+                    <ul>
+                        <li><a th:href="@{/order/orderList}">주문 조회</a></li>
+                        <li><a href="#">반품 및 교환 신청</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">Contact Us</a></li>
+                <li><a href="#" class="logout">Login</a></li>
+            </ul>
+        </div>
     </div>
-    <div class="myAccout">
-        <h4>My 계정</h4>
-        <div><a>비밀번호 재설정</a></div>
-        <div><a th:href="@{/member/address}">배송지 설정</a></div>
-        <div><a>회원 탈퇴</a></div>
-    </div>
-
 </div>
+
+<!--<div class="bar" th:fragment="sideBar">-->
+<!--    <div class="myOrder" style="margin-bottom:20px;">-->
+<!--        <h4>My 주문</h4>-->
+<!--        <div><a th:href="@{/order/orderList}">주문 및 배송 조회</a></div>-->
+<!--        <div><a>취소 및 반품 내역</a></div>-->
+<!--        <div><a th:href="@{/review/manage}">리뷰 관리</a></div>-->
+<!--    </div>-->
+<!--    <div class="myAccout">-->
+<!--        <h4>My 계정</h4>-->
+<!--        <div><a>비밀번호 재설정</a></div>-->
+<!--        <div><a th:href="@{/member/address}">배송지 설정</a></div>-->
+<!--        <div><a>회원 탈퇴</a></div>-->
+<!--    </div>-->
+<!--</div>-->

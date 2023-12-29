@@ -92,7 +92,14 @@ public class OrderController {
         return "order/orderList";
     }
 
+    @GetMapping(value = "/detail/{orderId}")
+    public String orderDetail(@PathVariable("orderId") Long orderId, Model model) {
+        Order findOrder = orderServiceImpl.findByOrderId(orderId);
+        model.addAttribute("order", findOrder);
 
+        return "order/orderDetail";
+    }
+    // 구매 로직
     @GetMapping(value = "/payment")
     @Transactional
     public String orderPayment(Model model, HttpServletResponse response) throws IOException{

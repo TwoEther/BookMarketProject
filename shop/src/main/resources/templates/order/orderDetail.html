@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"/>
+<link rel="stylesheet" href="/static/css/sideBar.css">
+<style>
+    .contextArea{
+        position:absolute;
+        left:350px;
+        margin-top:30px;
+    }
+
+    #bottom-footer{
+        clear:both;
+        height:100px;
+    }
+    .head-text {
+        text-align:center;
+    }
+
+    table {
+      border-collapse: separate;
+      border-spacing: 1px;
+      text-align: center;
+      line-height: 1.5;
+      border-top: 1px solid #ccc;
+      margin : 20px 10px;
+    }
+    table th {
+      width: 150px;
+      padding: 10px;
+      font-weight: bold;
+      vertical-align: top;
+      border-bottom: 1px solid #ccc;
+    }
+    table td {
+      width: 350px;
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+      justify-content:center;
+    }
+
+    .item-image {
+        width:100px;
+    }
+</style>
+
+<body>
+    <div th:replace="fragments/topHeader :: topHeader"/>
+    <div th:replace="fragments/mainHeader :: mainHeader" />
+    <div>
+        <div th:replace="fragments/sideBar :: sideBar"/>
+        <div class="contextArea" id="contextArea">
+            <h4 class="head-text">주문 상세</h4>
+            <h5>주문 정보</h5>
+            <table class="order-table">
+                <tbody>
+                    <tr>
+                        <th>주문 번호</th>
+                        <td>2134481283</td>
+                    </tr>
+                    <tr>
+                        <th>주문 일자</th>
+                        <td th:text="${order.orderDate}"></td>
+                    </tr>
+                    <tr>
+                        <th>주문자</th>
+                        <td th:text="${order.member.name}"></td>
+                    </tr>
+                    <tr>
+                        <th>결제금액</th>
+                        <td th:text="${order.getTotalPrice()}"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h5>상품 정보</h5>
+            <table>
+                <thead>
+                    <tr>
+                        <th>상품</th>
+                        <th></th>
+                        <th>주문금액</th>
+                        <th>배송상황</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="orderItem : ${order.orderItems}">
+                        <td><img class="item-image" th:src="${orderItem.item.getFilePath()}"></td>
+                        <td th:text="${orderItem.item.name}"></td>
+                        <td th:text="${#numbers.formatInteger(orderItem.getTotalPrice(), 3,'COMMA')}"></td>
+                        <td>배송 준비중</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h5>결제 정보</h5>
+            <table>
+                <tr>
+                    <th>결제 수단</th>
+                    <td>카카오 페이</td>
+                </tr>
+                <tr>
+                    <th>결제 금액</th>
+                    <td th:text="${order.getTotalPrice()}"></td>
+                </tr>
+            </table>
+            </div>
+    </div>
+
+
+
+
+<!--<div th:replace="fragments/footer :: footer"/>-->
+</body>
+</html>

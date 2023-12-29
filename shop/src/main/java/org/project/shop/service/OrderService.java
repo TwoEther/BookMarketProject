@@ -8,7 +8,10 @@ import java.util.List;
 public interface OrderService {
     public Long order(Long memberId, Long itemId, int count);
     public void cancelOrder(Long orderId);
+
+    public List<Order> findAllOrder();
     public List<Order> findOrders(OrderSearch orderSearch);
+    public Order findByOrderId(Long orderId);
 
     public Order findByMemberIdBeforePayment(Long memberId);
     public List<Order> findByMemberIdAfterPayment(Long memberId);

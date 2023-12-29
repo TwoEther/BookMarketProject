@@ -9,7 +9,8 @@ import java.util.List;
 public interface OrderRepository {
     public void save(Order order);
 
-    public Order findOneOrder(Long id);
+    public Order findByOrderId(Long orderId);
+    public List<Order> findAllOrder();
 
     public Order findByMemberIdBeforePayment(Long memberId);
 

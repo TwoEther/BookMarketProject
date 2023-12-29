@@ -27,8 +27,16 @@ public class OrderRepositoryImpl implements OrderRepository{
     }
 
     @Override
-    public Order findOneOrder(Long id) {
-        return em.find(Order.class, id);
+    public Order findByOrderId(Long orderId) {
+        return queryFactory.selectFrom(order)
+                .where(order.id.eq(orderId))
+                .fetchOne();
+    }
+
+    @Override
+    public List<Order> findAllOrder() {
+        return queryFactory.selectFrom(order)
+                .fetch();
     }
 
     @Override

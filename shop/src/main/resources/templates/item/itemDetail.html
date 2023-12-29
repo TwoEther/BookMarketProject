@@ -139,7 +139,6 @@
                 success: function (flag) {
                     if(!flag){alert("접근 권한이 없습니다");}
                     else{alert("삭제 되었습니다");}
-                    location.reload();
                 },
                 error:function(request, status, error){
                     alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error); }
@@ -272,7 +271,7 @@
 
                         <ul class="product-links">
                             <li>Category:</li>
-<!--                            <li><a href="#"><span th:text="{item.getCategory().category1}"></span></a></li>-->
+<!--                            <li><a href="#"><span th:text="{item.category}"></span></a></li>-->
 <!--                            <li><a href="#"><span th:text="{item.getCategory().category2}"></span></a></li>-->
                         </ul>
 
@@ -406,7 +405,6 @@
                                                 <li th:each = "review : ${allReview}">
                                                     <div class="review-heading">
                                                         <p class="name"><strong><span th:text="${review.member.name}"></span></strong></p>
-                                                        <p class="name" th:text="${review.member.orders.orderItems}"><strong><span>else</span></strong></p>
                                                         <p class="date" th:text="${review.created_at}">27 DEC 2018, 8:0 PM</p>
                                                         <div th:if="${review.score} >= 5" class="review-rating">
                                                             <i th:each="page: ${#numbers.sequence(1, review.score, 1)}" class="fa fa-star"></i>

@@ -31,6 +31,9 @@ public class Item {
     private int pages;
     private String description;
 
+    @ColumnDefault(value = "true")
+    private boolean isSale;
+
     @ColumnDefault(value = "0")
     private Integer total_purchase;
 
@@ -42,8 +45,8 @@ public class Item {
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     private List<CartItem> cartItem = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
+    @ManyToOne
+    @JoinColumn(name = "category_item")
     private Category category;
 
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -103,10 +106,15 @@ public class Item {
     }
     public void setCategory(Category category) {
         if (this.category != null) {
-            this.category.getItems().remove(this);
+            this.category.getCategory_item().remove(this);
         }
         this.category = category;
-        category.getItems().add(this);
+        category.getCategory_item().add(this);
+    }
+
+
+    public void setStockQuantity(int stockQuantity) {
+        this.stockQuantity = stockQuantity;
     }
 
     // 재고 관리를 위한 로직
@@ -127,6 +135,7 @@ public class Item {
                 ", name='" + name + '\'' +
                 ", price=" + price +
                 ", stockQuantity=" + stockQuantity +
+                ", category=" + category.toString() +
                 '}';
     }
 }

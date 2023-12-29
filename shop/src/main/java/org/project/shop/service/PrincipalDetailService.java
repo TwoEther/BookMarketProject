@@ -23,6 +23,7 @@ public class PrincipalDetailService implements UserDetailsService {
         if (principal == null) {
             return null;
         } else {
+
             return new PrincipalDetails(principal);
         }
     }

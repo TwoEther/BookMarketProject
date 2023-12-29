@@ -9,7 +9,7 @@
         <!-- row -->
         <div class="row">
             <!-- LOGO -->
-            <div class="col-md-3">
+            <div class="col-3">
                 <div class="header-logo">
                     <a th:href="@{/}" class="logo">
                         <img src="/static/images/logo.png" alt="">
@@ -19,7 +19,7 @@
             <!-- /LOGO -->
 
             <!-- SEARCH BAR -->
-            <div class="col-md-6">
+            <div class="col-6">
                 <div class="header-search">
                     <form th:action="@{/item}">
                         <select class="input-select" name="type">
@@ -35,7 +35,7 @@
             <!-- /SEARCH BAR -->
 
             <!-- ACCOUNT -->
-            <div class="col-md-3 clearfix" sec:authorize="isAuthenticated()">
+            <div class="col-3" sec:authorize="isAuthenticated()">
                 <div class="header-ctn">
                     <!-- Wishlist -->
                     <div>

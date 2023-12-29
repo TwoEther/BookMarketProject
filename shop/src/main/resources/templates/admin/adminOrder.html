@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="fragments/header :: header" />
+<link rel="stylesheet" href="/static/css/admincss.css">
+<style>
+
+    #mainArea {
+        height: 605px;
+        font-size:large;
+    }
+
+    div.row {
+        height: 45%;
+        margin-bottom: 30px;
+    }
+    div.row > div.col-5{
+        background-color:#F4EDEC;
+        margin: 30px 30px 30px 30px;
+    }
+
+    table > * {
+        text-align: center;
+    }
+
+    td {
+        padding-right: 10px;
+    }
+</style>
+<body class="sb-nav-fixed">
+<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+    <!-- Navbar Brand-->
+    <a class="navbar-brand ps-3" th:href="@{/admin}">관리자 페이지</a>
+    <!-- Sidebar Toggle-->
+    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+    <!-- Navbar Search-->
+    <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+        <div class="input-group">
+            <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+            <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+        </div>
+    </form>
+    <!-- Navbar-->
+    <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" th:href="@{/}">홈으로 이동</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li><a class="dropdown-item" th:href="@{/member/logout}">로그아웃</a></li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+<div id="layoutSidenav">
+    <div id="layoutSidenav_nav">
+        <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+            <div class="sb-sidenav-menu">
+                <div class="nav">
+                    <div class="sb-sidenav-menu-heading">Core</div>
+                    <a class="nav-link" th:href="@{/admin}">
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        Dashboard
+                    </a>
+                    <div class="sb-sidenav-menu-heading">Interface</div>
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                        상품 및 주문
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" th:href="@{/admin/item}">상품</a>
+                            <a class="nav-link" th:href="@{/admin/order}">주문</a>
+                        </nav>
+                    </div>
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
+                        <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                        리뷰 및 문의
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" th:href="@{/admin/review}">리뷰</a>
+                            <a class="nav-link" th:href="@{/admin/inquiry}">문의</a>
+                        </nav>
+                    </div>
+
+                </div>
+            </div>
+            <div class="sb-sidenav-footer">
+                <div class="small">Logged in as:</div>
+                Start Bootstrap
+            </div>
+        </nav>
+    </div>
+
+    <div id="layoutSidenav_content">
+        <h3>상품 리스트</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>주문 번호</th>
+                <th>주문 날짜</th>
+                <th>주문자</th>
+                <th>주문 금액</th>
+                <th>주문 개수</th>
+                <th>배송 상태 수정</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each ="order :${allOrder}">
+                <td th:text="${order.tid}"></td>
+                <td th:text="${order.orderDate}"></td>
+                <td th:text="${order.member.name}"></td>
+                <td th:text="${order.getTotalPrice()}"></td>
+                <td>
+                    <!-- Button Trigger Modal -->
+                    <button type="button" class="btn btn-lg btn-success mt-4"
+                            data-bs-toggle="modal" data-bs-target="#myModal" style="margin-top:0px;">
+                        <i class="fa-solid fa-pencil"></i>
+                        조정하기
+                    </button>
+
+                    <!-- The Modal -->
+                    <div id="myModal" class="modal fade" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">
+                                        재고 조정
+                                    </h5>
+                                    <button type="button" class="btn-close"
+                                            data-bs-dismiss="modal">
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="thumbnail-box">
+                                        <div class="row">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <!-- Button Trigger Modal -->
+                    <button type="button" class="btn btn-lg btn-success mt-4"
+                            data-bs-toggle="modal" data-bs-target="#statusModal" style="margin-top:0px;">
+                        <i class="fa-solid fa-pencil"></i>
+                        조정하기
+                    </button>
+
+                    <!-- The Modal -->
+                    <div id="statusModal" class="modal fade" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">
+                                        상태 수정
+                                    </h5>
+                                    <button type="button" class="btn-close"
+                                            data-bs-dismiss="modal">
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="thumbnail-box">
+                                        <div class="row">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+<!--        <div th:if="${!allItem.isEmpty()}" class="store-filter clearfix">-->
+<!--            <span class="store-qty">Showing 20-100 products</span>-->
+<!--            <ul class="store-pagination">-->
+<!--                <li class="page-item" th:classappend="${!allItem.hasPrevious} ? 'disabled'">-->
+<!--                    <form th:action="@{/admin/item}">-->
+<!--                        <input type="hidden" name="page" th:value="${currentPage-1}">-->
+<!--                        <input class="input" th:value="${keyword}" type="hidden" name="keyword">-->
+<!--                        <input class="page-left" type="submit" value="&#xf359;">-->
+<!--                    </form>-->
+<!--                </li>-->
+<!--                <li th:each="page: ${#numbers.sequence(startPage, endPage)}"-->
+<!--                    class="page-item">-->
+<!--                    <a th:text="${page}" class="page-link" th:href="@{|?page=${page}&keyword=${keyword}|}"></a>-->
+<!--                </li>-->
+<!--                <li class="page-item" th:classappend="${!allItem.hasNext} ? 'disabled'">-->
+<!--                    <form th:action="@{/admin/item}">-->
+<!--                        <input type="hidden" name="page" th:value="${currentPage+1}">-->
+<!--                        <input class="input" th:value="${keyword}" type="hidden" name="keyword">-->
+<!--                        <input class="page-right" type="submit" value="&#xf35a;">-->
+<!--                    </form>-->
+<!--                </li>-->
+<!--            </ul>-->
+<!--        </div>-->
+
+
+        <footer class="py-4 bg-light mt-auto">
+            <div class="container-fluid px-4">
+                <div class="d-flex align-items-center justify-content-between small">
+                    <div class="text-muted">Copyright &copy; Your Website 2023</div>
+                    <div>
+                        <a href="#">Privacy Policy</a>
+                        &middot;
+                        <a href="#">Terms &amp; Conditions</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+</body>
+</html>

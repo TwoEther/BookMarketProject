@@ -20,6 +20,7 @@ public class Order {
     @Column(unique = true)
     private String tid;
 
+
     // 지연 로딩 사용
     // N:1 (Order : Member)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -115,8 +116,13 @@ public class Order {
     public String toString() {
         return "Order{" +
                 "id=" + id +
+                ", tid='" + tid + '\'' +
                 ", member=" + member +
                 ", orderItems=" + orderItems +
+                ", delivery=" + delivery +
+                ", cart=" + cart +
+                ", orderDate=" + orderDate +
+                ", status=" + status +
                 '}';
     }
 }

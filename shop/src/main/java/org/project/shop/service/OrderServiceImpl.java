@@ -40,13 +40,23 @@ public class OrderServiceImpl implements OrderService{
     // 주문 취소
     public void cancelOrder(Long orderId) {
         // 주문 조회
-        Order order = orderRepositoryImpl.findOneOrder(orderId);
+        Order order = orderRepositoryImpl.findByOrderId(orderId);
         order.cancel();
+    }
+
+    @Override
+    public List<Order> findAllOrder() {
+        return orderRepositoryImpl.findAllOrder();
     }
 
     @Override
     public List<Order> findOrders(OrderSearch orderSearch) {
         return orderRepositoryImpl.findAllOrder(orderSearch);
+    }
+
+    @Override
+    public Order findByOrderId(Long orderId) {
+        return orderRepositoryImpl.findByOrderId(orderId);
     }
 
     @Override
