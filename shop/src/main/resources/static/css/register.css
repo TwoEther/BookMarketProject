@@ -1,3 +1,10 @@
 .form-group {
         margin-bottom:5px;
 }
+
+.form-group > input {
+    width:500px;
+}
+.container > * {
+    justify-content:center;
+}

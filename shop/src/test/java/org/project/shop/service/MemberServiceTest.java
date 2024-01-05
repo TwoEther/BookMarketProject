@@ -42,7 +42,7 @@ public class MemberServiceTest {
         Member member1 = new Member(id, name);
 
         //when
-        Long memberId = memberServiceImpl.join(member1);
+        Long memberId = memberServiceImpl.save(member1);
 
         //Then
         Member findMember = memberServiceImpl.findByUserId(id);
@@ -65,7 +65,7 @@ public class MemberServiceTest {
 
 
         // when
-        memberServiceImpl.join(joinMember1);
+        memberServiceImpl.save(joinMember1);
 
         // then
         Member findMember = memberServiceImpl.findOneMember(joinMember1.getId());
@@ -80,8 +80,8 @@ public class MemberServiceTest {
         Member member1 = new Member("lee");
         Member member2 = new Member("lee");
 
-        memberServiceImpl.join(member1);
-        memberServiceImpl.join(member2);
+        memberServiceImpl.save(member1);
+        memberServiceImpl.save(member2);
 
         fail("예외가 발생");
     }
@@ -92,8 +92,8 @@ public class MemberServiceTest {
         Member member1 = new Member("test1", "test1");
         Member member2 = new Member("test2", "test2");
 
-        memberServiceImpl.join(member1);
-        memberServiceImpl.join(member2);
+        memberServiceImpl.save(member1);
+        memberServiceImpl.save(member2);
 
         member1.setRole(Role.ROLE_ADMIN.toString());
         member2.setRole(Role.ROLE_USER.toString());

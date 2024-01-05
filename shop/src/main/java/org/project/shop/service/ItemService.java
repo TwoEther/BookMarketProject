@@ -12,6 +12,7 @@ public interface ItemService {
     public void saveItemNoImage(Item item);
     public void saveItem(Item Item, MultipartFile file) throws Exception;
     public Item findOneItem(Long itemId);
+
     public Page<Item> findAllItem(PageRequest pageRequest);
     public void updateItem(Long itemId, String name, int price, int stockQuantity);
 

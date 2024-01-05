@@ -9,6 +9,7 @@ import org.project.shop.config.ScriptUtils;
 import org.project.shop.domain.Address;
 import org.project.shop.domain.Member;
 import org.project.shop.domain.Role;
+import org.project.shop.service.MailService;
 import org.project.shop.service.MemberServiceImpl;
 import org.project.shop.web.AddressForm;
 import org.project.shop.web.LoginForm;
@@ -35,6 +36,7 @@ import java.util.Map;
 @RequestMapping(value = "/member")
 public class MemberController {
     private final MemberServiceImpl memberServiceImpl;
+    private final MailService mailService;
 
     @GetMapping(value = "/new")
     public String createForm(@RequestParam(value = "error", required = false) String error,
@@ -63,12 +65,13 @@ public class MemberController {
         String email = form.getEmail();
         String roles = form.getRoles();
 
+//        mailService.sendEmail();
 
         if (memberServiceImpl.findByUserId(id) != null) {
             ScriptUtils.alert(response, "아이디가 존재합니다");
             return "/member/createMemberForm";
         } else {
-            Member member = new Member(id, password, nickname, name, phoneNum, email);
+            Member member = new Member(id, password, name, phoneNum, email);
             if (roles.equals(Role.ROLE_ADMIN.toString())) {
                 member.setRole(Role.ROLE_ADMIN.toString());
             } else if (roles.equals(Role.ROLE_ANONYMOUS)) {
@@ -83,7 +86,7 @@ public class MemberController {
             }
 
             try {
-                memberServiceImpl.join(member);
+                memberServiceImpl.save(member);
             } catch (DataIntegrityViolationException e) {
                 e.printStackTrace();
                 result.reject("signupFailed", "이미 등록된 사용자입니다.");
@@ -202,5 +205,13 @@ public class MemberController {
     @ResponseBody
     public void deleteMemberById(@RequestParam String memberNum) {
         memberServiceImpl.deleteMemberByMemberId(Long.valueOf(memberNum));
+    }
+
+    // 이메일 인증
+    public void sendCodeToEmail(String toEmail) {
+
+    }
+
+    private void checkDuplicatedEmail(String email) {
     }
 }

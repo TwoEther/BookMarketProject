@@ -5,12 +5,10 @@ import lombok.Getter;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 // Exception 처리를 위한 클래스
 @Getter
 @Builder
-
 public class ErrorResponse {
     private final LocalDateTime timestamp = LocalDateTime.now();
     private final int status;
@@ -18,14 +16,14 @@ public class ErrorResponse {
     private final String code;
     private final String message;
 
-    public static ResponseEntity<ErrorResponse> toResponseEntity(ErrorCode errorCode) {
+    public static ResponseEntity<ErrorResponse> toResponseEntity(ExceptionCode exceptionCode) {
         return ResponseEntity
-                .status(errorCode.getHttpStatus())
+                .status(exceptionCode.getHttpStatus())
                 .body(ErrorResponse.builder()
-                        .status(errorCode.getHttpStatus().value())
-                        .error(errorCode.getHttpStatus().name())
-                        .code(errorCode.name())
-                        .message(errorCode.getDetail())
+                        .status(exceptionCode.getHttpStatus().value())
+                        .error(exceptionCode.getHttpStatus().name())
+                        .code(exceptionCode.name())
+                        .message(exceptionCode.getMessage())
                         .build()
                 );
     }

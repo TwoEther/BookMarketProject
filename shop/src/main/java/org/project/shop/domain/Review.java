@@ -19,7 +19,7 @@ public class Review {
     @GeneratedValue
     private Long id;
 
-    private String created_at;
+    private LocalDateTime created_at;
     private int score;
 
     @Column(length = 500)
@@ -95,19 +95,14 @@ public class Review {
     }
 
 
-    public Review(int score, String text, String create_time) {
+    public Review(int score, String text) {
         this.likeNum = 0;
         this.score = score;
         this.text = text;
-        this.created_at = create_time;
+        this.created_at = LocalDateTime.now();
     }
 
-    public Review(String created_at, int score, String text, String type) {
-        this.created_at = created_at;
-        this.score = score;
-        this.text = text;
-        this.type = type;
-    }
+
 
     @Override
     public String toString() {

@@ -25,14 +25,11 @@ public class MemberRepositoryImpl implements MemberRepository{
     }
 
     @Override
-    public void save(Member member) {
+    public Long save(Member member) {
         em.persist(member);
+        return member.getId();
     }
 
-    @Override
-    public void clear() {
-        queryFactory.delete(member).execute();
-    }
 
     @Override
     public Member findMember(Long id) {
@@ -50,16 +47,18 @@ public class MemberRepositoryImpl implements MemberRepository{
     }
 
     @Override
+    public Member findOneMember(Long memberId) {
+        return queryFactory.select(member)
+                .where(member.id.eq(memberId))
+                .fetchOne();
+    }
+
+    @Override
     public List<Member> findAllMember(){
         return queryFactory.select(member)
                 .from(member)
                 .orderBy(member.created_at.asc())
                 .fetch();
-    }
-
-    @Override
-    public void mergeMember(Member member) {
-        em.merge(member);
     }
 
     @Override
@@ -71,8 +70,10 @@ public class MemberRepositoryImpl implements MemberRepository{
     }
 
     @Override
-    public Member findByName(String userName) {
-        return null;
+    public Optional<Member> findByEmail(String email) {
+        return Optional.ofNullable(queryFactory.select(member)
+                .where(member.email.eq(email))
+                .fetchOne());
     }
 
 

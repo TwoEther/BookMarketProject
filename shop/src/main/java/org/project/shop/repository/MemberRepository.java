@@ -6,23 +6,21 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MemberRepository {
-    public void save(Member member);
+    // 회원 가입
+    public Long save(Member member);
 
-    public void clear();
+    // 회원 조회
+    public List<Member> findAllMember();
+    public List<Member> findAllGeneralMember();
+    public Member findOneMember(Long memberId);
+    public Member findByUserId(String userId);
+    public String findMemberIdByEmailAndPhoneNum(String email, String phoneNum);
+    public Member findById(Long id);
+
     public Member findMember(Long id);
 
-    public List<Member> findAllGeneralMember();
-    public List<Member> findAllMember();
+    public Optional<Member> findByEmail(String email);
 
-    public void mergeMember(Member member);
-
-    public Member findById(Long id);
-    public Member findByName(String userName);
-
-    public Member findByUserId(String userId);
-
-    public String findMemberIdByEmailAndPhoneNum(String email, String phoneNum);
-    public Member findById(String id);
-
+    // 회원 삭제
     public void deleteMemberByMemberId(Long memberId);
 }

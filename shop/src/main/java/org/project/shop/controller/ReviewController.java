@@ -66,9 +66,8 @@ public class ReviewController {
 
         int score = Integer.parseInt(fscore);
         Long itemId = Long.parseLong(fitemId);
-        String create_time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분 ss초"));
 
-        Review review = new Review(score, review_detail, create_time);
+        Review review = new Review(score, review_detail);
         Member findMember = memberServiceImpl.findByUserId(username);
 
         Item findItem = itemServiceImpl.findOneItem(itemId);

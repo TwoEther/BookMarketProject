@@ -3,30 +3,30 @@
 <head th:replace="fragments/header :: header" />
 <link rel="stylesheet" href="/static/css/admincss.css">
 <link rel="stylesheet" href="/static/css/table.css">
+
 <style>
-
-    #mainArea {
-        height: 605px;
-        font-size:large;
+    tr {
+        border-bottom: 1px solid black;
     }
 
-    div.row {
-        height: 45%;
-        margin-bottom: 30px;
-    }
-    div.row > div.col-5{
-        background-color:#F4EDEC;
-        margin: 30px 30px 30px 30px;
+    input[type="submit"]{
+        font-family: FontAwesome;
     }
 
-    table > * {
-        text-align: center;
+    .content-header > *{
+        float:right;
     }
 
-    td {
-        padding-right: 10px;
+    table {
+        margin-top:30px;
+        margin-left:30px;
+
+        width:800px;
     }
+
 </style>
+
+
 <body class="sb-nav-fixed">
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
     <!-- Navbar Brand-->
@@ -42,12 +42,12 @@
     </form>
     <!-- Navbar-->
     <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-        <li class="nav-item dropdown">
+        <li class="nav-review dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" th:href="@{/}">홈으로 이동</a></li>
+                <li><a class="dropdown-review" th:href="@{/}">홈으로 이동</a></li>
                 <li><hr class="dropdown-divider" /></li>
-                <li><a class="dropdown-item" th:href="@{/member/logout}">로그아웃</a></li>
+                <li><a class="dropdown-review" th:href="@{/member/logout}">로그아웃</a></li>
             </ul>
         </li>
     </ul>
@@ -70,7 +70,7 @@
                     </a>
                     <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                         <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" th:href="@{/admin/item}">상품</a>
+                            <a class="nav-link" th:href="@{/admin/review}">상품</a>
                             <a class="nav-link" th:href="@{/admin/order}">주문</a>
                         </nav>
                     </div>
@@ -81,7 +81,7 @@
                     </a>
                     <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
                         <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" th:href="@{/admin/order}">리뷰</a>
+                            <a class="nav-link" th:href="@{/admin/review}">리뷰</a>
                             <a class="nav-link" th:href="@{/admin/inquiry}">문의</a>
                         </nav>
                     </div>
@@ -99,7 +99,7 @@
         <section class="notice">
             <div class="page-title">
                 <div class="container">
-                    <h3>주문 관리</h3>
+                    <h3>문의 관리</h3>
                 </div>
             </div>
 
@@ -124,31 +124,25 @@
                     <table class="board-table">
                         <thead>
                         <tr>
-                            <th scope="col" class="th-num">주문 번호</th>
-                            <th scope="col" class="th-title">주문 날짜</th>
-                            <th scope="col" class="th-title">주문자</th>
-                            <th scope="col" class="th-date">주문 금액</th>
-                            <th scope="col" class="th-date">배송 상태 조정</th>
-                            <th scope="col" class="th-date">저장</th>
+                            <th scope="col" class="th-num">번호</th>
+                            <th scope="col" class="th-title">상품명</th>
+                            <th scope="col" class="th-title">문의 내용</th>
+                            <th scope="col" class="th-date">등록일</th>
+                            <th scope="col" class="th-date">답변 작성 여부</th>
+                            <th scope="col" class="th-date">답변 작성 하기</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="order : ${allOrder}">
-                            <td th:text="${order.tid}"></td>
-                            <td th:text="${order.orderDate}"></td>
-                            <th th:text="${order.member.name}"></th>
-                            <th th:text="${order.getTotalPrice()}"></th>
-                            <form th:action="@{/admin/order/status/{param}(param=${order.id})}" method="post">
-                                <td>
-                                    <select name="status" id="status">
-                                        <option value="true">판매 가능</option>
-                                        <option value="false">판매 불가능</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <button type="submit">저장</button>
-                                </td>
-                            </form>
+                        <tr th:each="inquiry : ${allInquiry}">
+                            <td>3</td>
+                            <td><a th:href="@{/item/{param}(param=${inquiry.item.id})}"><span th:text="${inquiry.item.name}"></span></a></td>
+                            <th th:text="${inquiry.content}"></th>
+                            <td th:text="${#temporals.format(inquiry.created_at, 'yyyy.MM.dd HH:mm')}">2017.07.13</td>
+                            <td th:if="${inquiry.child.isEmpty()}">N</td>
+                            <td th:unless="${inquiry.child.isEmpty()}">Y</td>
+                            <td>
+                                <button>작성하기</button>
+                            </td>
                         </tr>
 
                         </tbody>
@@ -158,34 +152,10 @@
 
         </section>
 
-<!--        <div th:if="${!allItem.isEmpty()}" class="store-filter clearfix">-->
-<!--            <span class="store-qty">Showing 20-100 products</span>-->
-<!--            <ul class="store-pagination">-->
-<!--                <li class="page-item" th:classappend="${!allItem.hasPrevious} ? 'disabled'">-->
-<!--                    <form th:action="@{/admin/item}">-->
-<!--                        <input type="hidden" name="page" th:value="${currentPage-1}">-->
-<!--                        <input class="input" th:value="${keyword}" type="hidden" name="keyword">-->
-<!--                        <input class="page-left" type="submit" value="&#xf359;">-->
-<!--                    </form>-->
-<!--                </li>-->
-<!--                <li th:each="page: ${#numbers.sequence(startPage, endPage)}"-->
-<!--                    class="page-item">-->
-<!--                    <a th:text="${page}" class="page-link" th:href="@{|?page=${page}&keyword=${keyword}|}"></a>-->
-<!--                </li>-->
-<!--                <li class="page-item" th:classappend="${!allItem.hasNext} ? 'disabled'">-->
-<!--                    <form th:action="@{/admin/item}">-->
-<!--                        <input type="hidden" name="page" th:value="${currentPage+1}">-->
-<!--                        <input class="input" th:value="${keyword}" type="hidden" name="keyword">-->
-<!--                        <input class="page-right" type="submit" value="&#xf35a;">-->
-<!--                    </form>-->
-<!--                </li>-->
-<!--            </ul>-->
-<!--        </div>-->
-
 
         <footer class="py-4 bg-light mt-auto">
             <div class="container-fluid px-4">
-                <div class="d-flex align-items-center justify-content-between small">
+                <div class="d-flex align-reviews-center justify-content-between small">
                     <div class="text-muted">Copyright &copy; Your Website 2023</div>
                     <div>
                         <a href="#">Privacy Policy</a>

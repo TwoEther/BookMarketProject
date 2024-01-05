@@ -31,8 +31,8 @@ public class Member {
     @NotBlank(message = "이름은 필수 값 입니다.")
     private String name;
 
-    @NotBlank(message = "닉네임은 필수 값 입니다.")
-    private String nickname;
+//    @NotBlank(message = "닉네임은 필수 값 입니다.")
+//    private String nickname;
 
     @NotBlank(message = "핸드폰 번호는 필수 값 입니다.")
     private String phoneNum;
@@ -113,10 +113,9 @@ public class Member {
 
     }
 
-    public Member(String userId, String password, String nickname, String name, String phoneNum, String email) {
+    public Member(String userId, String password, String name, String phoneNum, String email) {
         this.userId = userId;
         this.password = password;
-        this.nickname = nickname;
         this.name = name;
         this.phoneNum = phoneNum;
         this.email = email;

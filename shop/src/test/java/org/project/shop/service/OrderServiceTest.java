@@ -50,10 +50,10 @@ public class OrderServiceTest {
 
     @BeforeEach
     public void setUp() {
-        Member member1 = new Member("id1", "pw1","nickname1", "user1", "010-2394-5911", "user1@test.com");
-        Member member2 = new Member("id2", "pw2", "nickname2", "user2","010-3952-1860", "user2@test.com");
-        memberServiceImpl.join(member1);
-        memberServiceImpl.join(member2);
+        Member member1 = new Member("id1", "pw1", "user1", "010-2394-5911", "user1@test.com");
+        Member member2 = new Member("id2", "pw2", "user2","010-3952-1860", "user2@test.com");
+        memberServiceImpl.save(member1);
+        memberServiceImpl.save(member2);
 
         Item item1 = new Item("book1", 20000, 30);
         Item item2 = new Item("book2", 30000, 40);

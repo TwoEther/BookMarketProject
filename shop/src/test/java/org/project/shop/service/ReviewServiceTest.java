@@ -48,11 +48,11 @@ public class ReviewServiceTest {
         reviewServiceImpl.save(review2);
         reviewServiceImpl.save(review3);
 
-        Member member1 = new Member("testId1", "password1","nickname1", "name1","0100101010","test1@test.com");
-        Member member2 = new Member("testId2", "password2","nickname2", "name2","0100101011","test2@test.com");
+        Member member1 = new Member("testId1", "password1", "name1","0100101010","test1@test.com");
+        Member member2 = new Member("testId2", "password2", "name2","0100101011","test2@test.com");
 
-        memberServiceImpl.join(member1);
-        memberServiceImpl.join(member2);
+        memberServiceImpl.save(member1);
+        memberServiceImpl.save(member2);
 
         Item item1 = new Item("item1", 20000, 30);
         Item item2 = new Item("item2", 34000, 15);
