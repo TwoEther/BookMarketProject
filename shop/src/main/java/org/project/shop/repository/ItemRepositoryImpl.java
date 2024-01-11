@@ -1,6 +1,9 @@
 package org.project.shop.repository;
 
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -14,9 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import org.project.shop.domain.Item;
 
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.project.shop.domain.QCategory.category;
@@ -24,7 +30,7 @@ import static org.project.shop.domain.QItem.item;
 
 @Repository
 @RequiredArgsConstructor
-public class ItemRepositoryImpl implements ItemRepository{
+public class ItemRepositoryImpl implements ItemRepository {
     @PersistenceContext
     EntityManager em;
 
@@ -43,7 +49,7 @@ public class ItemRepositoryImpl implements ItemRepository{
     }
 
     @Override
-    public Item findOneItem(Long id){
+    public Item findOneItem(Long id) {
         return queryFactory.select(item)
                 .from(item)
                 .where(item.id.eq(id))
@@ -51,7 +57,7 @@ public class ItemRepositoryImpl implements ItemRepository{
     }
 
     @Override
-    public Page<Item> findAllItem(PageRequest pageRequest){
+    public Page<Item> findAllItem(PageRequest pageRequest) {
         List<Item> result = queryFactory.select(item)
                 .from(item)
                 .offset(pageRequest.getOffset())
@@ -105,6 +111,7 @@ public class ItemRepositoryImpl implements ItemRepository{
                 )
                 .offset(pageRequest.getOffset())
                 .limit(pageRequest.getPageSize())
+                .orderBy(getOrderSpecifier(pageRequest))
                 .fetch();
         return new PageImpl<>(result);
     }
@@ -140,5 +147,25 @@ public class ItemRepositoryImpl implements ItemRepository{
         return queryFactory.selectFrom(item)
                 .orderBy(item.total_purchase.desc(), Expressions.numberTemplate(Double.class, "function('rand')").asc())
                 .fetch();
+    }
+
+    // 동적 정렬 쿼리
+    public OrderSpecifier<?> getOrderSpecifier(PageRequest pageRequest) {
+        // 정렬 조건이 있다면
+        if (!pageRequest.getSort().isEmpty()) {
+            for (Sort.Order order : pageRequest.getSort()) {
+                Order direction = order.getDirection().isDescending() ? Order.DESC : Order.ASC;
+
+                switch (order.getProperty()) {
+                    case "createDate" -> {
+                        return new OrderSpecifier(direction, item.createDate);
+                    }
+                    case "total_purchase" -> {
+                        return new OrderSpecifier(direction, item.total_purchase);
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

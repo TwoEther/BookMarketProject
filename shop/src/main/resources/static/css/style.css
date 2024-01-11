@@ -703,6 +703,7 @@ textarea.input {
   .main-nav>li {
     display: block;
     float: none;
+    background-color:red;
   }
   .main-nav>li+li {
     margin-left: 0px;
@@ -710,6 +711,7 @@ textarea.input {
   .main-nav>li>a {
     padding: 15px;
     color: #FFF;
+
   }
 }
 

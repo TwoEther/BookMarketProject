@@ -70,8 +70,13 @@ section.notice {
   text-align: center;
 }
 
-.board-table .th-num {
+.board-table .th-num{
   width: 100px;
+  text-align: center;
+}
+
+.board-table .th-btn{
+  width: 80px;
   text-align: center;
 }
 

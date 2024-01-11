@@ -19,6 +19,10 @@
         margin: 30px 30px 30px 30px;
     }
 
+    .img-area > img {
+        width:100px;
+    }
+
     table > * {
         text-align: center;
     }
@@ -59,24 +63,10 @@
         <section class="notice">
             <div class="page-title">
                 <div class="container">
-                    <h3>주문 관리</h3>
+                    <h3>주문 상품 관리</h3>
                 </div>
             </div>
 
-            <!-- board seach area -->
-            <div id="board-search">
-                <div class="container">
-                    <div class="search-window">
-                        <form action="">
-                            <div class="search-wrap">
-                                <label for="search" class="blind">공지사항 내용 검색</label>
-                                <input id="search" type="search" name="" placeholder="검색어를 입력해주세요." value="">
-                                <button type="submit" class="btn btn-dark">검색</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
 
             <!-- board list area -->
             <div id="board-list">
@@ -84,24 +74,32 @@
                     <table class="board-table">
                         <thead>
                         <tr>
-                            <th scope="col" class="th-num">주문 번호</th>
-                            <th scope="col" class="th-title">주문 날짜</th>
-                            <th scope="col" class="th-title">주문자</th>
+                            <th scope="col" class="th-num">상품 이미지</th>
+                            <th scope="col" class="th-title">상품명</th>
+                            <th scope="col" class="th-title">주문 개수</th>
                             <th scope="col" class="th-date">주문 금액</th>
                             <th scope="col" class="th-date">배송 상태 조정</th>
+                            <th scope="col" class="th-date">저장 하기</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="order : ${allOrder}">
-                            <td th:text="${order.tid}"></td>
-                            <td th:text="${order.orderDate}"></td>
-                            <th th:text="${order.member.name}"></th>
-                            <th th:text="${order.getTotalPrice()}"></th>
+                        <tr th:each ="orderItem : ${order.orderItems}">
+                            <td class="img-area"><img th:src="${orderItem.item.getFilePath()}" alt=""></td>
+                            <td th:text="${orderItem.item.name}"></td>
+                            <th th:text="${orderItem.count}+'개'"></th>
+                            <th th:text="${orderItem.getTotalPrice()}"></th>
+                            <form th:action="@{/admin/item/delivery/{param}(param=${orderItem.id})}" method="post">
                             <th>
-                                <form th:action="@{/admin/order/{param}(param=${order.id})}" method="GET">
-                                    <button type="submit">이동하기</button>
-                                </form>
+                                <select name="delivery_status" id="delivery_status">
+                                    <option value="ready">배송 준비중</option>
+                                    <option value="going">배송 중</option>
+                                    <option value="complete">배송 완료</option>
+                                </select>
                             </th>
+                            <th>
+                                <button type="submit">저장</button>
+                            </th>
+                            </form>
 
                         </tr>
 

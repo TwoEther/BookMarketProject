@@ -3,6 +3,10 @@
 <head th:replace="fragments/header :: header" />
 
 <style>
+    ul.inquiry-area {
+        margin:10px 10px 0px 0px;
+    }
+
     ul.tabs{
         margin: 0px;
         padding: 0px;
@@ -55,6 +59,32 @@
         outline: 0;
         overflow-y: auto;
         resize: none;
+    }
+
+    .guide-area {
+        padding-bottom:20px;
+        border-bottom:1px solid black;
+    }
+
+    .inquiry {
+        height:100%;
+    }
+    .inquiry-heading{
+        padding:30px 0px 30px 0px;
+        border-bottom:1px dotted black;
+    }
+
+    .inquiry-heading > div.em-label, div.inquiry_name, div.inquiry_item_name{
+        float:left;
+        margin-left:10px;
+    }
+    .inquiry-heading > div.inquiry_time {
+        float:right;
+    }
+    .inquiry-heading > div.inquiry-text {
+        float:none;
+        margin:30px 0px 0px 30px;
+        width:300px;
     }
 
 
@@ -249,7 +279,10 @@
                         </div>
                         <p th:text="${item.description}"></p>
 
-                        <div class="add-to-cart">
+                        <div th:if="${item.saleStatus} == false">
+                            <h1 style="color:red;">판매 중지된 상품입니다</h1>
+                        </div>
+                        <div th:unless="${item.saleStatus} == false" class="add-to-cart">
                             <div class="qty-label">
                                 수량
                                 <div class="input-number">
@@ -428,7 +461,8 @@
                                                 </li>
 
                                             </ul>
-                                            <ul class="reviews-pagination">
+                                            <ul th:if="${allReview.size()} <= ${reviewSize}"></ul>
+                                            <ul th:unless="${allReview.size()} <= ${reviewSize}" class="reviews-pagination">
                                                 <li class="active">1</li>
                                                 <li><a href="#">2</a></li>
                                                 <li><a href="#">3</a></li>
@@ -575,12 +609,10 @@
                                             <li>공개 게시판이므로 전화번호, 메일 주소 등 고객님의 소중한 개인정보는 절대 남기지 말아주세요.</li>
                                         </ul>
                                     </div>
-                                    <hr>
-
                                     <!-- inquiry -->
-                                    <div class="col-md-7">
+                                    <div>
                                         <div>
-                                            <ul>
+                                            <ul class="inquiry-area">
                                                 <li th:each = "inquiry : ${allInquiry}">
                                                     <div class="inquiry">
                                                         <div class="inquiry-heading">
@@ -588,16 +620,11 @@
                                                             <div class="inquiry_name" th:text="${inquiry.member.name}"></div>
                                                             <div class="inquiry_item_name" th:text="${inquiry.item.name}"></div>
                                                             <div class="inquiry_time" th:text="${inquiry.created_at}"></div>
-                                                        </div>
-                                                        <div></div>
-
-                                                        <div class="inquiry-body">
-                                                            <div class="inquiry-text">
-                                                                <p th:text="${inquiry.content}"></p>
-                                                            </div>
+                                                            <div class="inquiry-text" th:text="${inquiry.content}"></div>
                                                         </div>
                                                     </div>
                                                 </li>
+                                                <hr>
                                             </ul>
 
                                             <ul class="reviews-pagination">
@@ -627,141 +654,141 @@
     <!-- /SECTION -->
 
     <!-- Section -->
-    <div class="section">
-        <!-- container -->
-        <div class="container">
-            <!-- row -->
-            <div class="row">
+<!--    <div class="section">-->
+<!--        &lt;!&ndash; container &ndash;&gt;-->
+<!--        <div class="container">-->
+<!--            &lt;!&ndash; row &ndash;&gt;-->
+<!--            <div class="row">-->
 
-                <div class="col-md-12">
-                    <div class="section-title text-center">
-                        <h3 class="title">Related Products</h3>
-                    </div>
-                </div>
+<!--                <div class="col-md-12">-->
+<!--                    <div class="section-title text-center">-->
+<!--                        <h3 class="title">Related Products</h3>-->
+<!--                    </div>-->
+<!--                </div>-->
 
-                <!-- product -->
-                <div class="col-md-3 col-xs-6">
-                    <div class="product">
-                        <div class="product-img">
-                            <img src="./img/product01.png" alt="">
-                            <div class="product-label">
-                                <span class="sale">-30%</span>
-                            </div>
-                        </div>
-                        <div class="product-body">
-                            <p class="product-category">Category</p>
-                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
-                            <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-                            <div class="product-rating">
-                            </div>
-                            <div class="product-btns">
-                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
-                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
-                                <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
-                            </div>
-                        </div>
-                        <div class="add-to-cart">
-                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
-                        </div>
-                    </div>
-                </div>
-                <!-- /product -->
+<!--                &lt;!&ndash; product &ndash;&gt;-->
+<!--                <div class="col-md-3 col-xs-6">-->
+<!--                    <div class="product">-->
+<!--                        <div class="product-img">-->
+<!--                            <img src="./img/product01.png" alt="">-->
+<!--                            <div class="product-label">-->
+<!--                                <span class="sale">-30%</span>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="product-body">-->
+<!--                            <p class="product-category">Category</p>-->
+<!--                            <h3 class="product-name"><a href="#">product name goes here</a></h3>-->
+<!--                            <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>-->
+<!--                            <div class="product-rating">-->
+<!--                            </div>-->
+<!--                            <div class="product-btns">-->
+<!--                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>-->
+<!--                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>-->
+<!--                                <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="add-to-cart">-->
+<!--                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                &lt;!&ndash; /product &ndash;&gt;-->
 
-                <!-- product -->
-                <div class="col-md-3 col-xs-6">
-                    <div class="product">
-                        <div class="product-img">
-                            <img src="./img/product02.png" alt="">
-                            <div class="product-label">
-                                <span class="new">NEW</span>
-                            </div>
-                        </div>
-                        <div class="product-body">
-                            <p class="product-category">Category</p>
-                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
-                            <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-                            <div class="product-rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="product-btns">
-                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
-                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
-                                <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
-                            </div>
-                        </div>
-                        <div class="add-to-cart">
-                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
-                        </div>
-                    </div>
-                </div>
-                <!-- /product -->
+<!--                &lt;!&ndash; product &ndash;&gt;-->
+<!--                <div class="col-md-3 col-xs-6">-->
+<!--                    <div class="product">-->
+<!--                        <div class="product-img">-->
+<!--                            <img src="./img/product02.png" alt="">-->
+<!--                            <div class="product-label">-->
+<!--                                <span class="new">NEW</span>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="product-body">-->
+<!--                            <p class="product-category">Category</p>-->
+<!--                            <h3 class="product-name"><a href="#">product name goes here</a></h3>-->
+<!--                            <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>-->
+<!--                            <div class="product-rating">-->
+<!--                                <i class="fa fa-star"></i>-->
+<!--                                <i class="fa fa-star"></i>-->
+<!--                                <i class="fa fa-star"></i>-->
+<!--                                <i class="fa fa-star"></i>-->
+<!--                                <i class="fa fa-star"></i>-->
+<!--                            </div>-->
+<!--                            <div class="product-btns">-->
+<!--                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>-->
+<!--                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>-->
+<!--                                <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="add-to-cart">-->
+<!--                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                &lt;!&ndash; /product &ndash;&gt;-->
 
-                <div class="clearfix visible-sm visible-xs"></div>
+<!--                <div class="clearfix visible-sm visible-xs"></div>-->
 
-                <!-- product -->
-                <div class="col-md-3 col-xs-6">
-                    <div class="product">
-                        <div class="product-img">
-                            <img src="./img/product03.png" alt="">
-                        </div>
-                        <div class="product-body">
-                            <p class="product-category">Category</p>
-                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
-                            <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-                            <div class="product-rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star-o"></i>
-                            </div>
-                            <div class="product-btns">
-                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
-                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
-                                <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
-                            </div>
-                        </div>
-                        <div class="add-to-cart">
-                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
-                        </div>
-                    </div>
-                </div>
-                <!-- /product -->
+<!--                &lt;!&ndash; product &ndash;&gt;-->
+<!--                <div class="col-md-3 col-xs-6">-->
+<!--                    <div class="product">-->
+<!--                        <div class="product-img">-->
+<!--                            <img src="./img/product03.png" alt="">-->
+<!--                        </div>-->
+<!--                        <div class="product-body">-->
+<!--                            <p class="product-category">Category</p>-->
+<!--                            <h3 class="product-name"><a href="#">product name goes here</a></h3>-->
+<!--                            <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>-->
+<!--                            <div class="product-rating">-->
+<!--                                <i class="fa fa-star"></i>-->
+<!--                                <i class="fa fa-star"></i>-->
+<!--                                <i class="fa fa-star"></i>-->
+<!--                                <i class="fa fa-star"></i>-->
+<!--                                <i class="fa fa-star-o"></i>-->
+<!--                            </div>-->
+<!--                            <div class="product-btns">-->
+<!--                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>-->
+<!--                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>-->
+<!--                                <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="add-to-cart">-->
+<!--                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                &lt;!&ndash; /product &ndash;&gt;-->
 
-                <!-- product -->
-                <div class="col-md-3 col-xs-6">
-                    <div class="product">
-                        <div class="product-img">
-                            <img src="./img/product04.png" alt="">
-                        </div>
-                        <div class="product-body">
-                            <p class="product-category">Category</p>
-                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
-                            <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-                            <div class="product-rating">
-                            </div>
-                            <div class="product-btns">
-                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
-                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
-                                <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
-                            </div>
-                        </div>
-                        <div class="add-to-cart">
-                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
-                        </div>
-                    </div>
-                </div>
-                <!-- /product -->
+<!--                &lt;!&ndash; product &ndash;&gt;-->
+<!--                <div class="col-md-3 col-xs-6">-->
+<!--                    <div class="product">-->
+<!--                        <div class="product-img">-->
+<!--                            <img src="./img/product04.png" alt="">-->
+<!--                        </div>-->
+<!--                        <div class="product-body">-->
+<!--                            <p class="product-category">Category</p>-->
+<!--                            <h3 class="product-name"><a href="#">product name goes here</a></h3>-->
+<!--                            <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>-->
+<!--                            <div class="product-rating">-->
+<!--                            </div>-->
+<!--                            <div class="product-btns">-->
+<!--                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>-->
+<!--                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>-->
+<!--                                <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="add-to-cart">-->
+<!--                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                &lt;!&ndash; /product &ndash;&gt;-->
 
-            </div>
-            <!-- /row -->
-        </div>
-        <!-- /container -->
-    </div>
+<!--            </div>-->
+<!--            &lt;!&ndash; /row &ndash;&gt;-->
+<!--        </div>-->
+<!--        &lt;!&ndash; /container &ndash;&gt;-->
+<!--    </div>-->
     <!-- /Section -->
 
     <div th:replace="fragments/footer :: footer"/>

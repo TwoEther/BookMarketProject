@@ -2,6 +2,7 @@ package org.project.shop.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,18 +15,22 @@ public class OrderItem {
     @Column(name="orderItem_id")
     private Long id;
 
+    private int orderPrice;
+    private int count;
+
+    private String deliveryStatus;
+
     // N:1 (OrderItem : item)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
 
     // N:1 (OrderItem : order)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne( fetch = FetchType.LAZY)
     @JoinColumn(name = "orderItems")
     private Order order;
 
-    private int orderPrice;
-    private int count;
+
 
     public void setItem(Item item) {
         this.item = item;
@@ -46,6 +51,10 @@ public class OrderItem {
         this.order = order;
         order.getOrderItems().add(this);
 
+    }
+
+    public void setDeliveryStatus(String deliveryStatus) {
+        this.deliveryStatus = deliveryStatus;
     }
 
     // 생성 메소드

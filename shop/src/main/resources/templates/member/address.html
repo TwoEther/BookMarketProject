@@ -26,11 +26,11 @@
                 <form th:action="@{/member/address}" th:object="${AddressForm}" method="POST">
                     <input type="hidden" th:name="${_csrf.parameterName}"
                            th:value="${_csrf.token}" />
-                    <input type="text" id="sample3_postcode" th:field="*{zipcode}" placeholder="우편번호" readonly>
+                    <input type="text" th:placeholder="${zipcode}" id="sample3_postcode" th:field="*{zipcode}" placeholder="우편번호" readonly>
                     <input type="button" onclick="sample3_execDaumPostcode()" value="우편번호 찾기"><br>
-                    <input type="text" id="sample3_address" th:field="*{address1}" placeholder="주소" readonly><br>
-                    <input type="text" id="sample3_detailAddress" th:field="*{address2}" placeholder="상세주소">
-                    <input type="text" id="sample3_extraAddress" th:field="*{reference}" placeholder="참고항목" >
+                    <input type="text" th:placeholder="${address1}" id="sample3_address" th:field="*{address1}" placeholder="주소" readonly><br>
+                    <input type="text" th:placeholder="${address2}" id="sample3_detailAddress" th:field="*{address2}" placeholder="상세주소">
+                    <input type="text" th:placeholder="${reference}" id="sample3_extraAddress" th:field="*{reference}" placeholder="참고항목" >
 
                     <div id="wrap" style="display:none;border:1px solid;width:500px;height:300px;margin:5px 0;position:relative">
                         <img src="//t1.daumcdn.net/postcode/resource/images/close.png" id="btnFoldWrap" style="cursor:pointer;position:absolute;right:0px;top:-1px;z-index:1" onclick="foldDaumPostcode()" alt="접기 버튼">

@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.project.shop.auth.PrincipalDetails;
 import org.project.shop.config.ScriptUtils;
 import org.project.shop.domain.Address;
 import org.project.shop.domain.Member;
@@ -17,6 +18,7 @@ import org.project.shop.web.MemberForm;
 import org.project.shop.web.findIDForm;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -60,7 +62,6 @@ public class MemberController {
         String id = form.getUserId();
         String password = form.getPassword1();
         String name = form.getName();
-        String nickname = form.getNickname();
         String phoneNum = form.getPhoneNum();
         String email = form.getEmail();
         String roles = form.getRoles();
@@ -168,37 +169,43 @@ public class MemberController {
     }
 
     @GetMapping(value = "/address")
-    public String setDeliveryMember(Model model) throws IOException {
+    public String setDeliveryMember(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                    Model model) throws IOException {
+        String username = principalDetails.getUsername();
+        Member findMember = memberServiceImpl.findByUserId(username);
+        Address address = findMember.getAddress();
+
+        String zipcode = (address == null) ? "우편 번호" : address.getZipcode();
+        String address1 = (address == null) ? "주소" : address.getAddress1();
+        String address2 =  (address == null) ? "상세 주소" :address.getAddress2();
+        String reference = (address == null) ? "참고 항목" :address.getReference();
+
+
+        model.addAttribute("zipcode", zipcode);
+        model.addAttribute("address1", address1);
+        model.addAttribute("address2", address2);
+        model.addAttribute("reference", reference);
+
         model.addAttribute("AddressForm", new AddressForm());
+
         return "member/address";
     }
 
     @PostMapping(value = "/address")
     @Transactional
-    public String setDeliveryMemberPost(HttpServletRequest request, HttpServletResponse response, AddressForm addressForm) throws IOException {
+    public void setDeliveryMemberPost(@AuthenticationPrincipal PrincipalDetails principalDetails, HttpServletResponse response, AddressForm addressForm) throws IOException {
         String zipcode = addressForm.getZipcode();
         String address1 = addressForm.getAddress1();
         String address2 = addressForm.getAddress2();
         String reference = addressForm.getReference();
 
-
-        Object principal;
-        try {
-            principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            UserDetails userDetails = (UserDetails) principal;
-            String username = ((UserDetails) principal).getUsername();
-        } catch (Exception e) {
-            ScriptUtils.alert(response, "올바르지 못한 접근입니다");
-            return "redirect:/";
-        }
-
-        Member findMember = memberServiceImpl.findByUserId(((UserDetails) principal).getUsername());
+        String username = principalDetails.getUsername();
+        Member findMember = memberServiceImpl.findByUserId(username);
         Address address = new Address(zipcode, address1, address2, reference);
         findMember.setAddress(address);
-        ScriptUtils.alert(response,"배송지가 설정 되었습니다");
-
-        return "/order/orderList";
+        ScriptUtils.alertAndBackPage(response,"배송지가 설정 되었습니다");
     }
+
 
     @DeleteMapping(value = "/delete/{memberNum}")
     @Transactional

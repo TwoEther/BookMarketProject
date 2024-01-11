@@ -8,6 +8,7 @@ import org.project.shop.web.ItemForm;
 import org.project.shop.web.SearchForm;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -141,9 +142,10 @@ public class ItemController {
     }
 
 
-    @GetMapping(value = "")    
+    @GetMapping(value = "")
     public String listByKeyWord(Model model, @RequestParam(value = "page", defaultValue = "0") int page,
                                 @RequestParam(value = "type", required = false) String type,
+                                @RequestParam(required = false, defaultValue = "판매량") String sort_by,
                                 @RequestParam(value = "keyword", required = false) String keyword) {
         // 3자리 콤마를 위한 format
         DecimalFormat decFormat = new DecimalFormat("###,###");
@@ -151,10 +153,16 @@ public class ItemController {
         int size = 6;
         // 전체 상품 개수
         int allItemNum = itemServiceImpl.getAllItemNum();
-        // 
-        
+        String variable;
+        //
+        if (sort_by.equals("최신")) {
+            variable = "createDate";
+        }else if(sort_by.equals("판매량")){
+            variable = "total_purchase";
+        }else{variable = "";}
+
         // 1페이지당 6개의 상품 호출
-        PageRequest pageRequest = PageRequest.of(page, size);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(variable).descending());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // 로그인이 되어있는 경우
@@ -190,7 +198,6 @@ public class ItemController {
         if (num == 0) country = "";
         else if(num == 1) country = "국내 도서";
         else country = "외국 도서";
-
 
 
         Page<Item> findAllItem = itemServiceImpl.findByKeyword(pageRequest, keyword, country);
@@ -237,10 +244,14 @@ public class ItemController {
 
 
     @GetMapping(value = "/{itemId}")
-    public String showItem(@PathVariable("itemId") Long itemId, @AuthenticationPrincipal Member member, Model
-            model) {
+    public String showItem(@PathVariable("itemId") Long itemId, @RequestParam(defaultValue = "0", required = false) int page,
+                           @AuthenticationPrincipal Member member,
+                           Model model) {
         DecimalFormat decFormat = new DecimalFormat("###,###");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 페이징 처리를 위한 변수
+        int reviewSize = 10;
 
         if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -268,27 +279,28 @@ public class ItemController {
         sameCategoryItems.remove(item);
 
         // 리뷰 처리
-        // 해당 아이템에 해당하는 리뷰를 가져옴
+        // 해당 아이템에 해당하는 리뷰를 페이징 해서 가져옴
+        Page<Review> findPageReviewByItemId = reviewServiceImpl.findPageReviewByItemId(PageRequest.of(page, reviewSize), itemId);
         List<Review> findAllReviewByItemId = reviewServiceImpl.findAllReviewByItemId(itemId);
 
         // 점수별 리뷰 개수
         int[] reviewCountByScore = Review.countByScore(findAllReviewByItemId);
-
-        // 문의 처리
-        List<Inquiry> allInquiry = inquiryServiceImpl.findByItemId(itemId);
-        for (Inquiry inquiry : allInquiry) {
-            System.out.println("inquiry.toString() = " + inquiry.toString());
-        }
-
-        System.out.println("reviewCountByScore = " + Arrays.toString(reviewCountByScore));
-
         // 평균 점수
         double avgScore = Review.calculateAvgScore(findAllReviewByItemId);
+        // 문의 처리
 
+        List<Inquiry> allInquiry = inquiryServiceImpl.findByItemId(itemId);
+
+        model.addAttribute("reviewSize", reviewSize);
         model.addAttribute("allInquiry", allInquiry);
+
         model.addAttribute("allReview", findAllReviewByItemId);
         model.addAttribute("reviewCount", reviewCountByScore);
+        model.addAttribute("pageReview", findPageReviewByItemId);
+
+
         model.addAttribute("avgScore", avgScore);
+
         model.addAttribute("item", item);
         model.addAttribute("groupItem", sameCategoryItems);
         return "item/itemDetail";

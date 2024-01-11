@@ -4,23 +4,6 @@
 <link rel="stylesheet" href="/static/css/register.css">
 
 <script>
-    function emailCheck(){
-        $.ajax({
-            type: "POST",
-            url: "/cart/add",
-            beforeSend : function(xhr){
-				xhr.setRequestHeader(header, token);
-            },
-            data : {"itemId": [[${item.id}]],
-                    "quantity": quantity},
-            success: function () {
-                alert("장바구니에 담겼습니다");
-                location.reload();
-            },
-            error:function(request, status, error){
-        		alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error); }
-        });
-    }
 </script>
 
 <body>
@@ -91,7 +74,6 @@ fieldError' : 'form-control'">
                    placeholder="이메일을 입력해 주세요" id="email"
                    th:class="${#fields.hasErrors('email')}? 'form-control
         fieldError' : 'form-control'">
-            <button id="email_check_btn">인증 하기</button>
             <p th:if="${#fields.hasErrors('email')}"
                th:errors="*{email}">Incorrect date</p>
 

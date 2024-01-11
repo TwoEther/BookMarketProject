@@ -33,6 +33,7 @@ public class AdminController {
     private final ReviewServiceImpl reviewServiceImpl;
     private final OrderServiceImpl orderServiceImpl;
     private final InquiryServiceImpl inquiryServiceImpl;
+    private final OrderItemServiceImpl orderItemServiceImpl;
 
     @GetMapping(value = "")
     public String adminPage(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
@@ -68,7 +69,7 @@ public class AdminController {
         model.addAttribute("endPage", endPage);
         model.addAttribute("currentPage", page);
         model.addAttribute("allItem", allItem);
-        return "admin/adminProduct";
+        return "admin/adminItem";
     }
 
     @PostMapping(value = "/item/{itemId}")
@@ -87,12 +88,39 @@ public class AdminController {
         Long id = Long.parseLong(itemId);
         Item findItem = itemServiceImpl.findOneItem(id);
         if (status) {
-            findItem.setSale(true);
+            findItem.setSaleStatus(true);
         } else {
-            findItem.setSale(false);
+            findItem.setSaleStatus(false);
         }
 
         ScriptUtils.alertAndBackPage(response, "수정 되었습니다");
+    }
+
+    @PostMapping(value = "/item/delivery/{orderItemId}")
+    @Transactional
+    public void adminMemberItemDeliveryEdit(HttpServletResponse response, @PathVariable String orderItemId,
+                                            @RequestParam String delivery_status) throws IOException {
+        Long orderItem_Id = Long.parseLong(orderItemId);
+        OrderItem findOrderItem = orderItemServiceImpl.findOrderItemById(orderItem_Id);
+        if (delivery_status.equals("ready")) {
+            findOrderItem.setDeliveryStatus("배송 준비중");
+        } else if (delivery_status.equals("going")) {
+            findOrderItem.setDeliveryStatus("배송중");
+        } else if (delivery_status.equals("complete")) {
+            findOrderItem.setDeliveryStatus("배송완료");
+        } else {
+            findOrderItem.setDeliveryStatus("추적할 수 없습니다");
+        }
+
+        ScriptUtils.alertAndBackPage(response, "수정 되었습니다");
+
+    }
+
+    @DeleteMapping(value = "/item/delete/{itemId}")
+    @Transactional
+    public void adminMemberItemDelete(@PathVariable String itemId) throws IOException {
+        Long id = Long.parseLong(itemId);
+        itemServiceImpl.deleteByItemId(id);
     }
 
     @GetMapping(value = "/review")
@@ -101,6 +129,12 @@ public class AdminController {
 
         model.addAttribute("allReview", allReview);
         return "/admin/adminReview";
+    }
+
+    @DeleteMapping(value = "/review/delete/{reviewId}")
+    public void adminDeleteReview(Model model, @PathVariable String reviewId) {
+        Long id = Long.parseLong(reviewId);
+        reviewServiceImpl.deleteReview(id);
     }
 
     @GetMapping(value = "/inquiry")
@@ -119,9 +153,18 @@ public class AdminController {
         return "/admin/adminOrder";
     }
 
+    @GetMapping(value = "/order/{orderId}")
+    public String adminMemberOrderDetail(Model model, @PathVariable Long orderId) {
+        Order findOrder = orderServiceImpl.findByOrderId(orderId);
+        model.addAttribute("order", findOrder);
+        return "/admin/adminOrderDetail";
+    }
+
     @PostMapping(value = "/order/status/{orderId}")
     public String adminMemberOrderList(Model model, @PathVariable Long orderId) {
         Order findOrder = orderServiceImpl.findByOrderId(orderId);
         return "/admin/adminOrder";
     }
+
+
 }

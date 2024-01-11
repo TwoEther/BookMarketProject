@@ -88,7 +88,7 @@
                         <td><img class="item-image" th:src="${orderItem.item.getFilePath()}"></td>
                         <td th:text="${orderItem.item.name}"></td>
                         <td th:text="${#numbers.formatInteger(orderItem.getTotalPrice(), 3,'COMMA')}"></td>
-                        <td>배송 준비중</td>
+                        <td th:text="${orderItem.deliveryStatus}"></td>
                     </tr>
                 </tbody>
             </table>

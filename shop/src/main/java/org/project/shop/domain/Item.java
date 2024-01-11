@@ -31,11 +31,10 @@ public class Item {
     private int pages;
     private String description;
 
-    @ColumnDefault(value = "true")
-    private boolean isSale;
+    private boolean saleStatus = true;
 
     @ColumnDefault(value = "0")
-    private Integer total_purchase;
+    private int total_purchase;
 
     // 이미지 저장을 위한 변수
     private String filePath;

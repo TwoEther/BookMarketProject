@@ -49,6 +49,7 @@
         		alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error); }
         });
     }
+
 </script>
 
 <div>
@@ -60,27 +61,6 @@
     <nav th:replace="fragments/navbar :: navbar" />
     <!-- NAVIGATION -->
 
-
-    <!-- BREADCRUMB -->
-    <div id="breadcrumb" class="section">
-        <!-- container -->
-        <div class="container">
-            <!-- row -->
-            <div class="row">
-                <div class="col-md-12">
-                    <ul class="breadcrumb-tree">
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">All Categories</a></li>
-                        <li><a href="#">Accessories</a></li>
-                        <li class="active" th:text="${keyword}+' ('+${total_count}+')건'"></li>
-                    </ul>
-                </div>
-            </div>
-            <!-- /row -->
-        </div>
-        <!-- /container -->
-    </div>
-    <!-- /BREADCRUMB -->
 
     <!-- SECTION -->
     <div class="section">
@@ -176,13 +156,26 @@
                     <!-- store top filter -->
                     <div class="store-filter clearfix">
                         <div class="store-sort">
-                            <label>
-                                Sort By:
-                                <select class="input-select">
-                                    <option value="0">Popular</option>
-                                    <option value="1">Position</option>
-                                </select>
-                            </label>
+                            <a th:href="@{/item(page=${page}, keyword=${keyword}, sort_by='판매량')}">판매량순</a>
+                            <a th:href="@{/item(page=${page}, keyword=${keyword}, sort_by='최신')}">최신순</a>
+
+
+                                <script th:inline="javascript">
+                                    function sortByLatest(value){
+                                       $.ajax({
+                                            type: "GET",
+                                            url: "/item",
+                                            data : {"page": [[${page}]],
+                                                    "sort_by": value,
+                                                    "keyword" : [[${keyword}]]},
+                                            success: function () {
+                                                alert("실행 되었습니다");
+                                            },
+                                            error:function(request, status, error){
+                                                alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error); }
+                                        });
+                                    }
+                                </script>
 
                             <label>
                                 Show:

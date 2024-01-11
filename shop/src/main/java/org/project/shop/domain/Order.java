@@ -43,6 +43,9 @@ public class Order {
 
     private LocalDate orderDate;
 
+    @Embedded
+    private Address address;
+
     // Enum type
     @Enumerated(EnumType.ORDINAL)
     private OrderStatus status;

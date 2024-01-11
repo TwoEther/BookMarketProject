@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="fragments/header :: header" />
+<link rel="stylesheet" href="/static/css/admincss.css">
+<link rel="stylesheet" href="/static/css/table.css">
+
+<style>
+    tr {
+        border-bottom: 1px solid black;
+    }
+
+    input[type="submit"]{
+        font-family: FontAwesome;
+    }
+
+    .content-header > *{
+        float:right;
+    }
+
+</style>
+
+<script>
+    function deleteItem(itemId){
+        $.ajax({
+            type: "DELETE",
+            url: "/item/delete/"+itemId,
+            data : {"itemId": itemId},
+            success: function () {
+                alert("삭제 되었습니다");
+                location.reload();
+            },
+            error:function(request, status, error){
+        		alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error); }
+        });
+    }
+</script>
+
+<body class="sb-nav-fixed">
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <!-- Navbar Brand-->
+        <a class="navbar-brand ps-3" th:href="@{/admin}">관리자 페이지</a>
+        <!-- Sidebar Toggle-->
+        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+        <!-- Navbar Search-->
+        <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+            <div class="input-group">
+                <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+                <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+            </div>
+        </form>
+        <!-- Navbar-->
+        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" th:href="@{/}">홈으로 이동</a></li>
+                    <li><hr class="dropdown-divider" /></li>
+                    <li><a class="dropdown-item" th:href="@{/member/logout}">로그아웃</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <div id="layoutSidenav">
+        <div th:replace="fragments/adminSideBar :: adminSideBar" />
+
+        <div id="layoutSidenav_content">
+            <section class="notice">
+                <div class="page-title">
+                    <div class="container">
+                        <h3>상품 관리</h3>
+                    </div>
+                </div>
+
+                <!-- board seach area -->
+                <div id="board-search">
+                    <div class="container">
+                        <div class="search-window">
+                            <form action="">
+                                <div class="search-wrap">
+                                    <label for="search" class="blind">공지사항 내용 검색</label>
+                                    <input id="search" type="search" name="" placeholder="검색어를 입력해주세요." value="">
+                                    <button type="submit" class="btn btn-dark">검색</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- board list area -->
+                <div id="board-list">
+                    <div class="container">
+                        <table class="board-table">
+                            <thead>
+                            <tr>
+                                <th scope="col" class="th-num">상품 이미지</th>
+                                <th scope="col" class="th-title">상품명</th>
+                                <th scope="col" class="th-title">카테고리</th>
+                                <th scope="col" class="th-num">재고</th>
+                                <th scope="col" class="th-num">판매량</th>
+                                <th scope="col" class="th-date">판매 상태</th>
+                                <th scope="col" class="th-date">판매 상태 수정</th>
+                                <th scope="col" class="th-btn">저장</th>
+                                <th scope="col" class="th-btn">삭제</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each ="item :${allItem}">
+                                <td><img th:src="${item.getFilePath()}" style="width:80px;" alt="" srcset=""></td>
+                                <td th:text="${item.name}"></td>
+                                <td th:text="${item.category.category1}+'/'+${item.category.category2}"></td>
+                                <td th:text="${item.stockQuantity}"></td>
+                                <td th:text="${item.total_purchase}"></td>
+                                <td th:if="${item.saleStatus} == true">판매 가능</td>
+                                <td th:unless="${item.saleStatus} == true">판매 불가능</td>
+                                <form th:action="@{/admin/item/status/{param}(param=${item.id})}" method="post">
+                                    <td>
+                                        <select name="status" id="status">
+                                            <option value="true">판매 가능</option>
+                                            <option value="false">판매 불가능</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <button type="submit">저장</button>
+                                    </td>
+                                </form>
+                                <td>
+                                    <button th:id="${item.id}" onclick="deleteItem(this.id)">삭제하기</button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </section>
+
+            <div th:if="${!allItem.isEmpty()}" class="store-filter clearfix">
+                <span class="store-qty">Showing 20-100 products</span>
+                <ul class="store-pagination">
+                    <li class="page-item" th:classappend="${!allItem.hasPrevious} ? 'disabled'">
+                        <form th:action="@{/admin/item}">
+                            <input type="hidden" name="page" th:value="${currentPage-1}">
+                            <input class="input" th:value="${keyword}" type="hidden" name="keyword">
+                            <input class="page-left" type="submit" value="&#xf359;">
+                        </form>
+                    </li>
+                    <li th:each="page: ${#numbers.sequence(startPage, endPage)}"
+                        class="page-item">
+                        <a th:text="${page}" class="page-link" th:href="@{|?page=${page}&keyword=${keyword}|}"></a>
+                    </li>
+                    <li class="page-item" th:classappend="${!allItem.hasNext} ? 'disabled'">
+                        <form th:action="@{/admin/item}">
+                            <input type="hidden" name="page" th:value="${currentPage+1}">
+                            <input class="input" th:value="${keyword}" type="hidden" name="keyword">
+                            <input class="page-right" type="submit" value="&#xf35a;">
+                        </form>
+                    </li>
+                </ul>
+            </div>
+
+
+            <footer class="py-4 bg-light mt-auto">
+                <div class="container-fluid px-4">
+                    <div class="d-flex align-items-center justify-content-between small">
+                        <div class="text-muted">Copyright &copy; Your Website 2023</div>
+                        <div>
+                            <a href="#">Privacy Policy</a>
+                            &middot;
+                            <a href="#">Terms &amp; Conditions</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+</body>
+</html>
