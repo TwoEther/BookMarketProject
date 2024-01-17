@@ -5,6 +5,7 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import org.project.shop.domain.Item;
 
@@ -60,10 +62,8 @@ public class ItemRepositoryImpl implements ItemRepository {
     public Page<Item> findAllItem(PageRequest pageRequest) {
         List<Item> result = queryFactory.select(item)
                 .from(item)
-                .offset(pageRequest.getOffset())
-                .limit(pageRequest.getPageSize())
                 .fetch();
-        return new PageImpl<>(result);
+        return new PageImpl<>(result, pageRequest, result.size());
     }
 
     @Override
@@ -93,8 +93,20 @@ public class ItemRepositoryImpl implements ItemRepository {
                 )
                 .offset(pageRequest.getOffset())
                 .limit(pageRequest.getPageSize())
+                .orderBy(getOrderSpecifier(pageRequest))
                 .fetch();
-        return new PageImpl<>(result);
+
+        JPAQuery<Long> countQuery = queryFactory.select(item.count())
+                .from(item)
+                .where(item.name.like("%" + keyword + "%").or(
+                                item.author.like("%" + keyword + "%").or(
+                                        item.category.category1.like("%" + keyword + "%").or(
+                                                item.category.category2.like("%" + keyword + "%")
+                                        ))
+                        )
+                );
+
+        return PageableExecutionUtils.getPage(result, pageRequest, countQuery::fetchOne);
     }
 
     @Override
@@ -113,7 +125,21 @@ public class ItemRepositoryImpl implements ItemRepository {
                 .limit(pageRequest.getPageSize())
                 .orderBy(getOrderSpecifier(pageRequest))
                 .fetch();
-        return new PageImpl<>(result);
+
+        JPAQuery<Long> countQuery = queryFactory.select(item.count())
+                .from(item)
+                .where(item.name.like("%" + keyword + "%").or(
+                                item.author.like("%" + keyword + "%").or(
+                                        item.category.category1.like("%" + keyword + "%").or(
+                                                item.category.category2.like("%" + keyword + "%")
+                                        ))
+                        ).and(
+                                item.category.category1.like("%" + country + "%")
+                        )
+                );
+
+        return PageableExecutionUtils.getPage(result, pageRequest, countQuery::fetchOne);
+//        return new PageImpl<>(result, pageRequest, result.size());
     }
 
     @Override

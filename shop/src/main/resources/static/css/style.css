@@ -389,18 +389,25 @@ textarea.input {
 }
 
 #breadcrumb .breadcrumb-tree li+li:before {
-  content: '/';
+
   display: inline-block;
-  color: #8D99AE;
+  color: #676262;
   margin-right: 10px;
 }
 
 #breadcrumb .breadcrumb-tree li a {
-  color: #8D99AE;
+  color: #676262;
 }
 
 #breadcrumb .breadcrumb-tree li a:hover {
   color: #D10024;
+}
+
+#breadcrumb .breadcrumb-tree li * {
+    font-size:15px;
+}
+#breadcrumb .breadcrumb-tree li i {
+    margin-left:10px;
 }
 
 /*=========================================================
@@ -542,7 +549,7 @@ textarea.input {
   display: none;
 }
 
-.cart-dropdown {
+.cart-dropdown, .category-dropdown{
   position: absolute;
   width: 300px;
   background: #FFF;
@@ -555,41 +562,71 @@ textarea.input {
   visibility: hidden;
 }
 
-.dropdown.open>.cart-dropdown {
+.category-dropdown{
+    position: absolute;
+    width: 150px;
+    background: #FFF;
+    padding: 15px;
+    -webkit-box-shadow: 0px 0px 0px 2px #E4E7ED;
+    box-shadow: 0px 0px 0px 2px #E4E7ED;
+    z-index: 99;
+    right: 0;
+    opacity: 0;
+    visibility: hidden;
+    border: 20px;
+    border-radius: 10px;
+}
+
+#search_num_box>div{
+    display:inline-block;
+    font-size:30px;
+    font-weight:bold;
+}
+
+#search_num_box>div.keyword_box {
+    color:green;
+}
+
+
+.category-dropdown>ul>li {
+    text-align:center;
+    color:#686767;
+}
+.dropdown.open>.cart-dropdown .dropdown.open>.category-dropdown{
   opacity: 1;
   visibility: visible;
 }
 
-.cart-dropdown .cart-list {
+.cart-dropdown .cart-list .category-dropdown{
   max-height: 180px;
   overflow-y: scroll;
   margin-bottom: 15px;
 }
 
-.cart-dropdown .cart-list .product-widget {
+.cart-dropdown .cart-list .product-widget .category-dropdown{
   padding: 0px;
   -webkit-box-shadow: none;
   box-shadow: none;
 }
 
-.cart-dropdown .cart-list .product-widget:last-child {
+.cart-dropdown .cart-list .product-widget:last-child .category-dropdown{
   margin-bottom: 0px;
 }
 
-.cart-dropdown .cart-list .product-widget .product-img {
+.cart-dropdown .cart-list .product-widget .product-img .category-dropdown{
   left: 0px;
   top: 0px;
 }
 
-.cart-dropdown .cart-list .product-widget .product-body .product-price {
+.cart-dropdown .cart-list .product-widget .product-body .product-price .category-dropdown{
   color: #2B2D42;
 }
 
-.cart-dropdown .cart-btns {
+.cart-dropdown .cart-btns .category-dropdown{
   margin: 0px -17px -17px;
 }
 
-.cart-dropdown .cart-btns>a {
+.cart-dropdown .cart-btns>a .category-dropdown{
   display: inline-block;
   width: calc(50% - 0px);
   padding: 12px;
@@ -601,16 +638,16 @@ textarea.input {
   transition: 0.2s all;
 }
 
-.cart-dropdown .cart-btns>a:first-child {
+.cart-dropdown .cart-btns>a:first-child .category-dropdown{
   margin-right: -4px;
   background-color: #1e1f29;
 }
 
-.cart-dropdown .cart-btns>a:hover {
+.cart-dropdown .cart-btns>a:hover .category-dropdown{
   opacity: 0.9;
 }
 
-.cart-dropdown .cart-summary {
+.cart-dropdown .cart-summary .category-dropdown{
   border-top: 1px solid #E4E7ED;
   padding-top: 15px;
   padding-bottom: 15px;
@@ -638,9 +675,15 @@ textarea.input {
   margin-left: 30px
 }
 
+.main-nav>li {
+}
+
 .main-nav>li>a {
   padding: 20px 0px;
+  font-size:20px;
+  font-family: 'Noto Sans KR', sans-serif;
 }
+
 
 .main-nav>li>a:hover, .main-nav>li>a:focus, .main-nav>li.active>a {
   color: #D10024;
@@ -963,7 +1006,7 @@ textarea.input {
   z-index: 10;
 }
 
-.product .product-body .product-rating>i.fa-star {
+.product .product-body .product-rating>i.fa-star .product-rating>div:first-child{
   color: #ef233c;
 }
 
@@ -1147,6 +1190,10 @@ textarea.input {
 .product-widget .product-body .product-price .qty {
   font-weight: 400;
   margin-right: 10px;
+}
+
+.product-body > div:first-child>i{
+    color:#D10024;
 }
 
 .product-widget .delete {
@@ -1495,7 +1542,7 @@ textarea.input {
   color: #E4E7ED;
 }
 
-.product-details .product-rating>i.fa-star {
+.product-details .product-rating>i.fa-star, .product-rating>div:first-child>i{
   color: #D10024;
 }
 
@@ -1777,7 +1824,7 @@ textarea.input {
   color: #E4E7ED;
 }
 
-.reviews .review-heading .review-rating>i.fa-star {
+.reviews .review-heading .review-rating>i.fa-star, i.fa-star, i.fa-star-o{
   color: #D10024;
 }
 

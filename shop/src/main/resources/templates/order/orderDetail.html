@@ -50,17 +50,22 @@
     <div>
         <div th:replace="fragments/sideBar :: sideBar"/>
         <div class="contextArea" id="contextArea">
-            <h4 class="head-text">주문 상세</h4>
-            <h5>주문 정보</h5>
-            <table class="order-table">
-                <tbody>
+            <div class="row">
+                <h4 class="head-text">주문 상세</h4>
+                <h5>주문 정보</h5>
+                <table class="order-table">
+                    <tbody>
                     <tr>
                         <th>주문 번호</th>
                         <td>2134481283</td>
+                        <th>결제 수단</th>
+                        <td>카카오 페이</td>
                     </tr>
                     <tr>
                         <th>주문 일자</th>
                         <td th:text="${order.orderDate}"></td>
+                        <th>결제 금액</th>
+                        <td th:text="${order.getTotalPrice()}"></td>
                     </tr>
                     <tr>
                         <th>주문자</th>
@@ -70,41 +75,36 @@
                         <th>결제금액</th>
                         <td th:text="${order.getTotalPrice()}"></td>
                     </tr>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
 
-            <h5>상품 정보</h5>
-            <table>
-                <thead>
+            <div class="row">
+                <h5>상품 정보</h5>
+                <table>
+                    <thead>
                     <tr>
                         <th>상품</th>
                         <th></th>
                         <th>주문금액</th>
                         <th>배송상황</th>
                     </tr>
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
                     <tr th:each="orderItem : ${order.orderItems}">
                         <td><img class="item-image" th:src="${orderItem.item.getFilePath()}"></td>
                         <td th:text="${orderItem.item.name}"></td>
                         <td th:text="${#numbers.formatInteger(orderItem.getTotalPrice(), 3,'COMMA')}"></td>
                         <td th:text="${orderItem.deliveryStatus}"></td>
                     </tr>
-                </tbody>
-            </table>
-
-            <h5>결제 정보</h5>
-            <table>
-                <tr>
-                    <th>결제 수단</th>
-                    <td>카카오 페이</td>
-                </tr>
-                <tr>
-                    <th>결제 금액</th>
-                    <td th:text="${order.getTotalPrice()}"></td>
-                </tr>
-            </table>
+                    </tbody>
+                </table>
             </div>
+
+
+
+
+        </div>
     </div>
 
 

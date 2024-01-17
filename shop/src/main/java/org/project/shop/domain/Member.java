@@ -31,8 +31,9 @@ public class Member {
     @NotBlank(message = "이름은 필수 값 입니다.")
     private String name;
 
-//    @NotBlank(message = "닉네임은 필수 값 입니다.")
+    //    @NotBlank(message = "닉네임은 필수 값 입니다.")
 //    private String nickname;
+    private boolean isAuth = false;
 
     @NotBlank(message = "핸드폰 번호는 필수 값 입니다.")
     private String phoneNum;
@@ -64,12 +65,15 @@ public class Member {
     @JoinColumn(name = "member")
     private List<Review> reviews = new ArrayList<>();
 
+    // 찜하기
     @OneToOne(mappedBy = "member")
     private LikeItem likeItem;
 
+    // 리뷰 좋아요
     @OneToMany(mappedBy = "member")
     private List<LikeReview> likeReviews = new ArrayList<>();
 
+    // 문의
     @OneToMany(mappedBy = "member")
     private List<Inquiry> inquiries = new ArrayList<>();
 
@@ -128,6 +132,10 @@ public class Member {
 
     public void setRole(String description) {
         this.role = description;
+    }
+
+    public void setAuth(boolean auth) {
+        isAuth = auth;
     }
 
     public Member() {

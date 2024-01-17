@@ -11,15 +11,15 @@ import java.util.List;
 @Getter
 public class Category {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "category_id")
     private Long id;
 
     private String category1;
     private String category2;
 
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
-    private List<Item> category_item = new ArrayList<>();
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Item> categoryItem = new ArrayList<>();
 
     public Category(String category1, String category2) {
         this.category1 = category1;
@@ -28,6 +28,7 @@ public class Category {
 
     public Category() {
     }
+
 
     @Override
     public String toString() {

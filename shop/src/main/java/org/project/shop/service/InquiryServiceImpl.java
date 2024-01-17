@@ -3,6 +3,8 @@ package org.project.shop.service;
 import org.project.shop.domain.Inquiry;
 import org.project.shop.repository.InquiryRepository;
 import org.project.shop.repository.InquiryRepositoryImpl;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,8 +28,8 @@ public class InquiryServiceImpl implements InquiryService{
     }
 
     @Override
-    public List<Inquiry> findByItemId(Long id) {
-        return inquiryRepositoryImpl.findByItemId(id);
+    public Page<Inquiry> findByItemId(PageRequest pageRequest, Long id) {
+        return inquiryRepositoryImpl.findByItemId(pageRequest, id);
     }
 
     @Override

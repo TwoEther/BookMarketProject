@@ -23,6 +23,8 @@ public class MemberForm {
 
     @NotEmpty(message = "이메일을 입력하세요")
     private String email;
+
+    private String email_Check_number;
 //
 //    private String city;
 //    private String street;

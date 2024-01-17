@@ -1,15 +1,23 @@
 package org.project.shop.repository;
 
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.project.shop.domain.Inquiry;
 import org.project.shop.domain.QInquiry;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 import static org.project.shop.domain.QInquiry.inquiry;
+import static org.project.shop.domain.QItem.item;
 
 @Repository
 public class InquiryRepositoryImpl implements InquiryRepository{
@@ -35,10 +43,19 @@ public class InquiryRepositoryImpl implements InquiryRepository{
     }
 
     @Override
-    public List<Inquiry> findByItemId(Long id) {
-        return queryFactory.selectFrom(inquiry)
+    public Page<Inquiry> findByItemId(PageRequest pageRequest, Long id) {
+        List<Inquiry> inquiries = queryFactory.selectFrom(inquiry)
                 .where(inquiry.item.id.eq(id))
+                .orderBy(getOrderSpecifier(pageRequest))
+                .offset(pageRequest.getOffset())
+                .limit(pageRequest.getPageSize())
                 .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory.select(inquiry.count())
+                .from(inquiry)
+                .where(inquiry.id.eq(id));
+
+        return PageableExecutionUtils.getPage(inquiries, pageRequest, countQuery::fetchOne);
     }
 
     @Override
@@ -52,5 +69,21 @@ public class InquiryRepositoryImpl implements InquiryRepository{
         queryFactory.delete(inquiry)
                 .where(inquiry.id.eq(id))
                 .execute();
+    }
+
+    public OrderSpecifier<?> getOrderSpecifier(PageRequest pageRequest) {
+        // 정렬 조건이 있다면
+        if (!pageRequest.getSort().isEmpty()) {
+            for (Sort.Order order : pageRequest.getSort()) {
+                Order direction = order.getDirection().isDescending() ? Order.DESC : Order.ASC;
+
+                switch (order.getProperty()) {
+                    case "created_at" -> {
+                        return new OrderSpecifier(direction, inquiry.created_at);
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

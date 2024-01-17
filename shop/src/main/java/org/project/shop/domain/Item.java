@@ -13,7 +13,6 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-// 추후 물품 상속관계를 위해 추상클래스로 작성
 public class Item {
 
     @Id
@@ -44,8 +43,8 @@ public class Item {
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     private List<CartItem> cartItem = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "category_item")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "categoryItem")
     private Category category;
 
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -105,10 +104,10 @@ public class Item {
     }
     public void setCategory(Category category) {
         if (this.category != null) {
-            this.category.getCategory_item().remove(this);
+            this.category.getCategoryItem().remove(this);
         }
         this.category = category;
-        category.getCategory_item().add(this);
+        category.getCategoryItem().add(this);
     }
 
 

@@ -13,7 +13,6 @@ import java.util.List;
 import static org.project.shop.domain.QCategory.category;
 
 @Repository
-@Transactional
 public class CategoryRepositoryImpl implements CategoryRepository{
     @PersistenceContext
     EntityManager em;
@@ -29,7 +28,6 @@ public class CategoryRepositoryImpl implements CategoryRepository{
     @Transactional
     public void save(Category category) {
         em.persist(category);
-        em.flush();
     }
 
     @Override

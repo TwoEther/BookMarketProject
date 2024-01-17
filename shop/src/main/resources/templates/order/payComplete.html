@@ -3,23 +3,28 @@
 <head th:replace="fragments/header :: header"/>
 <body>
 <style>
+    .main > * {
+        text-align:center;
+    }
 </style>
-<div class="container">
+<body>
+    <div th:replace="fragments/topHeader :: topHeader"/>
     <div th:replace="fragments/mainHeader :: mainHeader"/>
-    <div class="container" id="body">
-        <div class="container">
-            <h3></h3>
-            <div class="recipeArea">
-                <h3 th:text="${kakaoApprove.item_name}+'이 결제완료 되었습니다'"></h3>
-                <p th:text="'결제금액: '+${kakaoApprove.amount.total}+'원'"></p>
-            </div>
-            <a class="btn btn-lg btn-primary" >계속 쇼핑하기</a>
-            <a class="btn btn-lg btn-secondary">장바구니로 가기</a>
+    <div class="main">
+        <h3></h3>
+        <div class="recipeArea">
+            <h3 th:text="${kakaoApprove.item_name}+'이 결제완료 되었습니다'"></h3>
+            <p th:text="'결제금액: '+${kakaoApprove.amount.total}+'원'"></p>
+        </div>
+        <div class="btnArea">
+            <a class="btn btn-lg btn-primary" th:href="@{/}">홈으로 가기</a>
+            <a class="btn btn-lg btn-secondary" th:href="@{/order/orderList}">주문 목록으로 가기</a>
         </div>
     </div>
 
     <div th:replace="fragments/footer :: footer"/>
-</div> <!-- /container -->
+</body>
+
 </body>
 
 </html>

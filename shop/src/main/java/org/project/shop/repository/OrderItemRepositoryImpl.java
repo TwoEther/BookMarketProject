@@ -39,6 +39,7 @@ public class OrderItemRepositoryImpl implements OrderItemRepository{
     public List<OrderItem> findOrderItemByOrderId(Long orderId) {
         return queryFactory.selectFrom(orderItem)
                 .where(orderItem.order.id.eq(orderId))
+                .orderBy(orderItem.order.orderDate.desc())
                 .fetch();
     }
 

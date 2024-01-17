@@ -20,7 +20,7 @@ public class LikeReview {
     @JoinColumn(name = "likeReviews")
     private Member member;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @JoinColumn(name = "reviewLikeReview")
     private Review review;
 

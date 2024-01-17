@@ -206,16 +206,48 @@ public class MemberController {
         ScriptUtils.alertAndBackPage(response,"배송지가 설정 되었습니다");
     }
 
+    @GetMapping(value = "/cancel")
+    public String getMemberCancelPage(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        if (principalDetails == null) {
+            return "redirect:/";
+        }
+        return "/member/cancel";
+    }
 
+    @DeleteMapping(value = "/cancel")
+    @ResponseBody
+    @Transactional
+    public String deleteMemberGeneral(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    @AuthenticationPrincipal PrincipalDetails principalDetails,
+                                    @RequestParam String password1,
+                                    @RequestParam String password2) throws IOException {
+        String username = principalDetails.getUsername();
+        String msg = "";
+        Member findMember = memberServiceImpl.findByUserId(username);
+        if (!password1.equals(password2)) {
+            msg = "비밀 번호가 다릅니다";
+        } else {
+            msg = "삭제 되었습니다";
+            new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+            memberServiceImpl.deleteMemberByMemberId(findMember.getId());
+        }
+        return msg;
+    }
+    // admin
     @DeleteMapping(value = "/delete/{memberNum}")
     @Transactional
     @ResponseBody
-    public void deleteMemberById(@RequestParam String memberNum) {
+    public void deleteMemberAdmin(@RequestParam String memberNum) {
         memberServiceImpl.deleteMemberByMemberId(Long.valueOf(memberNum));
     }
 
     // 이메일 인증
-    public void sendCodeToEmail(String toEmail) {
+    @PostMapping("/new/email-check")
+    @ResponseBody
+    public void sendCodeToEmail(@RequestParam String email) throws Exception {
+        String code = mailService.sendSimpleMessage(email);
+        System.out.println("code = " + code);
 
     }
 

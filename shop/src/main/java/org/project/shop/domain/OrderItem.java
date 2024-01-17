@@ -18,7 +18,8 @@ public class OrderItem {
     private int orderPrice;
     private int count;
 
-    private String deliveryStatus;
+    @Enumerated(EnumType.STRING)
+    private DeliveryStatus deliveryStatus;
 
     // N:1 (OrderItem : item)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -53,7 +54,8 @@ public class OrderItem {
 
     }
 
-    public void setDeliveryStatus(String deliveryStatus) {
+
+    public void setDeliveryStatus(DeliveryStatus deliveryStatus) {
         this.deliveryStatus = deliveryStatus;
     }
 

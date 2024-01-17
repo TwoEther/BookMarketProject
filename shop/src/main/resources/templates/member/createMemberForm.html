@@ -2,8 +2,43 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header" />
 <link rel="stylesheet" href="/static/css/register.css">
+<style>
+    .form-div > *{
+        display:inline-block;
+    }
+</style>
+
 
 <script>
+    function emailDuplicateCheck(){
+        var token = $("meta[name='_csrf']").attr("content");
+	    var header = $("meta[name='_csrf_header']").attr("content");
+
+        validationDivOn();
+        var email = document.getElementById("email").value;
+
+        $.ajax({
+            type: "POST",
+            url: "/member/new/email-check",
+            beforeSend : function(xhr){
+				xhr.setRequestHeader(header, token);
+            },
+            data : {"email": email},
+            success: function () {
+                alert("인증번호가 발송되었습니다");
+            },
+            error:function(request, status, error){
+        		alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error); }
+        });
+    }
+
+    function validationDivOn(){
+        var con = document.getElementById("email_check_div");
+        if(con.style.display=='none'){
+            con.style.display = 'block';
+        }
+    }
+
 </script>
 
 <body>
@@ -70,13 +105,22 @@ fieldError' : 'form-control'">
             <label th:for="email">이메일</label>
             <input type="hidden" th:name="${_csrf.parameterName}"
                    th:value="${_csrf.token}" />
-            <input type="email" th:field="*{email}" class="form-control"
-                   placeholder="이메일을 입력해 주세요" id="email"
-                   th:class="${#fields.hasErrors('email')}? 'form-control
+            <div class="form-div">
+                <input type="email" th:field="*{email}" class="form-control"
+                       placeholder="이메일을 입력해 주세요" id="email"
+                       th:class="${#fields.hasErrors('email')}? 'form-control
         fieldError' : 'form-control'">
-            <p th:if="${#fields.hasErrors('email')}"
-               th:errors="*{email}">Incorrect date</p>
+                <p th:if="${#fields.hasErrors('email')}"
+                   th:errors="*{email}">Incorrect date</p>
+                <input type="button" onclick="emailDuplicateCheck()" class="email_validation_btn" value="인증하기">
+            </div>
 
+        </div>
+
+        <div class="form-group" id="email_check_div" style="display:none;">
+            <input type="hidden" th:name="${_csrf.parameterName}"
+                   th:value="${_csrf.token}" />
+            <input type="text" class="validation_number_btn" placeholder="인증번호를 입력하세요">
         </div>
 
         <div>

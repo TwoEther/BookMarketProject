@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"/>
+<link rel="stylesheet" href="/static/css/sideBar.css">
+<link rel="stylesheet" href="/static/css/mypage.css">
+
+<style>
+    .contextArea > div {
+        width:500px;
+        margin:0px 0px 20px 0px;
+    }
+    #password1, #password2 {
+        float:right;
+        width: 270px;
+    }
+</style>
+
+<script>
+    function cancelMember() {
+        var token = $("meta[name='_csrf']").attr("content");
+	    var header = $("meta[name='_csrf_header']").attr("content");
+
+        var pw1 = document.getElementById("password1").value;
+        var pw2 = document.getElementById("password2").value;
+
+        $.ajax({
+            type: "DELETE",
+            url: "/member/cancel",
+            beforeSend : function(xhr){
+				xhr.setRequestHeader(header, token);
+            },
+            data : {"password1": pw1,
+                    "password2": pw2},
+            success: function (msg) {
+                alert(msg);
+                location.reload();
+            },
+            error:function(request, status, error){
+                alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error); }
+        });
+    }
+</script>
+<body>
+    <div th:replace="fragments/topHeader :: topHeader"/>
+    <div th:replace="fragments/mainHeader :: mainHeader" />
+    <div class="container">
+        <div th:replace="fragments/sideBar :: sideBar"/>
+        <div class="contextArea" id="contextArea">
+            <h2>회원 탈퇴</h2><hr>
+            <div class="pw1-area">
+                <label>현재 비밀번호 : </label>
+                <input type="password" placeholder="현재 비밀번호를 입력해 주세요." id="password1">
+            </div>
+
+            <div class="pw2-area">
+                <label>비밀번호 재입력 : </label>
+                <input type="password" placeholder="비밀번호를 입력해 주세요." id="password2">
+            </div>
+
+
+            <button type="button" onclick="cancelMember()">삭제 하기</button>
+            <button type="button" th:href="@{/}">홈으로 가기</button>
+
+        </div>
+    </div>
+
+
+
+<!--    <div th:replace="fragments/footer :: footer"/>-->
+</body>
+<script>
+    function cancel(id) {
+        var con = "orderList";
+        var form = document.createElement("form");
+        form.setAttribute("method", "post");
+        form.setAttribute("action", "/orders/" + id + "/cancel");
+        document.body.appendChild(form);
+        form.submit();
+    }
+</script>
+</html>

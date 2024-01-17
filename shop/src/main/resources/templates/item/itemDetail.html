@@ -207,13 +207,6 @@
         });
     }
 
-    $(document).ready(function () {
-        $("#showText").click(function () {
-            $("#text").show();
-            $("#myModal").modal("handleUpdate");
-        });
-    });
-
     $(document).ready(function(){
         $('ul.tabs li').click(function(){
             var tab_id = $(this).attr('data-tab');
@@ -240,6 +233,53 @@
     <nav th:replace="fragments/navbar :: navbar" />
     <!-- /NAVIGATION -->
 
+    <!-- BREADCRUMB -->
+    <div id="breadcrumb" class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="breadcrumb-tree">
+                        <li class="active">
+                            <div class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                    <i class="fa-solid fa-house"></i>
+                                    <span th:text="${item.category.category1}"></span>
+                                </a>
+
+                                <div class="category-dropdown">
+                                    <ul>
+                                        <li><a th:href="@{/item(keyword='')}"><span>전체 도서</span></a></li>
+                                        <li><a th:href="@{/item(keyword='국내 도서')}"><span>국내 도서</span></a></li>
+                                        <li><a th:href="@{/item(keyword='외국 도서')}"><span>외국 도서</span></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="active">
+                            <div class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                    <i class="fa-solid fa-house"></i>
+                                    <span th:text="${item.category.category2}"></span>
+                                </a>
+
+                                <div class="category-dropdown">
+                                    <ul th:each="category : ${allCategory2}">
+                                        <li><a th:href="@{/item(keyword=${category})}"><span th:text="${category}"></span></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="active" th:text="${item.name}"></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
 
     <!-- SECTION -->
     <div class="section" onload="formatByKoreanMoney()">
@@ -265,11 +305,13 @@
                         <h2 class="product-name" th:text="${item.name}"></h2>
                         <div>
                             <div class="product-rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star-o"></i>
+                                <div th:if="${avgScore} >= 5" class="review-rating">
+                                    <i th:each="page: ${#numbers.sequence(1, avgScore, 1)}" class="fa fa-star"></i>
+                                </div>
+                                <div th:unless="${avgScore} >= 5" class="review-rating">
+                                    <i th:each="page: ${#numbers.sequence(1, avgScore, 1)}" class="fa fa-star"></i>
+                                    <i th:each="page: ${#numbers.sequence(avgScore + 1, 5, 1)}" class="fa fa-star-o empty"></i>
+                                </div>
                             </div>
                             <a class="review-link" href="#"><span th:text="${allReview.size()}+' Review(s) '"></span></a>
                         </div>
@@ -304,8 +346,8 @@
 
                         <ul class="product-links">
                             <li>Category:</li>
-<!--                            <li><a href="#"><span th:text="{item.category}"></span></a></li>-->
-<!--                            <li><a href="#"><span th:text="{item.getCategory().category2}"></span></a></li>-->
+                            <li class="active"><a href="#"><span th:text="${item.category.category1}+'/'"></span></a></li>
+                            <li class="active"><a href="#"><span th:text="${item.category.category2}"></span></a></li>
                         </ul>
 
                         <ul class="product-links">
@@ -616,11 +658,11 @@
                                                 <li th:each = "inquiry : ${allInquiry}">
                                                     <div class="inquiry">
                                                         <div class="inquiry-heading">
-                                                            <div class="em-label"><em class="inquiry-label">질문</em></div>
+                                                            <div class="em-label"><em class="inquir y-label">질문</em></div>
                                                             <div class="inquiry_name" th:text="${inquiry.member.name}"></div>
                                                             <div class="inquiry_item_name" th:text="${inquiry.item.name}"></div>
-                                                            <div class="inquiry_time" th:text="${inquiry.created_at}"></div>
-                                                            <div class="inquiry-text" th:text="${inquiry.content}"></div>
+                                                            <div class="inquiry_time" th:text="${#temporals.format(inquiry.created_at, 'yyyy.MM.dd HH:mm')}"></div>
+                                                            <div class="inquiry-text" th:text="'ㄴ'+${inquiry.content}"></div>
                                                         </div>
                                                     </div>
                                                 </li>
@@ -653,143 +695,6 @@
     </div>
     <!-- /SECTION -->
 
-    <!-- Section -->
-<!--    <div class="section">-->
-<!--        &lt;!&ndash; container &ndash;&gt;-->
-<!--        <div class="container">-->
-<!--            &lt;!&ndash; row &ndash;&gt;-->
-<!--            <div class="row">-->
-
-<!--                <div class="col-md-12">-->
-<!--                    <div class="section-title text-center">-->
-<!--                        <h3 class="title">Related Products</h3>-->
-<!--                    </div>-->
-<!--                </div>-->
-
-<!--                &lt;!&ndash; product &ndash;&gt;-->
-<!--                <div class="col-md-3 col-xs-6">-->
-<!--                    <div class="product">-->
-<!--                        <div class="product-img">-->
-<!--                            <img src="./img/product01.png" alt="">-->
-<!--                            <div class="product-label">-->
-<!--                                <span class="sale">-30%</span>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="product-body">-->
-<!--                            <p class="product-category">Category</p>-->
-<!--                            <h3 class="product-name"><a href="#">product name goes here</a></h3>-->
-<!--                            <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>-->
-<!--                            <div class="product-rating">-->
-<!--                            </div>-->
-<!--                            <div class="product-btns">-->
-<!--                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>-->
-<!--                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>-->
-<!--                                <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="add-to-cart">-->
-<!--                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                &lt;!&ndash; /product &ndash;&gt;-->
-
-<!--                &lt;!&ndash; product &ndash;&gt;-->
-<!--                <div class="col-md-3 col-xs-6">-->
-<!--                    <div class="product">-->
-<!--                        <div class="product-img">-->
-<!--                            <img src="./img/product02.png" alt="">-->
-<!--                            <div class="product-label">-->
-<!--                                <span class="new">NEW</span>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="product-body">-->
-<!--                            <p class="product-category">Category</p>-->
-<!--                            <h3 class="product-name"><a href="#">product name goes here</a></h3>-->
-<!--                            <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>-->
-<!--                            <div class="product-rating">-->
-<!--                                <i class="fa fa-star"></i>-->
-<!--                                <i class="fa fa-star"></i>-->
-<!--                                <i class="fa fa-star"></i>-->
-<!--                                <i class="fa fa-star"></i>-->
-<!--                                <i class="fa fa-star"></i>-->
-<!--                            </div>-->
-<!--                            <div class="product-btns">-->
-<!--                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>-->
-<!--                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>-->
-<!--                                <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="add-to-cart">-->
-<!--                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                &lt;!&ndash; /product &ndash;&gt;-->
-
-<!--                <div class="clearfix visible-sm visible-xs"></div>-->
-
-<!--                &lt;!&ndash; product &ndash;&gt;-->
-<!--                <div class="col-md-3 col-xs-6">-->
-<!--                    <div class="product">-->
-<!--                        <div class="product-img">-->
-<!--                            <img src="./img/product03.png" alt="">-->
-<!--                        </div>-->
-<!--                        <div class="product-body">-->
-<!--                            <p class="product-category">Category</p>-->
-<!--                            <h3 class="product-name"><a href="#">product name goes here</a></h3>-->
-<!--                            <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>-->
-<!--                            <div class="product-rating">-->
-<!--                                <i class="fa fa-star"></i>-->
-<!--                                <i class="fa fa-star"></i>-->
-<!--                                <i class="fa fa-star"></i>-->
-<!--                                <i class="fa fa-star"></i>-->
-<!--                                <i class="fa fa-star-o"></i>-->
-<!--                            </div>-->
-<!--                            <div class="product-btns">-->
-<!--                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>-->
-<!--                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>-->
-<!--                                <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="add-to-cart">-->
-<!--                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                &lt;!&ndash; /product &ndash;&gt;-->
-
-<!--                &lt;!&ndash; product &ndash;&gt;-->
-<!--                <div class="col-md-3 col-xs-6">-->
-<!--                    <div class="product">-->
-<!--                        <div class="product-img">-->
-<!--                            <img src="./img/product04.png" alt="">-->
-<!--                        </div>-->
-<!--                        <div class="product-body">-->
-<!--                            <p class="product-category">Category</p>-->
-<!--                            <h3 class="product-name"><a href="#">product name goes here</a></h3>-->
-<!--                            <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>-->
-<!--                            <div class="product-rating">-->
-<!--                            </div>-->
-<!--                            <div class="product-btns">-->
-<!--                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>-->
-<!--                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>-->
-<!--                                <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="add-to-cart">-->
-<!--                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                &lt;!&ndash; /product &ndash;&gt;-->
-
-<!--            </div>-->
-<!--            &lt;!&ndash; /row &ndash;&gt;-->
-<!--        </div>-->
-<!--        &lt;!&ndash; /container &ndash;&gt;-->
-<!--    </div>-->
-    <!-- /Section -->
 
     <div th:replace="fragments/footer :: footer"/>
 </div> <!-- /container -->

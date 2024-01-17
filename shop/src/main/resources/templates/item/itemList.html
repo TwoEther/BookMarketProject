@@ -12,6 +12,11 @@
         width:100%;
         background-color:white;
     }
+
+    .store-sort > a {
+        margin-right:5px;
+
+    }
 </style>
 <body>
 
@@ -61,6 +66,21 @@
     <nav th:replace="fragments/navbar :: navbar" />
     <!-- NAVIGATION -->
 
+    <!-- BREADCRUMB -->
+    <div id="breadcrumb" class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <div id="search_num_box" class="col-md-12">
+                   <div class="keyword_box"th:text="'\''+${keyword}+'\''"></div>
+                   <div th:text="'에 대한 '+${totalElement}+'개의 검색 결과'"></div>
+                </div>
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
 
     <!-- SECTION -->
     <div class="section">
@@ -75,7 +95,7 @@
                         <h3 class="aside-title">분류</h3>
                         <div class="checkbox-filter">
                             <div class="input-checkbox">
-                                <input type="checkbox" id="category-1">
+                                <input type="checkbox" th:id="korean" onclick="search(this.id)" id="category-1">
                                 <label for="category-1">
                                     <span></span>
                                     국내 도서
@@ -147,7 +167,7 @@
                             </div>
                         </div>
                     </div>
-                    <!-- /aside Widget -->
+<!--                    &lt;!&ndash; /aside Widget &ndash;&gt;-->
                 </div>
                 <!-- /ASIDE -->
 
@@ -156,8 +176,8 @@
                     <!-- store top filter -->
                     <div class="store-filter clearfix">
                         <div class="store-sort">
-                            <a th:href="@{/item(page=${page}, keyword=${keyword}, sort_by='판매량')}">판매량순</a>
-                            <a th:href="@{/item(page=${page}, keyword=${keyword}, sort_by='최신')}">최신순</a>
+                            <a class="btn btn-secondary" th:href="@{/item(page=${page}, keyword=${keyword}, sort_by='판매량')}">판매량순</a>
+                            <a class="btn btn-secondary" th:href="@{/item(page=${page}, keyword=${keyword}, sort_by='최신')}">최신순</a>
 
 
                                 <script th:inline="javascript">
@@ -177,18 +197,18 @@
                                     }
                                 </script>
 
-                            <label>
-                                Show:
-                                <select class="input-select">
-                                    <option value="0">20</option>
-                                    <option value="1">50</option>
-                                </select>
-                            </label>
+<!--                            <label>-->
+<!--                                Show:-->
+<!--                                <select class="input-select">-->
+<!--                                    <option value="0">20</option>-->
+<!--                                    <option value="1">50</option>-->
+<!--                                </select>-->
+<!--                            </label>-->
                         </div>
-                        <ul class="store-grid">
-                            <li class="active"><i class="fa fa-th"></i></li>
-                            <li><a href="#"><i class="fa fa-th-list"></i></a></li>
-                        </ul>
+<!--                        <ul class="store-grid">-->
+<!--                            <li class="active"><i class="fa fa-th"></i></li>-->
+<!--                            <li><a href="#"><i class="fa fa-th-list"></i></a></li>-->
+<!--                        </ul>-->
                     </div>
                     <!-- /store top filter -->
 
@@ -202,7 +222,8 @@
                                 </div>
 
                                 <div class="product-body" th:with="avg = ${T(java.lang.Math).floor(item.calculateAvgScore())}">
-                                    <p class="product-category">Category</p>
+                                    <p class="product-category" th:text="${item.author} +'(저자)'"></p>
+                                    <p class="product-category" th:text="${#temporals.format(item.createDate, 'yyyy-MM-dd')}"></p>
                                     <h3 class="product-name">
                                         <a th:href="@{/item/{param1}(param1=${item.id})}"><span th:text="${item.name}"></span></a>
                                     </h3>

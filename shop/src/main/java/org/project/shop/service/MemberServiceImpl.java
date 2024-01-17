@@ -90,11 +90,11 @@ public class MemberServiceImpl implements MemberService {
     }
 
 
-    public void sendToEmail(String toEmail) {
+    public void sendToEmail(String toEmail) throws Exception {
         this.checkDuplicateEmail(toEmail);
         String title = "이메일 인증 번호";
         String authCode = this.createRandomCode();
-        mailService.sendEmail(toEmail, title, authCode);
+        mailService.sendSimpleMessage(toEmail);
 
         // 인증 요청시 Redis에 저장
         redisService.setValues(AUTH_CODE_PREFIX+toEmail,

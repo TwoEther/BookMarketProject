@@ -2,13 +2,16 @@ package org.project.shop.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.project.shop.auth.PrincipalDetails;
 import org.project.shop.config.ScriptUtils;
 import org.project.shop.custom.CustomPageRequest;
 import org.project.shop.domain.*;
 import org.project.shop.service.KakaoPayService;
 import org.project.shop.service.*;
+import org.project.shop.web.AddressForm;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -68,10 +71,18 @@ public class OrderController {
     }
 
     @GetMapping(value = "/orderList")
-    public String orderListByMember(Model model) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserDetails userDetails = (UserDetails) principal;
-        String username = ((UserDetails) principal).getUsername();
+    public String orderListByMember(@AuthenticationPrincipal PrincipalDetails principalDetails ,
+                                    HttpServletResponse response, Model model) throws IOException {
+        if (principalDetails == null) {
+//            ScriptUtils.alert(response, "로그인 후 이용 가능 합니다.");
+            return "redirect:/";
+        }
+        String username = principalDetails.getUsername();
+        if (username.isEmpty()) {
+//            ScriptUtils.alert(response, "로그인 후 이용 가능 합니다.");
+            return "redirect:/";
+        }
+
 
         Member findMember = memberServiceImpl.findByUserId(username);
         List<Order> findAllOrder = orderServiceImpl.findByMemberIdAfterPayment(findMember.getId());
@@ -145,6 +156,8 @@ public class OrderController {
             model.addAttribute("totalCount", totalCount);
             model.addAttribute("paymentPrice", paymentPrice);
             model.addAttribute("totalPrice", totalPrice);
+
+            model.addAttribute("AddressForm", new AddressForm());
             return "order/payment";
 
         }

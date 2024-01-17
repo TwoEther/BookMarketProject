@@ -103,13 +103,13 @@ public class AdminController {
         Long orderItem_Id = Long.parseLong(orderItemId);
         OrderItem findOrderItem = orderItemServiceImpl.findOrderItemById(orderItem_Id);
         if (delivery_status.equals("ready")) {
-            findOrderItem.setDeliveryStatus("배송 준비중");
+            findOrderItem.setDeliveryStatus(DeliveryStatus.READY);
         } else if (delivery_status.equals("going")) {
-            findOrderItem.setDeliveryStatus("배송중");
+            findOrderItem.setDeliveryStatus(DeliveryStatus.GOING);
         } else if (delivery_status.equals("complete")) {
-            findOrderItem.setDeliveryStatus("배송완료");
+            findOrderItem.setDeliveryStatus(DeliveryStatus.COMPLETE);
         } else {
-            findOrderItem.setDeliveryStatus("추적할 수 없습니다");
+            findOrderItem.setDeliveryStatus(DeliveryStatus.NOTFOUND);
         }
 
         ScriptUtils.alertAndBackPage(response, "수정 되었습니다");

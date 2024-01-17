@@ -85,6 +85,7 @@ public class KakaoPayController {
             // 구매 처리
             OrderItem orderItem = OrderItem.createOrderItem(item, item != null ? item.getPrice() : 0, count);
             orderItem.setOrder(paymentOrder);
+            orderItem.setDeliveryStatus(DeliveryStatus.READY);
             paymentsItemList.add(orderItem);
             orderItemServiceImpl.save(orderItem);
 

@@ -32,7 +32,7 @@ public class Review {
     // ?
     private String type;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "reviews")
     private Member member;
 

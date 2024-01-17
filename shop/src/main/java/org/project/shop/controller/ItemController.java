@@ -43,7 +43,7 @@ public class ItemController {
     private final ReviewServiceImpl reviewServiceImpl;
     private final InquiryServiceImpl inquiryServiceImpl;
 
-    @GetMapping(value = "/dbConfig")
+    @PostMapping(value = "/dbConfig")
     public String dbConfig(Model model) throws Exception {
         List<List<String>> ret = new ArrayList<List<String>>();
         BufferedReader br = null;
@@ -202,6 +202,8 @@ public class ItemController {
 
         Page<Item> findAllItem = itemServiceImpl.findByKeyword(pageRequest, keyword, country);
 
+        Long totalElement = findAllItem.getTotalElements();
+
         int pageNum = Math.floorDiv(allItemNum, size) - 1;
         int startPage = Math.max(page - 1, 0);
         int endPage = Math.min(page, pageNum);
@@ -212,6 +214,11 @@ public class ItemController {
         // 외국 도서
         Page<Item> foreignList = itemServiceImpl.findByKeyword(pageRequest,"외국");
 
+        long total_korean_item_num = koreanList.getTotalElements();
+        long total_foreign_item_num = foreignList.getTotalElements();
+        long total_item_num = findAllItem.getTotalElements();
+
+            
         // 카테고리 목록
         Map<String, List<Integer>> categoryList = new HashMap<>();
         List<String> categories = categoryServiceImpl.findAllCategory2();
@@ -228,30 +235,31 @@ public class ItemController {
 
 
         model.addAttribute("keyword", keyword);
+        model.addAttribute("country", country);
 
         model.addAttribute("paging", findAllItem);
-        model.addAttribute("total_count", findAllItem.getTotalElements());
+        model.addAttribute("totalElement", totalElement);
+        model.addAttribute("total_count", total_item_num);
 
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
         model.addAttribute("currentPage", page);
 
-        model.addAttribute("koreanNum", koreanList.getTotalPages());
-        model.addAttribute("foreignNum", foreignList.getTotalPages());
+        model.addAttribute("koreanNum", total_korean_item_num);
+        model.addAttribute("foreignNum", total_foreign_item_num);
         model.addAttribute("categoryList", categoryList);
         return "item/itemList";
     }
 
 
     @GetMapping(value = "/{itemId}")
-    public String showItem(@PathVariable("itemId") Long itemId, @RequestParam(defaultValue = "0", required = false) int page,
+    public String showItem(@PathVariable("itemId") Long itemId,
+                           @RequestParam(defaultValue = "0", required = false) int reviewPage,
+                           @RequestParam(defaultValue = "0", required = false) int inquiryPage,
                            @AuthenticationPrincipal Member member,
                            Model model) {
         DecimalFormat decFormat = new DecimalFormat("###,###");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // 페이징 처리를 위한 변수
-        int reviewSize = 10;
 
         if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -274,29 +282,38 @@ public class ItemController {
             }
         }
 
+        int reviewSize = 10;
+        int inquirySize = 10;
+
         Item item = itemServiceImpl.findOneItem(itemId);
         List<Item> sameCategoryItems = itemServiceImpl.findByItemWithCategory(item.getCategory().getCategory2());
         sameCategoryItems.remove(item);
 
         // 리뷰 처리
         // 해당 아이템에 해당하는 리뷰를 페이징 해서 가져옴
-        Page<Review> findPageReviewByItemId = reviewServiceImpl.findPageReviewByItemId(PageRequest.of(page, reviewSize), itemId);
+        Page<Review> findPageReviewByItemId = reviewServiceImpl.findPageReviewByItemId(PageRequest.of(reviewPage, reviewSize), itemId);
         List<Review> findAllReviewByItemId = reviewServiceImpl.findAllReviewByItemId(itemId);
 
+        // 카테고리 처리
+        List<String> allCategory2 = categoryServiceImpl.findAllCategory2();
         // 점수별 리뷰 개수
         int[] reviewCountByScore = Review.countByScore(findAllReviewByItemId);
         // 평균 점수
         double avgScore = Review.calculateAvgScore(findAllReviewByItemId);
-        // 문의 처리
 
-        List<Inquiry> allInquiry = inquiryServiceImpl.findByItemId(itemId);
+        // 문의 처리
+        Page<Inquiry> allInquiry = inquiryServiceImpl.findByItemId(PageRequest.of(inquiryPage, inquirySize, Sort.by("created_at").descending()), itemId);
 
         model.addAttribute("reviewSize", reviewSize);
+        model.addAttribute("inquirySize", inquirySize);
+
         model.addAttribute("allInquiry", allInquiry);
 
         model.addAttribute("allReview", findAllReviewByItemId);
         model.addAttribute("reviewCount", reviewCountByScore);
         model.addAttribute("pageReview", findPageReviewByItemId);
+
+        model.addAttribute("allCategory2", allCategory2);
 
 
         model.addAttribute("avgScore", avgScore);
