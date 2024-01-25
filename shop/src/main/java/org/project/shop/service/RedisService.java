@@ -14,53 +14,23 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class RedisService {
-    private RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
 
-    public void setValues(String key, String data) {
-        ValueOperations<String, Object> value = redisTemplate.opsForValue();
-        value.set(key, data);
+    public String getRedisTemplateValue(String key) {
+        return redisTemplate.opsForValue().get(key);
     }
 
-    public void setValues(String key, String data, Duration duration) {
-        ValueOperations<String, Object> values = redisTemplate.opsForValue();
-        values.set(key, data, duration);
-    }
-
-    @Transactional(readOnly = true)
-    public String getValues(String key) {
-        ValueOperations<String, Object> values = redisTemplate.opsForValue();
-        if (values.get(key) == null) {
-            return "false";
-        }
-        return (String) values.get(key);
-    }
-
-    public void deleteValues(String key) {
+    public void deleteRedisTemplateValue(String key) {
         redisTemplate.delete(key);
     }
 
-    public void expireValues(String key, int timeout) {
-        redisTemplate.expire(key, timeout, TimeUnit.MILLISECONDS);
-    }
+    public void setRedisTemplate(String key, String value, Duration duration) {
+        if (getRedisTemplateValue(key) != null) {
+            deleteRedisTemplateValue(key);
+        }
 
-    public void setHashOps(String key, Map<String, String> data) {
-        HashOperations<String, Object, Object> values = redisTemplate.opsForHash();
-        values.putAll(key, data);
-    }
-
-    @Transactional(readOnly = true)
-    public String getHashOps(String key, String hashKey) {
-        HashOperations<String, Object, Object> values = redisTemplate.opsForHash();
-        return Boolean.TRUE.equals(values.hasKey(key, hashKey)) ? (String) redisTemplate.opsForHash().get(key, hashKey) : "";
-    }
-
-    public void deleteHashOps(String key, String hashKey) {
-        HashOperations<String, Object, Object> values = redisTemplate.opsForHash();
-        values.delete(key, hashKey);
-    }
-
-    public boolean checkExistsValue(String value) {
-        return !value.equals("false");
+        redisTemplate.opsForValue().set(key, value, duration);
     }
 }

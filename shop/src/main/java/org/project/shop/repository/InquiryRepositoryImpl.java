@@ -8,6 +8,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.project.shop.domain.Inquiry;
 import org.project.shop.domain.QInquiry;
+import org.project.shop.domain.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -45,7 +46,9 @@ public class InquiryRepositoryImpl implements InquiryRepository{
     @Override
     public Page<Inquiry> findByItemId(PageRequest pageRequest, Long id) {
         List<Inquiry> inquiries = queryFactory.selectFrom(inquiry)
-                .where(inquiry.item.id.eq(id))
+                .where(inquiry.item.id.eq(id).and(
+                        inquiry.member.role.eq(Role.ROLE_USER.toString())
+                ))
                 .orderBy(getOrderSpecifier(pageRequest))
                 .offset(pageRequest.getOffset())
                 .limit(pageRequest.getPageSize())
@@ -59,8 +62,9 @@ public class InquiryRepositoryImpl implements InquiryRepository{
     }
 
     @Override
-    public List<Inquiry> findAllInquiry() {
+    public List<Inquiry> findAllInquiryByGeneralMember() {
         return queryFactory.selectFrom(inquiry)
+                .where(inquiry.member.role.eq(Role.ROLE_USER.toString()))
                 .fetch();
     }
 

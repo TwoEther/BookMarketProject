@@ -45,26 +45,36 @@ public class CartController {
     @PostMapping(value = "/add")
     @ResponseBody
     @Transactional
-    public boolean addCartItem(@RequestParam HashMap<String, Object> params, @AuthenticationPrincipal PrincipalDetails principalDetails){
+    public String addCartItem(@RequestParam HashMap<String, Object> params, @AuthenticationPrincipal PrincipalDetails principalDetails){
 
         long itemId = Long.parseLong((String) params.get("itemId"));
         int quantity = Integer.parseInt((String) params.get("quantity"));
+        String return_code;
+        
+        if(quantity == 0) return_code = "zero_quantity";
+        else{
+            if (principalDetails == null) {
+                return_code = "user_none";
+            } else {
+                String username = principalDetails.getUsername();
 
-        if(principalDetails == null) return false;
-        String username = principalDetails.getUsername();
+                Member findMember = memberServiceImpl.findByUserId(username);
+                if (findMember != null) {
+                    Item findItem = itemServiceImpl.findOneItem(itemId);
 
-        Member findMember = memberServiceImpl.findByUserId(username);
-        if (findMember != null) {
-            Item findItem = itemServiceImpl.findOneItem(itemId);
-
-            quantity = Math.min(quantity, findItem.getStockQuantity());
-            Long id = cartServiceImpl.addCart(findMember, findItem, quantity);
-            return true;
-        } else {
-            Long id = null;
-            return false;
+                    quantity = Math.min(quantity, findItem.getStockQuantity());
+                    Long id = cartServiceImpl.addCart(findMember, findItem, quantity);
+                    return_code = "success";
+                } else {
+                    Long id = null;
+                    return_code = "exception";
+                }
+            }
         }
 
+        System.out.println("quantity = " + quantity);
+        System.out.println("return_code = " + return_code);
+        return return_code;
     }
 
     @GetMapping(value = "/list")

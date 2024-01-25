@@ -1,6 +1,5 @@
 package org.project.shop.service;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.project.shop.exception.BusinessLogicException;
 import org.project.shop.exception.ExceptionCode;
@@ -9,7 +8,6 @@ import org.project.shop.domain.Member;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -97,7 +95,7 @@ public class MemberServiceImpl implements MemberService {
         mailService.sendSimpleMessage(toEmail);
 
         // 인증 요청시 Redis에 저장
-        redisService.setValues(AUTH_CODE_PREFIX+toEmail,
+        redisService.setRedisTemplate(AUTH_CODE_PREFIX+toEmail,
                 authCode, Duration.ofMillis(this.authCodeExpirationMillis));
     }
 
@@ -136,15 +134,15 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
-    public int checkDuplicateMember(String user_id) {
+    public String checkDuplicateMember(String user_id) {
         if (user_id.isEmpty()) {
-            return MemberExceptionCode.EMPTY.ordinal();
+            return MemberExceptionCode.EMPTY.name();
         } else if (!checkReqexId(user_id)) {
-            return MemberExceptionCode.Reqex.ordinal();
+            return MemberExceptionCode.Reqex.name();
         } else if (findByUserId(user_id) != null){
-            return MemberExceptionCode.Dup.ordinal();
+            return MemberExceptionCode.Dup.name();
         } else {
-            return MemberExceptionCode.OK.ordinal();
+            return MemberExceptionCode.OK.name();
         }
     }
 

@@ -103,6 +103,44 @@ public class OrderController {
         return "order/orderList";
     }
 
+    @GetMapping(value = "/address")
+    public String setDeliveryOrder(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                    Model model) throws IOException {
+        String username = principalDetails.getUsername();
+        Member findMember = memberServiceImpl.findByUserId(username);
+        Address address = findMember.getAddress();
+
+        String zipcode = (address == null) ? "우편 번호" : address.getZipcode();
+        String address1 = (address == null) ? "주소" : address.getAddress1();
+        String address2 =  (address == null) ? "상세 주소" :address.getAddress2();
+        String reference = (address == null) ? "참고 항목" :address.getReference();
+
+
+        model.addAttribute("zipcode", zipcode);
+        model.addAttribute("address1", address1);
+        model.addAttribute("address2", address2);
+        model.addAttribute("reference", reference);
+
+        model.addAttribute("AddressForm", new AddressForm());
+
+        return "member/address";
+    }
+
+    @PostMapping(value = "/address")
+    @Transactional
+    public void setDeliveryOrderPost(@AuthenticationPrincipal PrincipalDetails principalDetails, HttpServletResponse response, AddressForm addressForm) throws IOException {
+        String zipcode = addressForm.getZipcode();
+        String address1 = addressForm.getAddress1();
+        String address2 = addressForm.getAddress2();
+        String reference = addressForm.getReference();
+
+        String username = principalDetails.getUsername();
+        Member findMember = memberServiceImpl.findByUserId(username);
+        Address address = new Address(zipcode, address1, address2, reference);
+        findMember.setAddress(address);
+        ScriptUtils.alertAndBackPage(response,"배송지가 설정 되었습니다");
+    }
+
     @GetMapping(value = "/detail/{orderId}")
     public String orderDetail(@PathVariable("orderId") Long orderId, Model model) {
         Order findOrder = orderServiceImpl.findByOrderId(orderId);

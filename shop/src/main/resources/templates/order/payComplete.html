@@ -3,15 +3,45 @@
 <head th:replace="fragments/header :: header"/>
 <body>
 <style>
-    .main > * {
-        text-align:center;
-    }
+
 </style>
+
 <body>
     <div th:replace="fragments/topHeader :: topHeader"/>
     <div th:replace="fragments/mainHeader :: mainHeader"/>
-    <div class="main">
-        <h3></h3>
+    <div class="container">
+        <div class="header1">
+            <h3>주문완료</h3>
+        </div>
+
+        <div class="header2">
+            <h3>주문이 완료되었습니다. 감사합니다!</h3>
+        </div>
+
+        <div class="orderDetail">
+            <h3>상품배송 정보</h3>
+            <div>
+                <h5>받는사람 정보</h5>
+                <table>
+                    <tr>
+                        <td>받는 사람</td>
+                        <td th:text="${member.name}+' / '+${member.phoneNum}"></td>
+                    </tr>
+
+                    <tr>
+                        <td>받는 주소</td>
+                        <td th:text="${member.name}+' / '+${member.phoneNum}"></td>
+                    </tr>
+
+                    <tr>
+                        <td>받는 사람</td>
+                        <td th:text="${member.name}+' / '+${member.phoneNum}"></td>
+                    </tr>
+                </table>
+            </div>
+            <div></div>
+        </div>
+
         <div class="recipeArea">
             <h3 th:text="${kakaoApprove.item_name}+'이 결제완료 되었습니다'"></h3>
             <p th:text="'결제금액: '+${kakaoApprove.amount.total}+'원'"></p>

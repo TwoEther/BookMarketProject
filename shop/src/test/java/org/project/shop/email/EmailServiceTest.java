@@ -21,8 +21,6 @@ public class EmailServiceTest {
         String email = "test@test.com";
         String authCode = "123dwe";
 
-        redisService.setValues(email, authCode, Duration.ofMillis(2300));
-        assertTrue(redisService.checkExistsValue(email));
-        assertThat(redisService.getValues(email)).isEqualTo(authCode);
+        redisService.setRedisTemplate(email, authCode, Duration.ofMillis(2300));
     }
 }

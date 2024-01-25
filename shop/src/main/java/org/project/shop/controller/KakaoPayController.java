@@ -3,6 +3,7 @@ package org.project.shop.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.project.shop.auth.PrincipalDetails;
 import org.project.shop.config.ScriptUtils;
 import org.project.shop.domain.*;
 import org.project.shop.kakaopay.KakaoApproveResponse;
@@ -11,6 +12,7 @@ import org.project.shop.kakaopay.KakaoReadyResponse;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -53,12 +55,12 @@ public class KakaoPayController {
     }
 
     @GetMapping("/paySuccess")
-    public String afterPayRequest(@RequestParam("pg_token") String pgToken, Model model) {
+    public String afterPayRequest(@RequestParam("pg_token") String pgToken,
+                                  @AuthenticationPrincipal PrincipalDetails principalDetails,
+                                  Model model) {
         KakaoApproveResponse kakaoApprove = kakaoPayService.ApproveResponse(pgToken);
 
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserDetails userDetails = (UserDetails) principal;
-        String username = ((UserDetails) principal).getUsername();
+        String username = principalDetails.getUsername();
 
         Member findMember = memberServiceImpl.findByUserId(username);
         Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
@@ -99,6 +101,7 @@ public class KakaoPayController {
         }
 
         model.addAttribute("kakaoApprove", kakaoApprove);
+        model.addAttribute("member", findMember);
         model.addAttribute("paymentsItemList", paymentsItemList);
         return "order/payComplete";
     }

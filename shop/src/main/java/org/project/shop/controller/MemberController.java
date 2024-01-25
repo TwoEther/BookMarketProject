@@ -12,6 +12,7 @@ import org.project.shop.domain.Member;
 import org.project.shop.domain.Role;
 import org.project.shop.service.MailService;
 import org.project.shop.service.MemberServiceImpl;
+import org.project.shop.service.RedisService;
 import org.project.shop.web.AddressForm;
 import org.project.shop.web.LoginForm;
 import org.project.shop.web.MemberForm;
@@ -29,6 +30,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +41,8 @@ import java.util.Map;
 public class MemberController {
     private final MemberServiceImpl memberServiceImpl;
     private final MailService mailService;
-
+    private final RedisService redisService;
+    
     @GetMapping(value = "/new")
     public String createForm(@RequestParam(value = "error", required = false) String error,
                              @RequestParam(value = "exception", required = false) String exception,
@@ -65,11 +68,18 @@ public class MemberController {
         String phoneNum = form.getPhoneNum();
         String email = form.getEmail();
         String roles = form.getRoles();
+        String email_check_num = form.getEmail_Check_number();
 
 //        mailService.sendEmail();
 
         if (memberServiceImpl.findByUserId(id) != null) {
             ScriptUtils.alert(response, "아이디가 존재합니다");
+            return "/member/createMemberForm";
+        } else if (email_check_num.isEmpty()) {
+            ScriptUtils.alert(response, "이메일 인증후 회원가입 가능합니다");
+            return "/member/createMemberForm";
+        } else if (!redisService.getRedisTemplateValue(email).equals(email_check_num)) {
+            ScriptUtils.alert(response, "인증번호가 일치 하지 않습니다");
             return "/member/createMemberForm";
         } else {
             Member member = new Member(id, password, name, phoneNum, email);
@@ -77,7 +87,7 @@ public class MemberController {
                 member.setRole(Role.ROLE_ADMIN.toString());
             } else if (roles.equals(Role.ROLE_ANONYMOUS)) {
                 member.setRole(Role.ROLE_ANONYMOUS.toString());
-            } else{
+            } else {
                 member.setRole(Role.ROLE_USER.toString());
             }
 
@@ -97,8 +107,8 @@ public class MemberController {
                 result.reject("signupFailed", e.getMessage());
                 return "/member/createMemberForm";
             }
-
-            return "redirect:/";
+            ScriptUtils.alert(response, "회원가입이 완료 되었습니다.");
+            return "/";
         }
 
 
@@ -106,7 +116,7 @@ public class MemberController {
 
     @PostMapping(value = "/idCheck")
     @ResponseBody
-    public int idCheck(@RequestParam String userId) throws Exception {
+    public String idCheck(@RequestParam String userId) throws Exception {
         return memberServiceImpl.checkDuplicateMember(userId);
     }
 
@@ -246,9 +256,11 @@ public class MemberController {
     @PostMapping("/new/email-check")
     @ResponseBody
     public void sendCodeToEmail(@RequestParam String email) throws Exception {
-        String code = mailService.sendSimpleMessage(email);
-        System.out.println("code = " + code);
-
+        if (!email.isEmpty()) {
+            String code = mailService.sendSimpleMessage(email);
+            redisService.setRedisTemplate(email, code, Duration.ofMillis(300 * 1000));
+            String value = redisService.getRedisTemplateValue(email);
+        }
     }
 
     private void checkDuplicatedEmail(String email) {

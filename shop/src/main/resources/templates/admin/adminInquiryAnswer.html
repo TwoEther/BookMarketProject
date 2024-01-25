@@ -24,6 +24,25 @@
         width:800px;
     }
 
+    textarea {
+        width: 100%;
+        height: 100px;
+        padding: 12px 14px;
+        color: #000;
+        border: 1px solid #d5d5d5;
+        border-radius: 6px;
+        font-size: 14px;
+        line-height: 22px;
+        letter-spacing: -0.01em;
+        font-family: "Noto Sans KR", sans-serif;
+        background-color: #fff;
+        box-sizing: border-box;
+        transition: background 0.2s ease-out, border-color 0.2s ease-out;
+        outline: 0;
+        overflow-y: auto;
+        resize: none;
+    }
+
 </style>
 
 
@@ -63,48 +82,71 @@
                 </div>
             </div>
 
-            <!-- board seach area -->
-            <div id="board-search">
-                <div class="container">
-                    <div class="search-window">
-                        <form action="">
-                            <div class="search-wrap">
-                                <label for="search" class="blind">공지사항 내용 검색</label>
-                                <input id="search" type="search" name="" placeholder="검색어를 입력해주세요." value="">
-                                <button type="submit" class="btn btn-dark">검색</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
             <!-- board list area -->
             <div id="board-list">
                 <div class="container">
                     <table class="board-table">
                         <thead>
                         <tr>
-                            <th scope="col" class="th-num">번호</th>
+                            <th scope="col" class="th-title">상품 이미지</th>
                             <th scope="col" class="th-title">상품명</th>
                             <th scope="col" class="th-title">문의 내용</th>
-                            <th scope="col" class="th-date">등록일</th>
-                            <th scope="col" class="th-date">답변 작성 여부</th>
-                            <th scope="col" class="th-date">답변 작성 하기</th>
+                            <th scope="col" class="th-title">등록일</th>
+                            <th scope="col" class="th-date">답변 내용</th>
+                            <th scope="col" class="th-date">답변 작성</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="inquiry : ${allInquiry}">
-                            <td>3</td>
-                            <td><a th:href="@{/item/{param}(param=${inquiry.item.id})}"><span th:text="${inquiry.item.name}"></span></a></td>
-                            <th th:text="${inquiry.content}"></th>
-                            <td th:text="${#temporals.format(inquiry.created_at, 'yyyy.MM.dd HH:mm')}">2017.07.13</td>
-                            <td th:if="${inquiry.child.isEmpty()}">N</td>
-                            <td th:unless="${inquiry.child.isEmpty()}">Y</td>
-                            <td>
-                                <a th:href="@{/admin/inquiry/answer/{param}(param=${inquiry.id})}">문의 작성 하기</a>
-                            </td>
+                        <tr>
+                            <td><img th:src="${inquiry.item.getFilePath()}" alt="" width="70px;"></td>
+                            <td th:text="${inquiry.item.name}"></td>
+                            <td th:text="${inquiry.content}"></td>
+                            <td th:text="${inquiry.created_at}"></td>
+                            <form th:action="@{/admin/inquiry/answer/{param}(param=${inquiry.id})}" method="post">
+                                <td>
+                                    <textarea name="answer">
+
+                                </textarea>
+                                </td>
+                                <td>
+                                    <button type="submit">작성 하기</button>
+                                </td>
+
+                            </form>
+                            <td></td>
                         </tr>
 
+                        </tbody>
+                    </table>
+
+                    <table class="board-table">
+                        <thead>
+                            <tr>
+                                <td>상품명</td>
+                                <td>답변 내용</td>
+                                <td>작성 시간</td>
+                                <td>답변 내용</td>
+                                <td>수정 하기</td>
+                                <td>삭제 하기</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="childInquiry : ${inquiry.child}">
+                            <td><a th:href="@{/item/{param}(param=${childInquiry.item.id})}"><span th:text="${childInquiry.item.name}"></span></a></td>
+                            <th th:text="${childInquiry.content}"></th>
+                            <td th:text="${#temporals.format(childInquiry.created_at, 'yyyy.MM.dd HH:mm')}">2017.07.13</td>
+                            <td>
+                                <textarea name="answer">
+                                </textarea>
+                            </td>
+
+                            <td>
+                                <button class="btn btn-danger">수정하기</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger">삭제하기</button>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>

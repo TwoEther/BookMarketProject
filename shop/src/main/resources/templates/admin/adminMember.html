@@ -59,22 +59,7 @@
         <section class="notice">
             <div class="page-title">
                 <div class="container">
-                    <h3>문의 관리</h3>
-                </div>
-            </div>
-
-            <!-- board seach area -->
-            <div id="board-search">
-                <div class="container">
-                    <div class="search-window">
-                        <form action="">
-                            <div class="search-wrap">
-                                <label for="search" class="blind">공지사항 내용 검색</label>
-                                <input id="search" type="search" name="" placeholder="검색어를 입력해주세요." value="">
-                                <button type="submit" class="btn btn-dark">검색</button>
-                            </div>
-                        </form>
-                    </div>
+                    <h3>회원 관리</h3>
                 </div>
             </div>
 
@@ -85,24 +70,18 @@
                         <thead>
                         <tr>
                             <th scope="col" class="th-num">번호</th>
-                            <th scope="col" class="th-title">상품명</th>
-                            <th scope="col" class="th-title">문의 내용</th>
+                            <th scope="col" class="th-title">아이디</th>
+                            <th scope="col" class="th-title"></th>
                             <th scope="col" class="th-date">등록일</th>
                             <th scope="col" class="th-date">답변 작성 여부</th>
                             <th scope="col" class="th-date">답변 작성 하기</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="inquiry : ${allInquiry}">
+                        <tr th:each="member : ${allMember}">
                             <td>3</td>
-                            <td><a th:href="@{/item/{param}(param=${inquiry.item.id})}"><span th:text="${inquiry.item.name}"></span></a></td>
-                            <th th:text="${inquiry.content}"></th>
-                            <td th:text="${#temporals.format(inquiry.created_at, 'yyyy.MM.dd HH:mm')}">2017.07.13</td>
-                            <td th:if="${inquiry.child.isEmpty()}">N</td>
-                            <td th:unless="${inquiry.child.isEmpty()}">Y</td>
-                            <td>
-                                <a th:href="@{/admin/inquiry/answer/{param}(param=${inquiry.id})}">문의 작성 하기</a>
-                            </td>
+                            <td th:text="${member.name}"></td>
+                            <td th:text="${member.role}"></td>
                         </tr>
 
                         </tbody>

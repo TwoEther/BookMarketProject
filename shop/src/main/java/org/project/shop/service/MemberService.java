@@ -20,7 +20,7 @@ public interface MemberService {
     public Optional<Member> findByEmail(String email);
 
     // 회원 확인
-    public int checkDuplicateMember(String id);
+    public String checkDuplicateMember(String id);
 
     // 회원 검증
     public boolean checkReqexId(String id);

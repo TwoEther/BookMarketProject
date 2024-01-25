@@ -27,6 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping(value = "/admin")
 @Secured("ROLE_ADMIN")
+
 public class AdminController {
     private final MemberServiceImpl memberServiceImpl;
     private final ItemServiceImpl itemServiceImpl;
@@ -49,8 +50,7 @@ public class AdminController {
     public String adminMemberPage(Model model) {
         List<Member> allGeneralMember = memberServiceImpl.findAllGeneralMember();
         model.addAttribute("allMember", allGeneralMember);
-        model.addAttribute("type", "member");
-        return "admin/adminHome";
+        return "admin/adminMember";
     }
 
     @GetMapping(value = "/item")
@@ -139,11 +139,66 @@ public class AdminController {
 
     @GetMapping(value = "/inquiry")
     public String adminInquiry(Model model) {
-        List<Inquiry> allInquiry = inquiryServiceImpl.findAllInquiry();
+        List<Inquiry> allInquiry = inquiryServiceImpl.findAllInquiryByGeneralMember();
 
         model.addAttribute("allInquiry", allInquiry);
         return "/admin/adminInquiry";
     }
+
+    @GetMapping(value = "/inquiry/answer/{inquiryId}")
+    public String adminInquiryAnswer(Model model, @PathVariable String inquiryId) {
+        Long id = Long.parseLong(inquiryId);
+        Inquiry findInquiry = inquiryServiceImpl.findById(id);
+
+        model.addAttribute("inquiry", findInquiry);
+        return "/admin/adminInquiryAnswer";
+    }
+
+    @PostMapping(value = "/inquiry/answer/{inquiryId}")
+    @Transactional
+    public void adminInquiryAnswer(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                    @PathVariable String inquiryId,
+                                     HttpServletResponse response,
+                                     @RequestParam String answer) throws IOException {
+        String username = principalDetails.getUsername();
+        Member adminMember = memberServiceImpl.findByUserId(username);
+
+        Long id = Long.parseLong(inquiryId);
+        Inquiry findInquiry = inquiryServiceImpl.findById(id);
+
+        Inquiry child = new Inquiry(answer);
+        child.setMember(adminMember);
+        child.setItem(findInquiry.getItem());
+        inquiryServiceImpl.save(child);
+
+        findInquiry.setChild(child);
+        child.setParent(findInquiry);
+
+        ScriptUtils.alertAndBackPage(response, "문의가 작성 되었습니다.");
+    }
+    @PutMapping(value = "/inquiry/answer/{inquiryId}")
+    @Transactional
+    public void adminInquiryPutAnswer(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                   @PathVariable String inquiryId,
+                                   HttpServletResponse response,
+                                   @RequestParam String answer) throws IOException {
+        String username = principalDetails.getUsername();
+        Member adminMember = memberServiceImpl.findByUserId(username);
+
+        Long id = Long.parseLong(inquiryId);
+        Inquiry findInquiry = inquiryServiceImpl.findById(id);
+
+        Inquiry child = new Inquiry(answer);
+        child.setMember(adminMember);
+        child.setItem(findInquiry.getItem());
+        inquiryServiceImpl.save(child);
+
+        findInquiry.setChild(child);
+        child.setParent(findInquiry);
+
+        ScriptUtils.alertAndBackPage(response, "문의가 작성 되었습니다.");
+    }
+
 
 
     @GetMapping(value = "/order")
@@ -154,9 +209,13 @@ public class AdminController {
     }
 
     @GetMapping(value = "/order/{orderId}")
-    public String adminMemberOrderDetail(Model model, @PathVariable Long orderId) {
+    public String adminMemberOrderDetail(Model model, @PathVariable Long orderId
+                                        ,@AuthenticationPrincipal PrincipalDetails principalDetails) {
+
         Order findOrder = orderServiceImpl.findByOrderId(orderId);
         model.addAttribute("order", findOrder);
+
+
         return "/admin/adminOrderDetail";
     }
 
@@ -166,5 +225,8 @@ public class AdminController {
         return "/admin/adminOrder";
     }
 
-
+    public void isLogined(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        Member findMember = memberServiceImpl.findByUserId(principalDetails.getUsername());
+        System.out.println("findMember.getRole() = " + findMember.getRole());
+    }
 }

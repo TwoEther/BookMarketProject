@@ -46,7 +46,6 @@ public class Member {
 //     정의 타입 사용
     @Embedded
     private Address address;
-
     private String role;
 
     @Embedded

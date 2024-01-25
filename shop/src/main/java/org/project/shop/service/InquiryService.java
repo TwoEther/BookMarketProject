@@ -13,7 +13,7 @@ public interface InquiryService {
 
     public Page<Inquiry> findByItemId(PageRequest pageRequest, Long id);
 
-    public List<Inquiry> findAllInquiry();
+    public List<Inquiry> findAllInquiryByGeneralMember();
 
     public void delete(Long id);
 }

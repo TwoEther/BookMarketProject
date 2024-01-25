@@ -13,7 +13,7 @@
         margin-bottom:50px;
     }
 
-    .logo > img {
+    .logo > a > img {
         width:100px;
     }
 
@@ -25,13 +25,23 @@
         width:400px;
         height:400px;
     }
+
+    .btn-area > * {
+        width:100%;
+    }
+
+    #valid {
+        color: red;
+        font-size:15px;
+        margin-top:5px;
+    }
 </style>
 
 <body>
 
 <div class="">
     <div class="logo">
-        <img src="/static/images/album.jpg">
+        <a th:href="@{/}"><img src="/static/images/album.jpg"></a>
     </div>
     <div class="loginBox">
         <form role="form" th:action="@{/member/login}" th:object="${loginForm}"
@@ -62,12 +72,17 @@ fieldError' : 'form-control'">
             </div>
 
             <div th:if="error">
-                <p id="valid" style="color: red; font-size:15px;"><a th:text="${exception}"></a></p>
+                <p id="valid"><a th:text="${exception}"></a></p>
             </div>
 
             <div class="form_footer">
-                <button type="submit" class="btn btn-primary">Submit</button>
                 <a th:href="@{/member/findId}" style="float:right;">아이디 찾기</a>
+            </div>
+
+            <div class="btn-area">
+                <button type="submit" class="btn btn-primary">로그인</button>
+                <hr>
+                <a class="btn btn-outline-secondary" th:href="@{/member/new}">회원 가입</a>
             </div>
 
         </form>

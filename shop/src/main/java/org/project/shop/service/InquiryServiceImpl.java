@@ -33,8 +33,8 @@ public class InquiryServiceImpl implements InquiryService{
     }
 
     @Override
-    public List<Inquiry> findAllInquiry() {
-        return inquiryRepositoryImpl.findAllInquiry();
+    public List<Inquiry> findAllInquiryByGeneralMember() {
+        return inquiryRepositoryImpl.findAllInquiryByGeneralMember();
     }
 
     @Override

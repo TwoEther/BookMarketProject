@@ -3,6 +3,13 @@
 <head th:replace="fragments/header :: header" />
 
 <style>
+    input[type="submit"]{
+        font-family: FontAwesome;
+    }
+    hr {
+        margin: 40px 0 40px 0;
+    }
+
     ul.inquiry-area {
         margin:10px 10px 0px 0px;
     }
@@ -87,6 +94,13 @@
         width:300px;
     }
 
+    .y-label-q {
+        background-color:#1e90ff;
+    }
+
+    .y-label-a {
+        background-color:#cd5c5c;
+    }
 
     td {
         text-align:center;
@@ -133,8 +147,11 @@
             },
             data : {"itemId": [[${item.id}]],
                     "quantity": quantity},
-            success: function () {
-                alert("장바구니에 담겼습니다");
+            success: function (code) {
+                if(code == "user_none"){alert("올바르지 못한 접근입니다.");}
+                if(code == "zero_quantity"){alert("1개 이상 선택해주세요.");}
+                if(code == "success"){alert("장바구니에 담겼습니다.");}
+                if(code == "exception"){alert("오류가 발생했습니다.");}
                 location.reload();
             },
             error:function(request, status, error){
@@ -271,8 +288,6 @@
                                 </div>
                             </div>
                         </li>
-
-                        <li class="active" th:text="${item.name}"></li>
                     </ul>
                 </div>
             </div>
@@ -346,7 +361,7 @@
 
                         <ul class="product-links">
                             <li>Category:</li>
-                            <li class="active"><a href="#"><span th:text="${item.category.category1}+'/'"></span></a></li>
+                            <li class="active"><a href="#"><span th:text="${item.category.category1}+' '"></span></a></li>
                             <li class="active"><a href="#"><span th:text="${item.category.category2}"></span></a></li>
                         </ul>
 
@@ -367,168 +382,247 @@
                     <div id="product-tab">
                         <!-- product tab nav -->
                         <ul class="tabs">
-                            <li class="tab-link current" data-tab="tab-1">정보</li>
-                            <li class="tab-link" data-tab="tab-2" th:text="'리뷰'+'('+${allReview.size()}+')'">리뷰</li>
-                            <li class="tab-link" data-tab="tab-3">문의</li>
+                            <li class="tab-link current"><a href="#tab-1">정보</a></li>
+                            <li class="tab-link" data-tab="tab-2" ><a href="#tab-2"><span th:text="'리뷰'+'('+${allReview.size()}+')'"></span></a></li>
+                            <li class="tab-link" data-tab="tab-3"><a href="#tab-3"><span>문의</span></a></li>
                         </ul>
                         <hr>
                         <!-- /product tab nav -->
 
                         <!-- product tab content -->
-                        <div class="tab-content-three">
-                            <!-- tab1  -->
-                            <div id="tab-1" class="tab-content current">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <p th:text="${item.description}"></p>
+                        <div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <a name="tab-1"></a>
+                                    <p th:text="${item.description}"></p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <a name="tab-2"></a>
+                                <div class="header-text">
+                                    <h3>상품 문의</h3>
+                                </div>
+                                <!-- Rating -->
+                                <div class="col-md-3">
+                                    <div id="rating">
+                                        <div class="rating-avg">
+                                            <span th:text="${avgScore}"></span>
+                                            <div class="rating-stars">
+                                                <div th:if="${avgScore} >= 5" class="review-rating">
+                                                    <i th:each="page: ${#numbers.sequence(1, avgScore, 1)}" class="fa fa-star"></i>
+                                                </div>
+                                                <div th:unless="${avgScore} >= 5" class="review-rating">
+                                                    <i th:each="page: ${#numbers.sequence(1, avgScore, 1)}" class="fa fa-star"></i>
+                                                    <i th:each="page: ${#numbers.sequence(avgScore + 1, 5, 1)}" class="fa fa-star-o empty"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <ul class="rating">
+                                            <li>
+                                                <div class="rating-stars">
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                </div>
+                                                <div class="rating-progress">
+                                                    <div style="width: 80%;"></div>
+                                                </div>
+                                                <span class="sum" th:text="${reviewCount[5]}">3</span>
+                                            </li>
+                                            <li>
+                                                <div class="rating-stars">
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                </div>
+                                                <div class="rating-progress">
+                                                    <div style="width: 60%;"></div>
+                                                </div>
+                                                <span class="sum" th:text="${reviewCount[4]}">3</span>
+                                            </li>
+                                            <li>
+                                                <div class="rating-stars">
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                </div>
+                                                <div class="rating-progress">
+                                                    <div></div>
+                                                </div>
+                                                <span class="sum" th:text="${reviewCount[3]}">3</span>
+                                            </li>
+                                            <li>
+                                                <div class="rating-stars">
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                </div>
+                                                <div class="rating-progress">
+                                                    <div></div>
+                                                </div>
+                                                <span class="sum" th:text="${reviewCount[2]}">3</span>
+                                            </li>
+                                            <li>
+                                                <div class="rating-stars">
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                </div>
+                                                <div class="rating-progress">
+                                                    <div></div>
+                                                </div>
+                                                <span class="sum" th:text="${reviewCount[1]}">3</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <!-- Review Form -->
+                                <div class="col-md-7">
+                                    <div id="reviews">
+                                        <ul class="reviews">
+                                            <li th:each = "review : ${allReview}">
+                                                <div class="review-heading">
+                                                    <p class="name"><strong><span th:text="${review.member.name}"></span></strong></p>
+                                                    <p class="date" th:text="${review.created_at}">27 DEC 2018, 8:0 PM</p>
+                                                    <div th:if="${review.score} >= 5" class="review-rating">
+                                                        <i th:each="page: ${#numbers.sequence(1, review.score, 1)}" class="fa fa-star"></i>
+                                                    </div>
+                                                    <div th:unless="${review.score} >= 5" class="review-rating">
+                                                        <i th:each="page: ${#numbers.sequence(1, review.score, 1)}" class="fa fa-star"></i>
+                                                        <i th:each="page: ${#numbers.sequence(review.score + 1, 5, 1)}" class="fa fa-star-o empty"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="review-body">
+                                                    <div class="review-text">
+                                                        <p th:text="${review.text}"></p>
+                                                    </div>
+                                                    <div class="review-btn">
+                                                        <button type="button" th:id="${review.id}" onclick="addLikeReview(this.id)"><i th:id="'likeBtn-'+${review.id}" class="fa-regular fa-thumbs-up"></i></button>
+                                                        <p th:id="'likeNum-'+${review.id}" th:text="${review.likeNum}"></p>
+                                                        <button type="submit" th:id="'delete-'+${review.id}" onclick="deleteReview(this.id)">삭제</button>
+
+                                                    </div>
+                                                </div>
+                                            </li>
+
+                                        </ul>
+                                        <ul th:if="${allReview.size()} <= ${reviewSize}"></ul>
+                                        <ul th:unless="${allReview.size()} <= ${reviewSize}" class="reviews-pagination">
+                                            <li class="page-item" th:classappend="${!pageReview.hasPrevious} ? 'disabled'">
+                                                <form th:action="@{/item/{param}(param=${item.id})}">
+                                                    <input type="hidden" name="reviewPage" th:value="${reviewPage-1}">
+                                                    <input class="page-left" type="submit" value="&#xf359;">
+                                                </form>
+                                            </li>
+                                            <li th:each="page: ${#numbers.sequence(reviewStartPage, reviewEndPage)}"
+                                                class="page-item">
+                                                <a th:text="${page}" class="page-link" th:href="@{|?page=${page}}"></a>
+                                            </li>
+                                            <li class="page-item" th:classappend="${!pageReview.hasNext} ? 'disabled'">
+                                                <form th:action="@{/item/{param}(param=${item.id})}">
+                                                    <input type="hidden" name="reviewPage" th:value="${reviewPage+1}">
+                                                    <input class="page-right" type="submit" value="&#xf35a;">
+                                                </form>
+                                                <!--                                <a class="page-link"-->
+                                                <!--                                   th:href="@{|?paging=${paging.number+1}|}">-->
+                                                <!--                                    <i class="fa fa-angle-right"></i>-->
+                                                <!--                                </a>-->
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <!-- 모달 영역 -->
+                                    <!-- Button Trigger Modal -->
+                                    <button type="button" class="btn btn-lg btn-success mt-4"
+                                            data-bs-toggle="modal" data-bs-target="#myModal" style="margin-top:0px;">
+                                        <i class="fa-solid fa-pencil"></i>
+                                        작성 하기
+                                    </button>
+
+                                    <!-- The Modal -->
+                                    <div id="myModal" class="modal fade" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">
+                                                        리뷰 작성
+                                                    </h5>
+                                                    <button type="button" class="btn-close"
+                                                            data-bs-dismiss="modal">
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="thumbnail-box">
+                                                        <div class="row">
+                                                            <div class="col-3">
+                                                                <img th:src="${item.getFilePath()}" alt="" style="width:100px;">
+                                                            </div>
+                                                            <div class="col-9">
+                                                                <form th:action="@{/review/add}" method="post" class="review-form">
+                                                                    <div class="input-rating">
+                                                                        <div class="stars">
+                                                                            <p><strong><span th:text="${item.name}"></span></strong></p>
+                                                                            <input id="star5" name="rating" value="5" type="radio"><label for="star5"></label>
+                                                                            <input id="star4" name="rating" value="4" type="radio"><label for="star4"></label>
+                                                                            <input id="star3" name="rating" value="3" type="radio"><label for="star3"></label>
+                                                                            <input id="star2" name="rating" value="2" type="radio"><label for="star2"></label>
+                                                                            <input id="star1" name="rating" value="1" type="radio"><label for="star1"></label>
+                                                                        </div>
+                                                                        <input type="hidden" th:value="${item.id}" name="itemId">
+                                                                        <textarea class="review_box" name="review" placeholder="내용을 10자 이상 입력해 주세요. 주제와 무관한 댓글, 악플, 배송 문의 등의 글은 임의로 삭제될 수 있습니다."></textarea>
+                                                                    </div>
+                                                                    <button type="submit" class="btn btn-danger"
+                                                                            data-bs-dismiss="modal">
+                                                                        작성 하기
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <!-- /tab1  -->
-
-                            <!-- tab2  -->
-                            <div id="tab-2" class="tab-content">
-                                <div class="row">
-                                    <!-- Rating -->
-                                    <div class="col-md-3">
-                                        <div id="rating">
-                                            <div class="rating-avg">
-                                                <span th:text="${avgScore}"></span>
-                                                <div class="rating-stars">
-                                                    <div th:if="${avgScore} >= 5" class="review-rating">
-                                                        <i th:each="page: ${#numbers.sequence(1, avgScore, 1)}" class="fa fa-star"></i>
-                                                    </div>
-                                                    <div th:unless="${avgScore} >= 5" class="review-rating">
-                                                        <i th:each="page: ${#numbers.sequence(1, avgScore, 1)}" class="fa fa-star"></i>
-                                                        <i th:each="page: ${#numbers.sequence(avgScore + 1, 5, 1)}" class="fa fa-star-o empty"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <ul class="rating">
-                                                <li>
-                                                    <div class="rating-stars">
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                    </div>
-                                                    <div class="rating-progress">
-                                                        <div style="width: 80%;"></div>
-                                                    </div>
-                                                    <span class="sum" th:text="${reviewCount[5]}">3</span>
-                                                </li>
-                                                <li>
-                                                    <div class="rating-stars">
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star-o"></i>
-                                                    </div>
-                                                    <div class="rating-progress">
-                                                        <div style="width: 60%;"></div>
-                                                    </div>
-                                                    <span class="sum" th:text="${reviewCount[4]}">3</span>
-                                                </li>
-                                                <li>
-                                                    <div class="rating-stars">
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star-o"></i>
-                                                        <i class="fa fa-star-o"></i>
-                                                    </div>
-                                                    <div class="rating-progress">
-                                                        <div></div>
-                                                    </div>
-                                                    <span class="sum" th:text="${reviewCount[3]}">3</span>
-                                                </li>
-                                                <li>
-                                                    <div class="rating-stars">
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star-o"></i>
-                                                        <i class="fa fa-star-o"></i>
-                                                        <i class="fa fa-star-o"></i>
-                                                    </div>
-                                                    <div class="rating-progress">
-                                                        <div></div>
-                                                    </div>
-                                                    <span class="sum" th:text="${reviewCount[2]}">3</span>
-                                                </li>
-                                                <li>
-                                                    <div class="rating-stars">
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star-o"></i>
-                                                        <i class="fa fa-star-o"></i>
-                                                        <i class="fa fa-star-o"></i>
-                                                        <i class="fa fa-star-o"></i>
-                                                    </div>
-                                                    <div class="rating-progress">
-                                                        <div></div>
-                                                    </div>
-                                                    <span class="sum" th:text="${reviewCount[1]}">3</span>
-                                                </li>
-                                            </ul>
-                                        </div>
+                            <hr>
+                            <div class="row">
+                                <a name="tab-3"></a>
+                                <div class="inquiry-header">
+                                    <div class="header-text">
+                                        <h3>상품 문의</h3>
                                     </div>
-                                    <!-- Review Form -->
-                                    <div class="col-md-7">
-                                        <div id="reviews">
-                                            <ul class="reviews">
-                                                <li th:each = "review : ${allReview}">
-                                                    <div class="review-heading">
-                                                        <p class="name"><strong><span th:text="${review.member.name}"></span></strong></p>
-                                                        <p class="date" th:text="${review.created_at}">27 DEC 2018, 8:0 PM</p>
-                                                        <div th:if="${review.score} >= 5" class="review-rating">
-                                                            <i th:each="page: ${#numbers.sequence(1, review.score, 1)}" class="fa fa-star"></i>
-                                                        </div>
-                                                        <div th:unless="${review.score} >= 5" class="review-rating">
-                                                            <i th:each="page: ${#numbers.sequence(1, review.score, 1)}" class="fa fa-star"></i>
-                                                            <i th:each="page: ${#numbers.sequence(review.score + 1, 5, 1)}" class="fa fa-star-o empty"></i>
-                                                        </div>
-                                                    </div>
-                                                    <div class="review-body">
-                                                        <div class="review-text">
-                                                            <p th:text="${review.text}"></p>
-                                                        </div>
-                                                        <div class="review-btn">
-                                                            <button type="button" th:id="${review.id}" onclick="addLikeReview(this.id)"><i th:id="'likeBtn-'+${review.id}" class="fa-regular fa-thumbs-up"></i></button>
-                                                            <p th:id="'likeNum-'+${review.id}" th:text="${review.likeNum}"></p>
-                                                            <button type="submit" th:id="'delete-'+${review.id}" onclick="deleteReview(this.id)">삭제</button>
-
-                                                        </div>
-                                                    </div>
-                                                </li>
-
-                                            </ul>
-                                            <ul th:if="${allReview.size()} <= ${reviewSize}"></ul>
-                                            <ul th:unless="${allReview.size()} <= ${reviewSize}" class="reviews-pagination">
-                                                <li class="active">1</li>
-                                                <li><a href="#">2</a></li>
-                                                <li><a href="#">3</a></li>
-                                                <li><a href="#">4</a></li>
-                                                <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
+                                    <div class="modal-area">
                                         <!-- 모달 영역 -->
                                         <!-- Button Trigger Modal -->
-                                        <button type="button" class="btn btn-lg btn-success mt-4"
-                                                data-bs-toggle="modal" data-bs-target="#myModal" style="margin-top:0px;">
+                                        <button type="button" class="btn btn-lg btn-success mt-4" id="inquiryModalBtn"
+                                                data-bs-toggle="modal" data-bs-target="#inquiryModal" style="margin-top:0px;!">
                                             <i class="fa-solid fa-pencil"></i>
                                             작성 하기
                                         </button>
 
                                         <!-- The Modal -->
-                                        <div id="myModal" class="modal fade" tabindex="-1">
+                                        <div id="inquiryModal" class="modal fade" tabindex="-1">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
                                                         <h5 class="modal-title">
-                                                            리뷰 작성
+                                                            문의 작성
                                                         </h5>
                                                         <button type="button" class="btn-close"
                                                                 data-bs-dismiss="modal">
@@ -536,153 +630,90 @@
                                                     </div>
                                                     <div class="modal-body">
                                                         <div class="thumbnail-box">
-                                                            <div class="row">
-                                                                <div class="col-3">
-                                                                    <img th:src="${item.getFilePath()}" alt="" style="width:100px;">
-                                                                </div>
-                                                                <div class="col-9">
-                                                                    <form th:action="@{/review/add}" method="post" class="review-form">
-                                                                        <div class="input-rating">
-                                                                            <div class="stars">
-                                                                                <p><strong><span th:text="${item.name}"></span></strong></p>
-                                                                                <input id="star5" name="rating" value="5" type="radio"><label for="star5"></label>
-                                                                                <input id="star4" name="rating" value="4" type="radio"><label for="star4"></label>
-                                                                                <input id="star3" name="rating" value="3" type="radio"><label for="star3"></label>
-                                                                                <input id="star2" name="rating" value="2" type="radio"><label for="star2"></label>
-                                                                                <input id="star1" name="rating" value="1" type="radio"><label for="star1"></label>
-                                                                            </div>
+                                                            <hr>
+                                                            <table>
+                                                                <tr>
+                                                                    <td>상품 정보</td>
+                                                                    <td th:text="${item.name}"></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>문의 사항</td>
+                                                                    <td>
+                                                                        <select name="selectForm" id="context">
+                                                                            <option value="select">문의 사항을 선택하세요</option>
+                                                                            <option value="product">상품 관련 문의</option>
+                                                                            <option value="delivery">배송 문의</option>
+                                                                            <option value="other">기타</option>
+                                                                        </select>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>문의 내용</td>
+                                                                    <td>
+                                                                        <form th:action="@{/inquiry/add}" method="post" class="review-form">
                                                                             <input type="hidden" th:value="${item.id}" name="itemId">
-                                                                            <textarea class="review_box" name="review" placeholder="내용을 10자 이상 입력해 주세요. 주제와 무관한 댓글, 악플, 배송 문의 등의 글은 임의로 삭제될 수 있습니다."></textarea>
-                                                                        </div>
-                                                                        <button type="submit" class="btn btn-danger"
-                                                                                data-bs-dismiss="modal">
-                                                                            작성 하기
-                                                                        </button>
-                                                                    </form>
-                                                                </div>
-                                                            </div>
+                                                                            <textarea class="inquiry_box" name="inquiry_text" placeholder="내용을 10자 이상 입력해 주세요. 주제와 무관한 댓글, 악플, 배송 문의 등의 글은 임의로 삭제될 수 있습니다."></textarea>
+                                                                            <button type="submit" class="btn btn-danger"
+                                                                                    data-bs-dismiss="modal">
+                                                                                작성 하기
+                                                                            </button>
+                                                                        </form>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
                                                         </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-
                                                     </div>
                                                 </div>
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <!-- /tab2  -->
 
-                            <!-- tab3  -->
-                            <div id="tab-3" class="tab-content">
-                                <div class="row">
-                                    <div class="inquiry-header">
-                                        <div class="header-text">
-                                            <h3>상품 문의</h3>
-                                        </div>
-                                        <div class="modal-area">
-                                            <!-- 모달 영역 -->
-                                            <!-- Button Trigger Modal -->
-                                            <button type="button" class="btn btn-lg btn-success mt-4" id="inquiryModalBtn"
-                                                    data-bs-toggle="modal" data-bs-target="#inquiryModal" style="margin-top:0px;!">
-                                                <i class="fa-solid fa-pencil"></i>
-                                                작성 하기
-                                            </button>
-
-                                            <!-- The Modal -->
-                                            <div id="inquiryModal" class="modal fade" tabindex="-1">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title">
-                                                                문의 작성
-                                                            </h5>
-                                                            <button type="button" class="btn-close"
-                                                                    data-bs-dismiss="modal">
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div class="thumbnail-box">
-                                                                <hr>
-                                                                <table>
-                                                                    <tr>
-                                                                        <td>상품 정보</td>
-                                                                        <td th:text="${item.name}"></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>문의 사항</td>
-                                                                        <td>
-                                                                            <select name="selectForm" id="context">
-                                                                                <option value="select">문의 사항을 선택하세요</option>
-                                                                                <option value="product">상품 관련 문의</option>
-                                                                                <option value="delivery">배송 문의</option>
-                                                                                <option value="other">기타</option>
-                                                                            </select>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>문의 내용</td>
-                                                                        <td>
-                                                                            <form th:action="@{/inquiry/add}" method="post" class="review-form">
-                                                                                <input type="hidden" th:value="${item.id}" name="itemId">
-                                                                                <textarea class="inquiry_box" name="inquiry_text" placeholder="내용을 10자 이상 입력해 주세요. 주제와 무관한 댓글, 악플, 배송 문의 등의 글은 임의로 삭제될 수 있습니다."></textarea>
-                                                                                <button type="submit" class="btn btn-danger"
-                                                                                        data-bs-dismiss="modal">
-                                                                                    작성 하기
-                                                                                </button>
-                                                                            </form>
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                            </div>
-                                                        </div>
+                                <div class="guide-area">
+                                    <ul>
+                                        <li>상품문의 및 후기게시판을 통해 취소나 환불, 반품 등은 처리되지 않습니다.</li>
+                                        <li>"해당 상품 자체"와 관계없는 글, 양도, 광고성, 욕설, 비방, 도배 등의 글은 예고 없이 이동, 노출제한, 삭제 등의 조치가 취해질 수 있습니다.</li>
+                                        <li>공개 게시판이므로 전화번호, 메일 주소 등 고객님의 소중한 개인정보는 절대 남기지 말아주세요.</li>
+                                    </ul>
+                                </div>
+                                <!-- inquiry -->
+                                <div>
+                                    <div>
+                                        <ul class="inquiry-area">
+                                            <li th:each = "inquiry : ${allInquiry}">
+                                                <div class="inquiry">
+                                                    <div class="inquiry-heading">
+                                                        <div class="em-label"><em class="y-label-q">질문</em></div>
+                                                        <div class="inquiry_item_name" th:text="${inquiry.item.name}"></div>
+                                                        <div class="inquiry_time" th:text="${#temporals.format(inquiry.created_at, 'yyyy.MM.dd HH:mm')}"></div>
+                                                        <div class="inquiry-text" th:text="'ㄴ'+${inquiry.content}"></div>
                                                     </div>
                                                 </div>
 
-                                        </div>
-                                        </div>
-                                    </div>
+                                                <div th:each="child : ${inquiry.child}" class="inquiry">
+                                                    <div class="inquiry-heading">
+                                                        <div class="em-label"><em class="y-label-a">답변</em></div>
+                                                        <div class="inquiry_item_name" th:text="${child.item.name}"></div>
+                                                        <div class="inquiry_time" th:text="${#temporals.format(child.created_at, 'yyyy.MM.dd HH:mm')}"></div>
+                                                        <div class="inquiry-text" th:text="'ㄴ'+${child.content}"></div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <hr>
+                                        </ul>
 
-                                    <div class="guide-area">
-                                        <ul>
-                                            <li>상품문의 및 후기게시판을 통해 취소나 환불, 반품 등은 처리되지 않습니다.</li>
-                                            <li>"해당 상품 자체"와 관계없는 글, 양도, 광고성, 욕설, 비방, 도배 등의 글은 예고 없이 이동, 노출제한, 삭제 등의 조치가 취해질 수 있습니다.</li>
-                                            <li>공개 게시판이므로 전화번호, 메일 주소 등 고객님의 소중한 개인정보는 절대 남기지 말아주세요.</li>
+                                        <ul class="reviews-pagination">
+                                            <li class="active">1</li>
+                                            <li><a href="#">2</a></li>
+                                            <li><a href="#">3</a></li>
+                                            <li><a href="#">4</a></li>
+                                            <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
                                         </ul>
                                     </div>
-                                    <!-- inquiry -->
-                                    <div>
-                                        <div>
-                                            <ul class="inquiry-area">
-                                                <li th:each = "inquiry : ${allInquiry}">
-                                                    <div class="inquiry">
-                                                        <div class="inquiry-heading">
-                                                            <div class="em-label"><em class="inquir y-label">질문</em></div>
-                                                            <div class="inquiry_name" th:text="${inquiry.member.name}"></div>
-                                                            <div class="inquiry_item_name" th:text="${inquiry.item.name}"></div>
-                                                            <div class="inquiry_time" th:text="${#temporals.format(inquiry.created_at, 'yyyy.MM.dd HH:mm')}"></div>
-                                                            <div class="inquiry-text" th:text="'ㄴ'+${inquiry.content}"></div>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                                <hr>
-                                            </ul>
-
-                                            <ul class="reviews-pagination">
-                                                <li class="active">1</li>
-                                                <li><a href="#">2</a></li>
-                                                <li><a href="#">3</a></li>
-                                                <li><a href="#">4</a></li>
-                                                <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
                                 </div>
-                                <hr>
                             </div>
-                            <!-- /tab3  -->
-
+                            <hr>
                         </div>
                         <!-- /product tab content  -->
                     </div>

@@ -254,7 +254,7 @@ public class ItemController {
 
     @GetMapping(value = "/{itemId}")
     public String showItem(@PathVariable("itemId") Long itemId,
-                           @RequestParam(defaultValue = "0", required = false) int reviewPage,
+                           @RequestParam(defaultValue = "0", required = false, value = "reviewPage") int reviewPage,
                            @RequestParam(defaultValue = "0", required = false) int inquiryPage,
                            @AuthenticationPrincipal Member member,
                            Model model) {
@@ -293,6 +293,9 @@ public class ItemController {
         // 해당 아이템에 해당하는 리뷰를 페이징 해서 가져옴
         Page<Review> findPageReviewByItemId = reviewServiceImpl.findPageReviewByItemId(PageRequest.of(reviewPage, reviewSize), itemId);
         List<Review> findAllReviewByItemId = reviewServiceImpl.findAllReviewByItemId(itemId);
+        int reviewPageNum = findPageReviewByItemId.getTotalPages();
+        int reviewStartPage = Math.max(reviewPage - 1, 0);
+        int reviewEndPage = Math.min(reviewPage, reviewPageNum);
 
         // 카테고리 처리
         List<String> allCategory2 = categoryServiceImpl.findAllCategory2();
@@ -305,6 +308,9 @@ public class ItemController {
         Page<Inquiry> allInquiry = inquiryServiceImpl.findByItemId(PageRequest.of(inquiryPage, inquirySize, Sort.by("created_at").descending()), itemId);
 
         model.addAttribute("reviewSize", reviewSize);
+        model.addAttribute("reviewStartPage", reviewStartPage);
+        model.addAttribute("reviewPage", reviewPage);
+        model.addAttribute("reviewEndPage", reviewEndPage);
         model.addAttribute("inquirySize", inquirySize);
 
         model.addAttribute("allInquiry", allInquiry);
@@ -312,7 +318,6 @@ public class ItemController {
         model.addAttribute("allReview", findAllReviewByItemId);
         model.addAttribute("reviewCount", reviewCountByScore);
         model.addAttribute("pageReview", findPageReviewByItemId);
-
         model.addAttribute("allCategory2", allCategory2);
 
 

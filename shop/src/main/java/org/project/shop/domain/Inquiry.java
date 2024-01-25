@@ -27,6 +27,7 @@ public class Inquiry {
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Item item;
+
     @Column(length = 300)
     private String content;
 
