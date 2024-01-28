@@ -81,6 +81,19 @@ public class AdminController {
 
         ScriptUtils.alertAndBackPage(response, "수정 되었습니다");
     }
+    @PostMapping(value = "/item/status")
+    @Transactional
+    public void adminMemberItemStatusAllEdit(HttpServletResponse response, @RequestParam Boolean status) throws IOException {
+        List<Item> allItem = itemServiceImpl.findAllItem();
+        if (status) {
+            allItem.forEach(item -> item.setSaleStatus(true));
+        } else {
+            allItem.forEach(item -> item.setSaleStatus(false));
+        }
+
+        ScriptUtils.alertAndBackPage(response, "수정 되었습니다");
+    }
+
 
     @PostMapping(value = "/item/status/{itemId}")
     @Transactional

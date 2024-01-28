@@ -7,12 +7,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.project.shop.auth.PrincipalDetails;
 import org.project.shop.config.ScriptUtils;
-import org.project.shop.domain.Address;
-import org.project.shop.domain.Member;
-import org.project.shop.domain.Role;
-import org.project.shop.service.MailService;
-import org.project.shop.service.MemberServiceImpl;
-import org.project.shop.service.RedisService;
+import org.project.shop.domain.*;
+import org.project.shop.service.*;
 import org.project.shop.web.AddressForm;
 import org.project.shop.web.LoginForm;
 import org.project.shop.web.MemberForm;
@@ -31,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +37,7 @@ import java.util.Map;
 @RequestMapping(value = "/member")
 public class MemberController {
     private final MemberServiceImpl memberServiceImpl;
+    private final OrderServiceImpl orderServiceImpl;
     private final MailService mailService;
     private final RedisService redisService;
     
@@ -108,7 +106,7 @@ public class MemberController {
                 return "/member/createMemberForm";
             }
             ScriptUtils.alert(response, "회원가입이 완료 되었습니다.");
-            return "/";
+            return "/home";
         }
 
 
@@ -214,6 +212,27 @@ public class MemberController {
         Address address = new Address(zipcode, address1, address2, reference);
         findMember.setAddress(address);
         ScriptUtils.alertAndBackPage(response,"배송지가 설정 되었습니다");
+    }
+
+    @GetMapping(value = "/review")
+    public String getReviewPage(@AuthenticationPrincipal PrincipalDetails principalDetails
+                                ,Model model) {
+        if (principalDetails == null) {
+            return "/home";
+        }
+        String username = principalDetails.getUsername();
+        Member findMember = memberServiceImpl.findByUserId(username);
+        List<Order> byMemberIdAfterPaymentOrder = orderServiceImpl.findByMemberIdAfterPayment(findMember.getId());
+        List<OrderItem> orderItems = new ArrayList<>();
+        List<Item> paymentItems = new ArrayList<>();
+
+        byMemberIdAfterPaymentOrder.forEach(order -> orderItems.addAll(order.getOrderItems()));
+//        orderItems.forEach(orderItem -> paymentItems.add(orderItem.getItem()));
+        model.addAttribute("allOrder", byMemberIdAfterPaymentOrder);
+        model.addAttribute("orderItems", orderItems);
+//        model.addAttribute("items", paymentItems);
+
+        return "/member/myPageReview";
     }
 
     @GetMapping(value = "/cancel")

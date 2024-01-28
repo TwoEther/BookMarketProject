@@ -23,12 +23,12 @@ public class Order {
 
     // 지연 로딩 사용
     // N:1 (Order : Member)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="orders")
     private Member member;
 
     // 1:N (Order : OrderItem)
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
     // 1:N (Order : Delivery)

@@ -13,6 +13,7 @@ public interface ItemService {
     public void saveItem(Item Item, MultipartFile file) throws Exception;
     public Item findOneItem(Long itemId);
 
+    public List<Item> findAllItem();
     public Page<Item> findAllItem(PageRequest pageRequest);
     public void updateItem(Long itemId, String name, int price, int stockQuantity);
 

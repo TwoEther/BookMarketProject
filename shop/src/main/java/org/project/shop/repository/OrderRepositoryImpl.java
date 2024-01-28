@@ -59,10 +59,26 @@ public class OrderRepositoryImpl implements OrderRepository{
     }
 
     @Override
+    public Order findByMemberIdAfterPaymentOneOrder(Long orderId, Long memberId) {
+        return queryFactory.selectFrom(order)
+                .where(order.id.eq(orderId).and(
+                        order.member.id.eq(memberId)
+                ))
+                .fetchOne();
+    }
+
+    @Override
     public List<Order> findOrderByMemberId(Long memberId) {
         return queryFactory.selectFrom(order)
                 .where(order.member.id.eq(memberId))
                 .fetch();
+    }
+
+    @Override
+    public void deleteOrder(Long orderId) {
+        queryFactory.delete(order)
+                .where(order.id.eq(orderId))
+                .execute();
     }
 
 

@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"/>
+<link rel="stylesheet" href="/static/css/sideBar.css">
+<link rel="stylesheet" href="/static/css/mypage.css">
+
+<body>
+    <div th:replace="fragments/topHeader :: topHeader"/>
+    <div th:replace="fragments/mainHeader :: mainHeader" />
+    <div class="container">
+        <div th:replace="fragments/sideBar :: sideBar"/>
+        <div class="contextArea" id="contextArea">
+            <h2>취소 신청</h2><hr>
+            <div>
+                <table>
+                    <tbody>
+                    <tr>
+                    </tr>
+                    <td>
+                        <div class="item-area" th:each="orderItem : ${order.orderItems}" style="height:100px">
+                            <div class="imgArea" style="float:left; width:100px;">
+                                <img th:src="@{${orderItem.item.getFilePath()}}" width="100px" height="80px;" alt="">
+                            </div>
+                            <div class="itemName-area">
+                                <h4 th:text="${orderItem.item.getName()}"></h4>
+                                <p th:text="${orderItem.getTotalPrice()} +'원' +','+${orderItem.getCount()}+'건'"></p>
+                            </div>
+                        </div>
+                    </td>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="cancelArea">
+                <h3>환불 정보를 확인해주세요.</h3>
+                <div>
+                    <table>
+                        <tr>
+                            <td>환불 정보</td>
+                            <td></td>
+                        </tr>
+
+                        <tr>
+                            <td>상품 금액</td>
+                            <td th:text="${order.getTotalPrice()}"></td>
+                        </tr>
+
+                        <tr>
+                            <td>환불 예상금액</td>
+                            <td th:text="${order.getTotalPrice()}"></td>
+                        </tr>
+
+                        <tr>
+                            <td>결제 수단</td>
+                            <td>카카오 페이</td>
+                        </tr>
+
+
+                    </table>
+                </div>
+            </div>
+            <div class="btn-area">
+                <button>취소 하기</button>
+                <button th:id="${order.id}" th:onclick="cancelOrder(this.id)">신청 하기</button>
+                <script th:inline="javascript">
+                    function cancelOrder(orderId){
+                        var token = $("meta[name='_csrf']").attr("content");
+                        var header = $("meta[name='_csrf_header']").attr("content");
+                        $.ajax({
+                            type: "DELETE",
+                            beforeSend : function(xhr){
+                                xhr.setRequestHeader(header, token);
+                            },
+                            url: "/order/cancel/"+orderId,
+                            data : {"orderId": orderId},
+                            success: function () {
+                                alert("주문 취소가 완료 되었습니다");
+                            },
+                            error:function(request, status, error){
+                                alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+                            }
+                        });
+                    }
+                </script>
+            </div>
+        </div>
+    </div>
+
+
+
+<!--    <div th:replace="fragments/footer :: footer"/>-->
+</body>
+<script>
+    function cancel(id) {
+        var con = "orderList";
+        var form = document.createElement("form");
+        form.setAttribute("method", "post");
+        form.setAttribute("action", "/orders/" + id + "/cancel");
+        document.body.appendChild(form);
+        form.submit();
+    }
+</script>
+</html>

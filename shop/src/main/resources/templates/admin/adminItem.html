@@ -82,6 +82,15 @@
                                     <button type="submit" class="btn btn-dark">검색</button>
                                 </div>
                             </form>
+                            <form th:action="@{/admin/item/status}" method="post">
+                                <input type="hidden" name="status" value="true">
+                                <input class="saleTrue" type="submit" value="전체 판매 가능">
+                            </form>
+
+                            <form th:action="@{/admin/item/status}" method="post">
+                                <input type="hidden" name="status" value="false">
+                                <input class="saleFalse" type="submit" value="전체 판매 불가능">
+                            </form>
                         </div>
                     </div>
                 </div>

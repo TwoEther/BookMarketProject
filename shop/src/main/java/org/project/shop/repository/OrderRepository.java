@@ -16,7 +16,12 @@ public interface OrderRepository {
 
     public List<Order> findByMemberIdAfterPayment(Long memberId);
 
+    public Order findByMemberIdAfterPaymentOneOrder(Long orderId, Long memberId);
+
     public List<Order> findOrderByMemberId(Long memberId);
+
+    public void deleteOrder(Long orderId);
+
 
     public List<Order> findAllOrder(OrderSearch orderSearch);
 }

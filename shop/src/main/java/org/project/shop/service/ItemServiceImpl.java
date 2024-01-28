@@ -50,6 +50,11 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
+    public List<Item> findAllItem() {
+        return itemRepositoryImpl.findAllItem();
+    }
+
+    @Override
     public Page<Item> findAllItem(PageRequest pageRequest) {
         return itemRepositoryImpl.findAllItem(pageRequest);
     }

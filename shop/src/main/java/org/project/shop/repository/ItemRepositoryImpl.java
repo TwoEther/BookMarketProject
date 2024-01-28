@@ -59,6 +59,11 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
+    public List<Item> findAllItem() {
+        return queryFactory.selectFrom(item).fetch();
+    }
+
+    @Override
     public Page<Item> findAllItem(PageRequest pageRequest) {
         List<Item> result = queryFactory.select(item)
                 .from(item)

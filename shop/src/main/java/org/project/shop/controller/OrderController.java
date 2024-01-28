@@ -11,6 +11,7 @@ import org.project.shop.service.*;
 import org.project.shop.web.AddressForm;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,6 +28,8 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@Secured({"ROLE_USER", "ROLE_ADMIN"})
+
 @RequestMapping(value = "/order")
 public class OrderController {
     private final OrderServiceImpl orderServiceImpl;
@@ -36,6 +39,10 @@ public class OrderController {
     private final CartItemServiceImpl cartItemServiceImpl;
     private final OrderItemServiceImpl orderItemServiceImpl;
     private final KakaoPayService kakaoPayService;
+
+    public static boolean checkLoginUser(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        return principalDetails != null;
+    }
 
     @GetMapping(value = "")
     public String createForm(Model model) {
@@ -64,14 +71,43 @@ public class OrderController {
         return "order/orderList";
     }
 
-    @PostMapping(value = "/orders/{orderId}/cancel")
-    public String cancelOrder(@PathVariable("orderId") Long orderId) {
-        orderServiceImpl.cancelOrder(orderId);
-        return "redirect:/orders";
+    @PostMapping(value = "/cancel")
+    public String cancelOrder(@RequestParam("orderId") Long orderId,
+                              Model model,
+                              @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        if (checkLoginUser(principalDetails)) {
+            String username = principalDetails.getUsername();
+            Member findMember = memberServiceImpl.findByUserId(username);
+
+            Order findOrder = orderServiceImpl.findByMemberIdAfterPaymentOneOrder(orderId, findMember.getId());
+
+            model.addAttribute("order", findOrder);
+            return "/order/orderCancel";
+        }
+        return "/home";
+
     }
 
+    @DeleteMapping(value = "/cancel/{orderId}")
+    @Transactional
+    @ResponseBody
+    public String cancelOrder(@PathVariable("orderId") Long orderId,
+                              @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        if (checkLoginUser(principalDetails)) {
+            String username = principalDetails.getUsername();
+            Member findMember = memberServiceImpl.findByUserId(username);
+
+            Order findOrder = orderServiceImpl.findByMemberIdAfterPaymentOneOrder(orderId, findMember.getId());
+            orderServiceImpl.deleteOrder(orderId);
+
+        }
+        return "/home";
+
+    }
+
+
     @GetMapping(value = "/orderList")
-    public String orderListByMember(@AuthenticationPrincipal PrincipalDetails principalDetails ,
+    public String orderListByMember(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                     HttpServletResponse response, Model model) throws IOException {
         if (principalDetails == null) {
 //            ScriptUtils.alert(response, "로그인 후 이용 가능 합니다.");
@@ -90,7 +126,7 @@ public class OrderController {
             model.addAttribute("allOrder", findAllOrder);
         } else {
             List<List<Item>> paymentList = new ArrayList<>();
-                for (Order order : findAllOrder) {
+            for (Order order : findAllOrder) {
                 List<OrderItem> allOrder = orderItemServiceImpl.findOrderItemByOrderId(order.getId());
                 List<Item> findAllItem = OrderItem.findAllItem(allOrder);
                 paymentList.add(findAllItem);
@@ -105,15 +141,15 @@ public class OrderController {
 
     @GetMapping(value = "/address")
     public String setDeliveryOrder(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                    Model model) throws IOException {
+                                   Model model) throws IOException {
         String username = principalDetails.getUsername();
         Member findMember = memberServiceImpl.findByUserId(username);
         Address address = findMember.getAddress();
 
         String zipcode = (address == null) ? "우편 번호" : address.getZipcode();
         String address1 = (address == null) ? "주소" : address.getAddress1();
-        String address2 =  (address == null) ? "상세 주소" :address.getAddress2();
-        String reference = (address == null) ? "참고 항목" :address.getReference();
+        String address2 = (address == null) ? "상세 주소" : address.getAddress2();
+        String reference = (address == null) ? "참고 항목" : address.getReference();
 
 
         model.addAttribute("zipcode", zipcode);
@@ -138,7 +174,7 @@ public class OrderController {
         Member findMember = memberServiceImpl.findByUserId(username);
         Address address = new Address(zipcode, address1, address2, reference);
         findMember.setAddress(address);
-        ScriptUtils.alertAndBackPage(response,"배송지가 설정 되었습니다");
+        ScriptUtils.alertAndBackPage(response, "배송지가 설정 되었습니다");
     }
 
     @GetMapping(value = "/detail/{orderId}")
@@ -148,10 +184,11 @@ public class OrderController {
 
         return "order/orderDetail";
     }
+
     // 구매 로직
     @GetMapping(value = "/payment")
     @Transactional
-    public String orderPayment(Model model, HttpServletResponse response) throws IOException{
+    public String orderPayment(Model model, HttpServletResponse response) throws IOException {
         /*
             view로 넘겨야 할 것들
             1. 구매자에 대한 정보(Member, Address)
@@ -185,7 +222,7 @@ public class OrderController {
             int totalCount = CartItem.getTotalCount(paymentCartItems);
             int paymentPrice = deliveryFee + totalPrice;
 
-            
+
             model.addAttribute("index", "te,st");
             model.addAttribute("member", findMember);
             model.addAttribute("cartItems", paymentCartItems);
@@ -199,7 +236,6 @@ public class OrderController {
             return "order/payment";
 
         }
-
 
 
     }

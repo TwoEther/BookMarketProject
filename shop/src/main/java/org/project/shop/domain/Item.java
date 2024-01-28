@@ -30,7 +30,7 @@ public class Item {
     private int pages;
     private String description;
 
-    private boolean saleStatus = true;
+    private boolean saleStatus;
 
     @ColumnDefault(value = "0")
     private int total_purchase;
@@ -84,6 +84,7 @@ public class Item {
         this.stockQuantity = stockQuantity;
         this.createDate = LocalDateTime.now();
         this.total_purchase = 0;
+        this.saleStatus = true;
     }
 
     public Item(String name, int price, int stockQuantity, String author, String publisher, int isbn, int pages, String description) {
@@ -97,6 +98,7 @@ public class Item {
         this.description = description;
         this.createDate = LocalDateTime.now();
         this.total_purchase = 0;
+        this.saleStatus = true;
     }
 
     public Item() {

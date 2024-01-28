@@ -542,11 +542,11 @@
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2" >
                                     <!-- 모달 영역 -->
                                     <!-- Button Trigger Modal -->
                                     <button type="button" class="btn btn-lg btn-success mt-4"
-                                            data-bs-toggle="modal" data-bs-target="#myModal" style="margin-top:0px;">
+                                            data-bs-toggle="modal" data-bs-target="#myModal" style="margin-top:0px; float:right;">
                                         <i class="fa-solid fa-pencil"></i>
                                         작성 하기
                                     </button>
@@ -569,7 +569,7 @@
                                                             <div class="col-3">
                                                                 <img th:src="${item.getFilePath()}" alt="" style="width:100px;">
                                                             </div>
-                                                            <div class="col-9">
+                                                            <div class="col-9" >
                                                                 <form th:action="@{/review/add}" method="post" class="review-form">
                                                                     <div class="input-rating">
                                                                         <div class="stars">

@@ -13,7 +13,7 @@ public interface ItemRepository {
 
     public void clear();
     public Item findOneItem(Long id);
-
+    public List<Item> findAllItem();
     public Page<Item> findAllItem(PageRequest pageRequest);
 
     public List<Item> findByItemWithCategory(String category2);

@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"/>
+<link rel="stylesheet" href="/static/css/sideBar.css">
+<link rel="stylesheet" href="/static/css/mypage.css">
+
+<body>
+<div th:replace="fragments/topHeader :: topHeader"/>
+<div th:replace="fragments/mainHeader :: mainHeader" />
+<div class="container">
+    <div th:replace="fragments/sideBar :: sideBar"/>
+    <div class="contextArea" id="contextArea">
+        <h2>리뷰 관리</h2><hr>
+        <div class="row">
+            <div class="col-6">리뷰 작성</div>
+            <div class="col-6">작성한 리뷰</div>
+        </div>
+        <div th:each = "order : ${allOrder}"  class="itemArea">
+            <div class="headerArea">
+                <h2 th:text="${order.orderDate}"></h2>
+            </div>
+
+            <div>
+                <table>
+                    <tbody>
+                    <tr>
+                    </tr>
+                    <td>
+                        <div class="item-area" th:each="orderItem : ${order.orderItems}" style="height:200px">
+                            <div class="imgArea" style="float:left; width:100px;">
+                                <img th:src="@{${orderItem.item.getFilePath()}}" width="100px" alt="">
+                            </div>
+                            <div class="itemName-area">
+                                <h4 th:text="${orderItem.item.getName()}"></h4>
+                                <p th:text="${orderItem.getTotalPrice()} +'원' +','+${orderItem.getCount()}+'건'"></p>
+                            </div>
+                            <div id="item_btn">
+                                <a th:href="@{/order/detail/{orderId}(orderId=${order.id})}">구매 상세 내역</a>
+                            </div>
+                        </div>
+                    </td>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!--    <div th:replace="fragments/footer :: footer"/>-->
+</body>
+<script>
+    function cancel(id) {
+        var con = "orderList";
+        var form = document.createElement("form");
+        form.setAttribute("method", "post");
+        form.setAttribute("action", "/orders/" + id + "/cancel");
+        document.body.appendChild(form);
+        form.submit();
+    }
+</script>
+</html>
