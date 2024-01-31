@@ -15,38 +15,54 @@
         </div>
 
         <div class="header2">
-            <h3>주문이 완료되었습니다. 감사합니다!</h3>
+            <h3 th:text="${kakaoApprove.item_name}+'이 결제완료 되었습니다'"></h3>
         </div>
 
         <div class="orderDetail">
-            <h3>상품배송 정보</h3>
-            <div>
-                <h5>받는사람 정보</h5>
-                <table>
-                    <tr>
-                        <td>받는 사람</td>
-                        <td th:text="${member.name}+' / '+${member.phoneNum}"></td>
-                    </tr>
+            <div class="row">
+                <div class="col-6">
+                    <h5>상품 정보</h5>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>상품 이미지</th>
+                            <th>상품 명</th>
+                            <th>주문금액</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="orderItem : ${paymentsItemList}">
+                            <td><img class="item-image" th:src="${orderItem.item.getFilePath()}" style="width:100px;"></td>
+                            <td th:text="${orderItem.item.name}"></td>
+                            <td th:text="${#numbers.formatInteger(orderItem.getTotalPrice(), 3,'COMMA')}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-                    <tr>
-                        <td>받는 주소</td>
-                        <td th:text="${member.name}+' / '+${member.phoneNum}"></td>
-                    </tr>
+                <div class="col-6">
+                    <h5>배송 및 결제 정보</h5>
+                    <table>
+                        <tr>
+                            <td>받는 사람</td>
+                            <td th:text="${member.name}"></td>
+                        </tr>
 
-                    <tr>
-                        <td>받는 사람</td>
-                        <td th:text="${member.name}+' / '+${member.phoneNum}"></td>
-                    </tr>
-                </table>
+                        <tr>
+                            <td>받는 주소</td>
+                            <td th:text="${order.address.address1}+' , '+${order.address.address2}"></td>
+                        </tr>
+
+                        <tr>
+                            <td>결제 금액</td>
+                            <td th:text="${#numbers.formatInteger(order.getTotalPrice(), 3,'COMMA')}"></td>
+                        </tr>
+                    </table>
+                </div>
             </div>
-            <div></div>
         </div>
 
-        <div class="recipeArea">
-            <h3 th:text="${kakaoApprove.item_name}+'이 결제완료 되었습니다'"></h3>
-            <p th:text="'결제금액: '+${kakaoApprove.amount.total}+'원'"></p>
-        </div>
-        <div class="btnArea">
+        <div class="btnArea" style="display:flex;justify-content:center;">
             <a class="btn btn-lg btn-primary" th:href="@{/}">홈으로 가기</a>
             <a class="btn btn-lg btn-secondary" th:href="@{/order/orderList}">주문 목록으로 가기</a>
         </div>

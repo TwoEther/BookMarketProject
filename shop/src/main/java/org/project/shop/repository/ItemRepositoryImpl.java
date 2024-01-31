@@ -60,7 +60,8 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public List<Item> findAllItem() {
-        return queryFactory.selectFrom(item).fetch();
+        return queryFactory.selectFrom(item).
+                orderBy(item.total_purchase.desc()).fetch();
     }
 
     @Override

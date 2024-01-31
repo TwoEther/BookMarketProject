@@ -21,6 +21,8 @@ public class Order {
     private String tid;
 
 
+
+
     // 지연 로딩 사용
     // N:1 (Order : Member)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -28,7 +30,7 @@ public class Order {
     private Member member;
 
     // 1:N (Order : OrderItem)
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
     // 1:N (Order : Delivery)

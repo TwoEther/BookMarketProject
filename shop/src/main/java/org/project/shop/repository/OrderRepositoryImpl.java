@@ -64,6 +64,7 @@ public class OrderRepositoryImpl implements OrderRepository{
                 .where(order.id.eq(orderId).and(
                         order.member.id.eq(memberId)
                 ))
+                .orderBy(order.orderDate.asc())
                 .fetchOne();
     }
 

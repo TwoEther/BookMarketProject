@@ -61,6 +61,7 @@ public class KakaoPayController {
         KakaoApproveResponse kakaoApprove = kakaoPayService.ApproveResponse(pgToken);
 
         String username = principalDetails.getUsername();
+        int total_price = 0;
 
         Member findMember = memberServiceImpl.findByUserId(username);
         Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
@@ -71,10 +72,7 @@ public class KakaoPayController {
         Order paymentOrder = Order.createOrder(findMember);
         List<Item> orderItemList = paymentOrder.findOrderItemList();
 
-        Delivery delivery = new Delivery();
-        delivery.setAddress(findMember.getAddress());
-
-        paymentOrder.setDelivery(delivery);
+        paymentOrder.setAddress(findMember.getAddress());
         paymentOrder.setStatus(OrderStatus.SUCCESS);
         paymentOrder.setTid(kakaoApprove.getTid());
         orderServiceImpl.save(paymentOrder);
@@ -83,11 +81,12 @@ public class KakaoPayController {
         for (CartItem cartItem : findCartItems) {
             Item item = cartItem.getItem();
             int count = cartItem.getCount();
-
             // 구매 처리
             OrderItem orderItem = OrderItem.createOrderItem(item, item != null ? item.getPrice() : 0, count);
             orderItem.setOrder(paymentOrder);
             orderItem.setDeliveryStatus(DeliveryStatus.READY);
+
+            total_price += (item == null ? 0 : item.getPrice()) * count;
             paymentsItemList.add(orderItem);
             orderItemServiceImpl.save(orderItem);
 
@@ -101,6 +100,8 @@ public class KakaoPayController {
         }
 
         model.addAttribute("kakaoApprove", kakaoApprove);
+        model.addAttribute("order", paymentOrder);
+        model.addAttribute("total_price", total_price);
         model.addAttribute("member", findMember);
         model.addAttribute("paymentsItemList", paymentsItemList);
         return "order/payComplete";

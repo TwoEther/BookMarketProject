@@ -76,4 +76,11 @@ public class OrderItemRepositoryImpl implements OrderItemRepository{
         return queryFactory.selectFrom(orderItem)
                 .fetch();
     }
+
+    @Override
+    public void deleteOrderItem(Long orderId) {
+        queryFactory.delete(orderItem)
+                .where(orderItem.id.eq(orderId))
+                .execute();
+    }
 }

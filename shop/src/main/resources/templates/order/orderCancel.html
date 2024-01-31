@@ -75,6 +75,7 @@
                             data : {"orderId": orderId},
                             success: function () {
                                 alert("주문 취소가 완료 되었습니다");
+                                location.href="/order/orderList";
                             },
                             error:function(request, status, error){
                                 alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);

@@ -163,6 +163,7 @@ public class ItemController {
 
         // 1페이지당 6개의 상품 호출
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(variable).descending());
+        PageRequest pageRequest2 = PageRequest.of(page, size, Sort.by("createDate").descending());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // 로그인이 되어있는 경우
@@ -201,7 +202,7 @@ public class ItemController {
 
 
         Page<Item> findAllItem = itemServiceImpl.findByKeyword(pageRequest, keyword, country);
-
+        List<Item> bestseller = itemServiceImpl.findAllItem().subList(0,3);
         Long totalElement = findAllItem.getTotalElements();
 
         int pageNum = Math.floorDiv(allItemNum, size) - 1;
@@ -238,6 +239,7 @@ public class ItemController {
         model.addAttribute("country", country);
 
         model.addAttribute("paging", findAllItem);
+        model.addAttribute("bestseller", bestseller);
         model.addAttribute("totalElement", totalElement);
         model.addAttribute("total_count", total_item_num);
 

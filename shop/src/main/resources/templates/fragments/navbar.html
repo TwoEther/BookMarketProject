@@ -9,15 +9,9 @@
             <!-- NAV -->
             <ul class="main-nav nav">
                 <li class="active"><a th:href="@{/}">Home</a></li>
-                <li><a th:href="@{/item(keyword = '국내 도서')}">전체 도서</a></li>
+                <li><a th:href="@{/item(keyword = '')}">전체 도서</a></li>
                 <li><a th:href="@{/item(keyword = '국내 도서')}">국내 도서</a></li>
                 <li><a th:href="@{/item(keyword = '외국 도서')}">외국 도서</a></li>
-                <li>
-                    <form th:action="@{/item/dbConfig}" method="post">
-                        <button type="submit">상품 초기화</button>
-                    </form>
-                </li>
-
             </ul>
             <!-- /NAV -->
         </div>

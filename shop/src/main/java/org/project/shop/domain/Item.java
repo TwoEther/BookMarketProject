@@ -66,6 +66,10 @@ public class Item {
         this.total_purchase += volume;
     }
 
+    public void cancelTotalPurchase(int volume) {
+        this.total_purchase -= volume;
+    }
+
     public double calculateAvgScore() {
         int total_score =  0;
         for (Review review : this.reviewItems) {

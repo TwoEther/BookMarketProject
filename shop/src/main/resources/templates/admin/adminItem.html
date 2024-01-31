@@ -17,6 +17,13 @@
         float:right;
     }
 
+    .form-area {
+        display:flex;
+        justify-content:right;
+    }
+    .form-area > form {
+        margin-left:10px;
+    }
 </style>
 
 <script>
@@ -82,15 +89,21 @@
                                     <button type="submit" class="btn btn-dark">검색</button>
                                 </div>
                             </form>
-                            <form th:action="@{/admin/item/status}" method="post">
-                                <input type="hidden" name="status" value="true">
-                                <input class="saleTrue" type="submit" value="전체 판매 가능">
-                            </form>
+                            <div class="form-area">
+                                <form th:action="@{/admin/item/status}" method="post">
+                                    <input type="hidden" name="status" value="true">
+                                    <input class="btn btn-dark btn-sm btn-block my-1" type="submit" value="전체 판매 가능">
+                                </form>
 
-                            <form th:action="@{/admin/item/status}" method="post">
-                                <input type="hidden" name="status" value="false">
-                                <input class="saleFalse" type="submit" value="전체 판매 불가능">
-                            </form>
+                                <form th:action="@{/admin/item/status}" method="post">
+                                    <input type="hidden" name="status" value="false">
+                                    <input class="btn btn-dark btn-sm btn-block my-1"  type="submit" value="전체 판매 불가능">
+                                </form>
+
+                                <form th:action="@{/item/dbConfig}" method="post">
+                                    <button type="submit" class="btn btn-dark btn-sm btn-block my-1">상품 초기화</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>

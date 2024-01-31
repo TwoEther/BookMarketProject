@@ -52,4 +52,9 @@ public class OrderItemServiceImpl implements OrderItemService{
     public List<OrderItem> findAllOrderItem() {
         return orderItemRepositoryImpl.findAllOrderItem();
     }
+
+    @Override
+    public void deleteOrderItem(Long orderId) {
+        orderItemRepositoryImpl.deleteOrderItem(orderId);
+    }
 }

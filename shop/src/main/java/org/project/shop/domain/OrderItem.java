@@ -27,7 +27,7 @@ public class OrderItem {
     private Item item;
 
     // N:1 (OrderItem : order)
-    @ManyToOne( fetch = FetchType.LAZY)
+    @ManyToOne( fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "orderItems")
     private Order order;
 

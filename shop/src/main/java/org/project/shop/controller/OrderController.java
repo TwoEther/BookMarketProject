@@ -98,6 +98,12 @@ public class OrderController {
             Member findMember = memberServiceImpl.findByUserId(username);
 
             Order findOrder = orderServiceImpl.findByMemberIdAfterPaymentOneOrder(orderId, findMember.getId());
+            List<OrderItem> orderItemByOrderId = orderItemServiceImpl.findOrderItemByOrderId(findOrder.getId());
+            for (OrderItem orderItem : orderItemByOrderId) {
+                Item item = orderItem.getItem();
+                item.cancelTotalPurchase(orderItem.getCount());
+            }
+            orderItemByOrderId.forEach(orderItem -> orderItemServiceImpl.deleteOrderItem(orderItem.getId()));
             orderServiceImpl.deleteOrder(orderId);
 
         }

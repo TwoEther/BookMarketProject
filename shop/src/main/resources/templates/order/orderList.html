@@ -13,10 +13,10 @@
             <h2>주문 목록</h2><hr>
             <div th:each = "order : ${allOrder}"  class="itemArea">
                 <div class="headerArea">
-                    <h2 th:text="${order.orderDate}"></h2>
                     <form th:action="@{/order/cancel}" method="post">
+                        <h2 th:text="${order.orderDate}" style="float:left;"></h2>
                         <input type="hidden" th:value="${order.id}" name="orderId">
-                        <input type="submit" value="주문 삭제하기">
+                        <input type="submit" value="주문 삭제하기" style="float:right;">
                     </form>
 
                 </div>
