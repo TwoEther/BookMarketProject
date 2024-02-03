@@ -39,10 +39,21 @@ public class AdminController {
     @GetMapping(value = "")
     public String adminPage(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
         List<Member> memberList = memberServiceImpl.findAllGeneralMember();
-        int size = Math.min(memberList.size(), 2);
+        List<Order> allOrder = orderServiceImpl.findAllOrder();
+        List<Inquiry> allInquiryByGeneralMember = inquiryServiceImpl.findAllInquiryByGeneralMember();
+        List<Review> allReview = reviewServiceImpl.findAllReview();
+
+        // 가져올 개수
+        int memberSize = Math.min(memberList.size(), 2);
+        int orderSize = Math.min(allOrder.size(), 2);
+        int inquirySize = Math.min(allInquiryByGeneralMember.size(), 2);
+        int reviewSize = Math.min(allReview.size(), 2);
 
         model.addAttribute("type", "member");
-        model.addAttribute("memberList", memberList.subList(0, size));
+        model.addAttribute("memberList", memberList.subList(0, memberSize));
+        model.addAttribute("orderList", allOrder.subList(0, orderSize));
+        model.addAttribute("inquiryList", allInquiryByGeneralMember.subList(0, inquirySize));
+        model.addAttribute("reviewList", allReview.subList(0, reviewSize));
         return "admin/adminHome";
     }
 

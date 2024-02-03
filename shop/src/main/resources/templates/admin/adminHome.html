@@ -9,6 +9,10 @@
         font-size:large;
     }
 
+    .col-5 {
+
+    }
+
     div.row {
         height: 45%;
         margin-bottom: 30px;
@@ -18,8 +22,10 @@
         margin: 30px 30px 30px 30px;
     }
 
+
     table > * {
         text-align: center;
+        font-size:12px;
     }
 
     td {
@@ -58,7 +64,7 @@
                 <div class="container-fluid px-4" id="mainArea">
                     <div class="row">
                         <div class="col-5">
-                            <p><strong>최근 가입한 회원</strong><p>
+                            <p style="justify-content:center;"><strong>최근 가입한 회원</strong><p>
                             <table>
                                 <thead>
                                 <th>아이디</th>
@@ -71,7 +77,7 @@
                                     <td th:text="${member.userId}"></td>
                                     <td th:text="${member.email}"></td>
                                     <td th:text="${member.phoneNum}"></td>
-                                    <td th:text="${member.created_at}"></td>
+                                    <td th:text="${#temporals.format(member.created_at, 'yyyy.MM.dd HH:mm')}"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -80,17 +86,17 @@
                             <p><strong>최근 결제된 주문</strong><p>
                             <table>
                                 <thead>
-                                <th>주문 번호</th>
                                 <th>상품</th>
                                 <th>개수</th>
                                 <th>금액</th>
+                                <th>주문 시간</th>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>t39423420340</td>
-                                    <td>나의 사춘기에게</td>
-                                    <td>5</td>
-                                    <td>42,000</td>
+                                <tr th:each = "order : ${orderList}">
+                                    <td th:text="${order.getOrderTitle()}"></td>
+                                    <td th:text="${order.getOrderQuantity()}"></td>
+                                    <td th:text="${#numbers.formatInteger(order.getTotalPrice(), 3,'COMMA')}"></td>
+                                    <td th:text="${#temporals.format(order.orderDate,'yyyy.MM.dd HH:mm')}"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -104,11 +110,13 @@
                                 <thead>
                                 <th>상품</th>
                                 <th>문의 내용</th>
+                                <th>작성 시간</th>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>admin123</td>
-                                    <td>상품에 스크래치가 있네요</td>
+                                <tr th:each = "inquiry : ${inquiryList}">
+                                    <td th:text="${inquiry.item.name}"></td>
+                                    <td th:text="${inquiry.content}"></td>
+                                    <td th:text="${#temporals.format(inquiry.created_at,'yyyy.MM.dd HH:mm')}"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -118,16 +126,16 @@
                             <table>
                                 <thead>
                                 <th>상품 번호</th>
-                                <th>상품 링크</th>
                                 <th>리뷰 내용</th>
                                 <th>별점</th>
+                                <th>작성 시간</th>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>t39423420340</td>
-                                    <td>나의 사춘기에게</td>
-                                    <td>5</td>
-                                    <td>42,000</td>
+                                <tr th:each = "review : ${reviewList}">
+                                    <td th:text="${review.item.name}"></td>
+                                    <td th:text="${review.text}"></td>
+                                    <td th:text="${review.score}"></td>
+                                    <td th:text="${#temporals.format(review.created_at,'yyyy.MM.dd HH:mm')}"></td>
                                 </tr>
                                 </tbody>
                             </table>

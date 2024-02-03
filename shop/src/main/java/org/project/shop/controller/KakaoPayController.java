@@ -49,10 +49,23 @@ public class KakaoPayController {
         return kakaoPayService.kakaoPayReady(itemName, total_count, total_price);
     }
 
+    @PostMapping(value = "/payCancel")
+    @ResponseBody
+    public KakaoReadyResponse beforeCancelRequest(@RequestParam Long orderId) {
+        Order findOrder = orderServiceImpl.findByOrderId(orderId);
+        String tid = findOrder.getTid();
+        int totalPrice = findOrder.getTotalPrice();
+
+        System.out.println("findOrder.toString() = " + findOrder.toString());
+        
+        return kakaoPayService.kakaoPayCancelReady(tid, totalPrice);
+    }
+
     @GetMapping(value = "/payCancel")
     public void failPayRequest(HttpServletResponse response) throws IOException {
         ScriptUtils.alertAndBackPage(response, "결제가 취소 되었습니다");
     }
+
 
     @GetMapping("/paySuccess")
     public String afterPayRequest(@RequestParam("pg_token") String pgToken,

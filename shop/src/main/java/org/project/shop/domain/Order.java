@@ -87,6 +87,19 @@ public class Order {
         return this.orderItems.get(0).getItem().getName() + "포함 "+ this.orderItems.size()+"건";
     }
 
+    public int getOrderQuantity() {
+        return this.getOrderItems().size();
+    }
+
+
+    // 주문명 생성 함수
+    public String getOrderTitle() {
+        List<OrderItem> orderItems = this.getOrderItems();
+        int orderItemNum = orderItems.size();
+        return orderItems.get(0).getItem().getName() + "포함 " + orderItemNum + "건";
+    }
+
+
     public List<Item> findOrderItemList() {
         List<Item> paymentItems = new ArrayList<>();
         for (OrderItem orderItem : this.getOrderItems()) {

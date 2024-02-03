@@ -45,6 +45,28 @@ public class KakaoPayService {
         return kakaoReady;
     }
 
+    public KakaoReadyResponse kakaoPayCancelReady(String tid, int cancel_amount) {
+
+        // 카카오페이 요청 양식
+        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
+        parameters.add("cid", cid);
+        parameters.add("tid", tid);
+        parameters.add("cancel_amount", Integer.toString(cancel_amount));
+        parameters.add("cancel_tax_free_amount", "0");
+        parameters.add("approval_url", "http://localhost:8080/order/orderList"); // 성공 시 redirect url
+        parameters.add("cancel_url", "http://localhost:8080/order/orderList"); // 취소 시 redirect url
+        parameters.add("fail_url", "http://localhost:8080/order/orderList"); // 실패 시 redirect url
+        // 파라미터, 헤더
+        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
+        // 외부에 보낼 url
+        RestTemplate restTemplate = new RestTemplate();
+        kakaoReady = restTemplate.postForObject(
+                "https://kapi.kakao.com/v1/payment/cancel",
+                requestEntity,
+                KakaoReadyResponse.class);
+        return kakaoReady;
+    }
+
     /**
      * 카카오 요구 헤더값
      */

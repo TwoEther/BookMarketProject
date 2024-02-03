@@ -68,8 +68,14 @@ public class ItemRepositoryImpl implements ItemRepository {
     public Page<Item> findAllItem(PageRequest pageRequest) {
         List<Item> result = queryFactory.select(item)
                 .from(item)
+                .offset(pageRequest.getOffset())
+                .limit(pageRequest.getPageSize())
                 .fetch();
-        return new PageImpl<>(result, pageRequest, result.size());
+
+        JPAQuery<Long> countQuery = queryFactory.select(item.count())
+                .from(item);
+
+        return PageableExecutionUtils.getPage(result, pageRequest, countQuery::fetchOne);
     }
 
     @Override

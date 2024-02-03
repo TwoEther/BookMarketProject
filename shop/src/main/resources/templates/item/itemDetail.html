@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head th:replace="fragments/header :: header" />
 
+
 <style>
     input[type="submit"]{
         font-family: FontAwesome;
@@ -110,6 +111,7 @@
     tr > td:last-child{
         width:350px;
     }
+
 
 </style>
 <body>
@@ -328,7 +330,7 @@
                                     <i th:each="page: ${#numbers.sequence(avgScore + 1, 5, 1)}" class="fa fa-star-o empty"></i>
                                 </div>
                             </div>
-                            <a class="review-link" href="#"><span th:text="${allReview.size()}+' Review(s) '"></span></a>
+                            <a class="review-link" href="#tab-2"><span th:text="${allReview.size()}+' Review(s) '"></span></a>
                         </div>
                         <div>
                             <h3 class="product-price" th:text="${#numbers.formatInteger(item.price, 3,'COMMA')}"><del class="product-old-price">$990.00</del></h3>
@@ -336,7 +338,7 @@
                         </div>
                         <p th:text="${item.description}"></p>
 
-                        <div th:if="${item.saleStatus} == false">
+                        <div th:if="${item.saleStatus} == false or ${item.stockQuantity} == 0">
                             <h1 style="color:red;">판매 중지된 상품입니다</h1>
                         </div>
                         <div th:unless="${item.saleStatus} == false" class="add-to-cart">
@@ -353,7 +355,6 @@
 
                         <ul class="product-btns">
                             <li><a href="javascript:void(0);" onclick="javascript:likeItemForm.submit();"><i class="fa fa-heart-o"></i> 찜하기</a></li>
-                            <li><a href="#"><i class="fa fa-exchange"></i> add to compare</a></li>
                             <form th:action="@{/like/add}" method="post" name="likeItemForm" style="display:hidden;">
                                 <input type="hidden" name="itemId" th:value="${item.id}">
                             </form>
@@ -363,14 +364,6 @@
                             <li>Category:</li>
                             <li class="active"><a href="#"><span th:text="${item.category.category1}+' '"></span></a></li>
                             <li class="active"><a href="#"><span th:text="${item.category.category2}"></span></a></li>
-                        </ul>
-
-                        <ul class="product-links">
-                            <li>Share:</li>
-                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                            <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
-                            <li><a href="#"><i class="fa fa-envelope"></i></a></li>
                         </ul>
 
                     </div>
@@ -545,7 +538,7 @@
                                 <div class="col-md-2" >
                                     <!-- 모달 영역 -->
                                     <!-- Button Trigger Modal -->
-                                    <button type="button" class="btn btn-lg btn-success mt-4"
+                                    <button type="button" class="btn btn-sm btn-success mt-4"
                                             data-bs-toggle="modal" data-bs-target="#myModal" style="margin-top:0px; float:right;">
                                         <i class="fa-solid fa-pencil"></i>
                                         작성 하기
@@ -610,7 +603,7 @@
                                     <div class="modal-area">
                                         <!-- 모달 영역 -->
                                         <!-- Button Trigger Modal -->
-                                        <button type="button" class="btn btn-lg btn-success mt-4" id="inquiryModalBtn"
+                                        <button type="button" class="btn btn-sm btn-success mt-4" id="inquiryModalBtn"
                                                 data-bs-toggle="modal" data-bs-target="#inquiryModal" style="margin-top:0px;!">
                                             <i class="fa-solid fa-pencil"></i>
                                             작성 하기
@@ -630,7 +623,6 @@
                                                     </div>
                                                     <div class="modal-body">
                                                         <div class="thumbnail-box">
-                                                            <hr>
                                                             <table>
                                                                 <tr>
                                                                     <td>상품 정보</td>

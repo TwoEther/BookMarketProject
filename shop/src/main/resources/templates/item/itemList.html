@@ -17,6 +17,11 @@
         margin-right:5px;
 
     }
+
+    .disabled{
+        cursor: not-allowed;
+        pointer-events: none;
+    }
 </style>
 <body>
 
@@ -174,7 +179,37 @@
                                     <div class="product-btns">
                                         <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
                                         <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
-                                        <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+                                        <button class="quick-view" data-bs-toggle="modal" data-bs-target="#quickModal"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+                                        <!--
+                                        <div id="quickModal" class="modal fade" tabindex="-1">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">
+                                                            리뷰 작성
+                                                        </h5>
+                                                        <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal">
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="thumbnail-box">
+                                                            <div class="row">
+                                                                <div class="col-3">
+                                                                    <img th:src="${item.getFilePath()}" alt="" style="width:100px;">
+                                                                </div>
+                                                                <div class="col-9" >
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-->
                                     </div>
                                 </div>
                                 <div class="add-to-cart">

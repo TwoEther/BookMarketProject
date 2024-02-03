@@ -139,7 +139,6 @@ public class Item {
                 ", name='" + name + '\'' +
                 ", price=" + price +
                 ", stockQuantity=" + stockQuantity +
-                ", category=" + category.toString() +
                 '}';
     }
 }

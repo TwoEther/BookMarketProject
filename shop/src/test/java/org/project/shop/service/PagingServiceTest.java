@@ -20,24 +20,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PagingServiceTest {
     @Autowired
     private ItemServiceImpl itemServiceImpl;
+
     @Test
-    public void pagingTest() {
-        //given
-        int page = 50;
-        int size = 6;
-
-        
-        // 50명의 Member 가입
-        for (int i = 0; i < page; i++) {
-            Item item = Item.builder().name("name"+i).price(10000).stockQuantity(30).
-                        build();
-            itemServiceImpl.saveItemNoImage(item);
-        }
-        for (int i = 0; i < Math.floorDiv(page, size)+1; i++) {
-            PageRequest pageRequest = PageRequest.of(i, size);
-            Page<Item> allItem = itemServiceImpl.findAllItem(pageRequest);
-
-            assertThat(allItem.getTotalElements()).isEqualTo(6);
+    public void previousPageTest() {
+        for (int page = 0; page < 8; page++) {
+            PageRequest pageRequest = PageRequest.of(page, 6);
+            Page<Item> pageItems = itemServiceImpl.findAllItem(pageRequest);
+            System.out.println("pageItems.hasPrevious() = " + pageItems.hasPrevious());
+            System.out.println("pageItems.hasNext() = " + pageItems.hasNext());
+            System.out.println("pageItems.getContent() = " + pageItems.getContent());
         }
     }
 

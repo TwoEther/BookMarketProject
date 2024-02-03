@@ -60,18 +60,18 @@
                 </div>
             </div>
             <div class="btn-area">
-                <button>취소 하기</button>
-                <button th:id="${order.id}" th:onclick="cancelOrder(this.id)">신청 하기</button>
+                <button class="btn btn-primary">취소 하기</button>
+                <button class="btn btn-primary" th:id="${order.id}" th:onclick="cancelOrder(this.id)">신청 하기</button>
                 <script th:inline="javascript">
                     function cancelOrder(orderId){
                         var token = $("meta[name='_csrf']").attr("content");
                         var header = $("meta[name='_csrf_header']").attr("content");
                         $.ajax({
-                            type: "DELETE",
-                            beforeSend : function(xhr){
-                                xhr.setRequestHeader(header, token);
-                            },
-                            url: "/order/cancel/"+orderId,
+                            type: "POST",
+                            url: "/kakaopay/payCancel",
+                            beforeSend: function (xhr) {
+                                  xhr.setRequestHeader(header, token);
+                                },
                             data : {"orderId": orderId},
                             success: function () {
                                 alert("주문 취소가 완료 되었습니다");
@@ -91,14 +91,4 @@
 
 <!--    <div th:replace="fragments/footer :: footer"/>-->
 </body>
-<script>
-    function cancel(id) {
-        var con = "orderList";
-        var form = document.createElement("form");
-        form.setAttribute("method", "post");
-        form.setAttribute("action", "/orders/" + id + "/cancel");
-        document.body.appendChild(form);
-        form.submit();
-    }
-</script>
 </html>
