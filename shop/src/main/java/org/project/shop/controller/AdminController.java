@@ -9,6 +9,7 @@ import org.project.shop.domain.*;
 import org.project.shop.service.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
@@ -66,7 +67,9 @@ public class AdminController {
 
     @GetMapping(value = "/item")
     public String adminMemberItem(Model model, @RequestParam(value = "page", defaultValue = "0") int page,
-                                  @RequestParam(value = "keyword", required = false) String keyword) {
+                                  @RequestParam(value = "keyword", defaultValue = "",required = false) String keyword,
+                                  @RequestParam(value = "sort_by", defaultValue = "createDate", required = false) String sort_by) {
+
 
         int pageSize = 6;
         int allItemNum = itemServiceImpl.getAllItemNum();
@@ -74,7 +77,7 @@ public class AdminController {
         int startPage = Math.max(page - 1, 0);
         int endPage = Math.min(page + 1, pageNum);
 
-        Page<Item> allItem = itemServiceImpl.findByKeyword(PageRequest.of(page, 6), keyword);
+        Page<Item> allItem = itemServiceImpl.findByKeyword(PageRequest.of(page, 6, Sort.by(sort_by)), keyword);
 
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);

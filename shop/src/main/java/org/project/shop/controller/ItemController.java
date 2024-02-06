@@ -209,6 +209,8 @@ public class ItemController {
         int startPage = Math.max(page - 1, 0);
         int endPage = Math.min(page, pageNum);
 
+        List<String> allCategory2 = categoryServiceImpl.findAllCategory2();
+
 
         // 국내 도서
         Page<Item> koreanList = itemServiceImpl.findByKeyword(pageRequest, "국내");
@@ -242,6 +244,8 @@ public class ItemController {
         model.addAttribute("bestseller", bestseller);
         model.addAttribute("totalElement", totalElement);
         model.addAttribute("total_count", total_item_num);
+
+        model.addAttribute("allCategory2", allCategory2);
 
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);

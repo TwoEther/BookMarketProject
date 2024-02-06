@@ -50,21 +50,30 @@ public class KakaoPayController {
     }
 
     @PostMapping(value = "/payCancel")
+    @Transactional
     @ResponseBody
-    public KakaoReadyResponse beforeCancelRequest(@RequestParam Long orderId) {
-        Order findOrder = orderServiceImpl.findByOrderId(orderId);
+    public KakaoReadyResponse beforeCancelRequest(@RequestParam Long orderId,
+                                                  @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        String username = principalDetails.getUsername();
+        Member findMember = memberServiceImpl.findByUserId(username);
+
+        Order findOrder = orderServiceImpl.findByMemberIdAfterPaymentOneOrder(orderId, findMember.getId());
+
         String tid = findOrder.getTid();
         int totalPrice = findOrder.getTotalPrice();
 
-        System.out.println("findOrder.toString() = " + findOrder.toString());
-        
+        List<OrderItem> orderItemByOrderId = orderItemServiceImpl.findOrderItemByOrderId(findOrder.getId());
+        for (OrderItem orderItem : orderItemByOrderId) {
+            Item item = orderItem.getItem();
+            item.cancelTotalPurchase(orderItem.getCount());
+        }
+        orderItemByOrderId.forEach(orderItem -> orderItemServiceImpl.deleteOrderItem(orderItem.getId()));
+        orderServiceImpl.deleteOrder(orderId);
+
         return kakaoPayService.kakaoPayCancelReady(tid, totalPrice);
     }
 
-    @GetMapping(value = "/payCancel")
-    public void failPayRequest(HttpServletResponse response) throws IOException {
-        ScriptUtils.alertAndBackPage(response, "결제가 취소 되었습니다");
-    }
+
 
 
     @GetMapping("/paySuccess")

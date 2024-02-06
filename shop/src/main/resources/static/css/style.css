@@ -577,6 +577,25 @@ textarea.input {
     border-radius: 10px;
 }
 
+.category-dropdown-menu{
+    position: absolute;
+    width: 100px;
+    background: #FFF;
+    padding: 15px;
+    -webkit-box-shadow: 0px 0px 0px 2px #E4E7ED;
+    box-shadow: 0px 0px 0px 2px #E4E7ED;
+    z-index: 99;
+    right: 0;
+    opacity: 0;
+    visibility: hidden;
+    border: 20px;
+    border-radius: 10px;
+}
+
+.category-dropdown-menu > ul > li {
+    font-size:14px;
+}
+
 #search_num_box>div{
     display:inline-block;
     font-size:30px;

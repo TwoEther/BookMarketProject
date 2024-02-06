@@ -19,9 +19,16 @@
     }
 
     .disabled{
+        visibility:hidden;
         cursor: not-allowed;
         pointer-events: none;
     }
+
+    .icon-area {
+        margin-right:30px;
+    }
+
+
 </style>
 <body>
 
@@ -76,7 +83,17 @@
             <!-- row -->
             <div class="row">
                 <div id="search_num_box" class="col-md-12">
-                   <div class="keyword_box"th:text="'\''+${keyword}+'\''"></div>
+                   <div class="dropdown" style="margin-right:20px;">
+                       <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                           <i class="fa-solid fa-list"></i>
+                       </a>
+                       <div class="category-dropdown-menu">
+                           <ul th:each="category : ${allCategory2}">
+                               <li><a th:href="@{/item(keyword=${category})}"><span th:text="${category}"></span></a></li>
+                           </ul>
+                       </div>
+                   </div>
+                   <div class="keyword_box" th:text="'\''+${keyword}+'\''"></div>
                    <div th:text="'에 대한 '+${totalElement}+'개의 검색 결과'"></div>
                 </div>
             </div>

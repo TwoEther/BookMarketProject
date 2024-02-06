@@ -12,6 +12,7 @@ import org.project.shop.web.AddressForm;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,8 +59,13 @@ public class OrderController {
 
     @PostMapping(value = "")
     public String order(@RequestParam("memberId") Long memberId,
-                        @RequestParam("itemId") Long itemId, @RequestParam("count") int count) {
+                        @RequestParam("itemId") Long itemId, @RequestParam("count") int count,
+                        @AuthenticationPrincipal PrincipalDetails principalDetails,
+                        Model model) {
+
         orderServiceImpl.order(memberId, itemId, count);
+
+
         return "redirect:/orders";
     }
 
@@ -115,10 +122,33 @@ public class OrderController {
     @GetMapping(value = "/orderList")
     public String orderListByMember(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                     HttpServletResponse response, Model model) throws IOException {
+        DecimalFormat decFormat = new DecimalFormat("###,###");
         if (principalDetails == null) {
 //            ScriptUtils.alert(response, "로그인 후 이용 가능 합니다.");
             return "redirect:/";
         }
+
+        // 로그인이 되어있는 경우
+        else {
+            String username = principalDetails.getUsername();
+
+            Member findMember = memberServiceImpl.findByUserId(username);
+
+            // 장바구니에 상품을 담지 않았다면
+            if (cartServiceImpl.findByMemberId(findMember.getId()) == null) {
+                model.addAttribute("NOP", 0);
+                model.addAttribute("totalPrice", 0);
+            } else {
+                Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
+                List<CartItem> findCartItems = cartItemServiceImpl.findByCartId(findCart.getId());
+
+                String totalPrice = decFormat.format(CartItem.getTotalPrice(findCartItems));
+                model.addAttribute("NOP", findCartItems.size());
+                model.addAttribute("cartItems", findCartItems);
+                model.addAttribute("totalPrice", totalPrice);
+            }
+        }
+
         String username = principalDetails.getUsername();
         if (username.isEmpty()) {
 //            ScriptUtils.alert(response, "로그인 후 이용 가능 합니다.");

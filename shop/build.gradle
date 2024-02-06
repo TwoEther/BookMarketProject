@@ -76,4 +76,7 @@ configurations {
 compileQuerydsl {
 	options.annotationProcessorPath = configurations.querydsl
 }
-// 여기까지
+
+compileQuerydsl.doFirst {
+	if(file(querydslDir).exists()) delete(file(querydslDir))
+}
