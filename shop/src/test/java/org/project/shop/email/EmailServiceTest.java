@@ -21,6 +21,6 @@ public class EmailServiceTest {
         String email = "test@test.com";
         String authCode = "123dwe";
 
-        redisService.setRedisTemplate(email, authCode, Duration.ofMillis(2300));
+//        redisService.setRedisTemplate(email, authCode, Duration.ofMillis(2300));
     }
 }

@@ -13,6 +13,7 @@ import org.project.shop.repository.OrderRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.couchbase.AutoConfigureDataCouchbase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -22,6 +23,7 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.project.shop.domain.QCartItem.cartItem;
 import static org.project.shop.domain.QOrderItem.orderItem;
 
+@ActiveProfiles("test")
 @AutoConfigureDataCouchbase
 @SpringBootTest
 @Transactional
@@ -131,7 +133,5 @@ public class OrderServiceTest {
         assertThat(findOrderItemByMemberA.size()).isEqualTo(2);
         assertThat(findOrderItemByMemberB.size()).isEqualTo(2);
 
-        System.out.println("findOrderItemByMemberA = " + findOrderItemByMemberA);
-        System.out.println("findOrderItemByMemberB = " + findOrderItemByMemberB);
     }
 }

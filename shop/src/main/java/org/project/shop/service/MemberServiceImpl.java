@@ -39,7 +39,6 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
-    @Transactional
     public Long save(Member member) {
         member.setPassword(passwordEncoder.encode(member.getPassword()));
         memberRepositoryImpl.save(member);
@@ -69,6 +68,11 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void deleteMemberByMemberId(Long memberId) {
         memberRepositoryImpl.deleteMemberByMemberId(memberId);
+    }
+
+    @Override
+    public void deleteAll() {
+        memberRepositoryImpl.deleteAll();
     }
 
     @Override

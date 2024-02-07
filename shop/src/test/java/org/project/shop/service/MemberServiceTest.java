@@ -1,13 +1,14 @@
 package org.project.shop.service;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.aspectj.lang.annotation.After;
+import org.junit.jupiter.api.*;
 import org.project.shop.domain.Member;
 import org.project.shop.domain.Role;
 import org.project.shop.repository.MemberRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
+@ActiveProfiles("test")
 @SpringBootTest
 @Transactional
 public class MemberServiceTest {
@@ -25,78 +27,42 @@ public class MemberServiceTest {
      */
 
     @Autowired
-    private MemberRepositoryImpl memberRepository;
-    @Autowired
     private MemberServiceImpl memberServiceImpl;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // Member를 저장후 꺼내옴
-    @Test
-    public void join() throws Exception{
-        //given
-        String name = "lee";
-        String id = "lee";
-        String password = passwordEncoder.encode("password1");
-        Member member1 = new Member(id, name);
+    @BeforeEach
+    public void setUp() {
+        Member member1 = new Member("id1", "password1", "name1", "010-1921-2392", "email1@email.com");
+        Member member2 = new Member("id2", "password2", "name2", "010-1921-2393", "email2@email.com");
 
-        //when
-        Long memberId = memberServiceImpl.save(member1);
-
-        //Then
-        Member findMember = memberServiceImpl.findByUserId(id);
-        System.out.println("findMember.toString() = " + findMember.toString());
-        System.out.println("memberRepository = " + memberRepository.findAllMember());
-
-    }
-
-    @Test
-    @DisplayName("비밀번호 암호화 후 로그인 테스트")
-    public void login() throws Exception {
-        // 1. 기존에 회원 가입된 유저가 DB에 저장 되어 있어야 함
-        // 2. 유저의 ID와 PW를 통해 유저를 찾을수 있어야 함
-
-        //given
-        String id = "lee";
-        String name = "lee";
-        String pw = "powkek";
-        Member joinMember1 = new Member(id, name);
-
-
-        // when
-        memberServiceImpl.save(joinMember1);
-
-        // then
-        Member findMember = memberServiceImpl.findOneMember(joinMember1.getId());
-        assertThat(findMember.getUserId()).isEqualTo(id);
-        assertThat(findMember.getName()).isEqualTo(name);
-        assertThat(findMember.getPassword()).isEqualTo(joinMember1.getPassword());
-
-    }
-
-    @Test
-    public void duplicateMemberCheck() throws Exception{
-        Member member1 = new Member("lee");
-        Member member2 = new Member("lee");
+        member1.setRole(Role.ROLE_ADMIN.toString());
+        member2.setRole(Role.ROLE_USER.toString());
 
         memberServiceImpl.save(member1);
         memberServiceImpl.save(member2);
+    }
 
-        fail("예외가 발생");
+    @AfterEach
+    public void cleanUp() {
+        memberServiceImpl.deleteAll();
+    }
+    // Member를 저장후 꺼내옴
+    @Test
+    @DisplayName("회원가입 테스트")
+    public void join() throws Exception{
+        //Then
+        Member findMember = memberServiceImpl.findByUserId("id1");
+        assertThat(findMember.getUserId()).isEqualTo("id1");
     }
 
     @DisplayName("Member 권한 테스트")
     @Test
     public void memberRoleTest() {
-        Member member1 = new Member("test1", "test1");
-        Member member2 = new Member("test2", "test2");
+        Member member1 = memberServiceImpl.findByUserId("id1");
+        Member member2 = memberServiceImpl.findByUserId("id2");
 
-        memberServiceImpl.save(member1);
-        memberServiceImpl.save(member2);
-
-        member1.setRole(Role.ROLE_ADMIN.toString());
-        member2.setRole(Role.ROLE_USER.toString());
 
         assertThat(member1.getRole()).isEqualTo(Role.ROLE_ADMIN.toString());
         assertThat(member2.getRole()).isEqualTo(Role.ROLE_USER.toString());

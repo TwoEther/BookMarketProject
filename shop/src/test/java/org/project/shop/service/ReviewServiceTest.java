@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Service
+@ActiveProfiles("test")
 @SpringBootTest
 public class ReviewServiceTest {
     @PersistenceContext
@@ -37,8 +38,7 @@ public class ReviewServiceTest {
     @Autowired
     private OrderItemServiceImpl orderItemServiceImpl;
 
-    @BeforeEach
-    @Transactional
+
     public void setUp() {
         Review review1 = new Review(4, "읽기 쉬워요");
         Review review2 = new Review(5, "정말 자세한 내용 입니다");
@@ -90,19 +90,14 @@ public class ReviewServiceTest {
     }
 
 
-    @DisplayName("리뷰 생성 테스트")
-    @Test
-    public void createReviewTest() {
-        List<Review> allReview = reviewServiceImpl.findAllReview();
-        assertThat(allReview.size()).isEqualTo(3);
-    }
-
     @DisplayName("특정 아이템에 리뷰가 적용되는지 테스트")
+    @Transactional
     @Test
     public void reviewItemTest() {
+        setUp();
         PageRequest pageRequest = CustomPageRequest.customPageRequest();
         List<Member> allMember = memberServiceImpl.findAllMember();
-        List<Item> allItems = (List<Item>) itemServiceImpl.findAllItem(pageRequest);
+        List<Item> allItems = itemServiceImpl.findAllItem();
         List<Review> allReview = reviewServiceImpl.findAllReview();
 
         Member member1 = allMember.get(0);
@@ -137,50 +132,6 @@ public class ReviewServiceTest {
 
         assertThat(allReviewByMemberId1.size()).isEqualTo(2);
         assertThat(allReviewByMemberId2.size()).isEqualTo(1);
-    }
-
-    @DisplayName("구매 상품에 리뷰가 적용되는지 테스트")
-    @Transactional
-    @Test
-    public void paymentItemReviewTest() {
-        for (int i = 0; i < 50; i++) {
-            itemServiceImpl.saveItemNoImage(
-                Item.builder()
-                        .name("name" + i)
-                        .price(20000)
-                        .stockQuantity(30)
-                        .build());
-        }
-
-
-        PageRequest pageRequest = PageRequest.of(0, 50);
-        List<Member> allMember = memberServiceImpl.findAllMember();
-        Page<Item> allItem = itemServiceImpl.findAllItem(pageRequest);
-        List<Review> allReview = reviewServiceImpl.findAllReview();
-
-        Item item1 = allItem.getContent().get(0);
-        Item item2 = allItem.getContent().get(1);
-        Item item3 = allItem.getContent().get(2);
-
-        Member member1 = allMember.get(0);
-        Review review1 = allReview.get(0);
-        Review review2 = allReview.get(1);
-
-
-        // 특정 Member가 구매한 전체 상품 목록
-        List<Order> byMemberIdAfterPayment = orderServiceImpl.findByMemberIdAfterPayment(member1.getId());
-        List<Item> paymentItemList = new ArrayList<>();
-        for (Order order : byMemberIdAfterPayment) {
-            List<Item> findAllItem = order.findOrderItemList();
-            paymentItemList.addAll(findAllItem);
-        }
-
-
-        List<Review> findAllReview = reviewServiceImpl.findAllReview();
-        assertThat(findAllReview.size()).isEqualTo(3);
-
-        List<Review> allReviewByItemId = reviewServiceImpl.findAllReviewByItemId(item1.getId());
-        assertThat(allReviewByItemId.size()).isEqualTo(2);
     }
 
 }

@@ -10,7 +10,6 @@ plugins {
 	id 'org.springframework.boot' version '3.1.2'
 	id 'io.spring.dependency-management' version '1.1.2'
 	// queryDSL
-	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'org.project.shop'
@@ -35,8 +34,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '3.0.5'
-    testImplementation 'org.testng:testng:7.7.0'
-    compileOnly 'org.projectlombok:lombok'
+	testImplementation 'org.testng:testng:7.7.0'
+	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	runtimeOnly 'com.mysql:mysql-connector-j'
@@ -60,23 +59,13 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-// queryDSL 추가
-def querydslDir = "$buildDir/generated/querydsl"
+ext.profile = (!project.hasProperty('profile') || !profile) ? 'dev' : profile
 
-querydsl {
-	jpa = true
-	querydslSourcesDir = querydslDir
-}
 sourceSets {
-	main.java.srcDir querydslDir
-}
-configurations {
-	querydsl.extendsFrom compileClasspath
-}
-compileQuerydsl {
-	options.annotationProcessorPath = configurations.querydsl
+	main {
+		resources {
+			srcDirs "src/main/resources", "src/main/resources-${profile}"
+		}
+	}
 }
 
-compileQuerydsl.doFirst {
-	if(file(querydslDir).exists()) delete(file(querydslDir))
-}

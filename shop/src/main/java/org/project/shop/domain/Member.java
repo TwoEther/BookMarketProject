@@ -14,7 +14,6 @@ import java.util.List;
 
 @Entity
 @Getter
-
 public class Member {
     @Id @GeneratedValue
     @Column(name = "member_id")
@@ -115,6 +114,7 @@ public class Member {
         this.created_at = LocalDateTime.now();
 
     }
+
 
     public Member(String userId, String password, String name, String phoneNum, String email) {
         this.userId = userId;

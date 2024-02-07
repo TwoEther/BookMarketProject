@@ -36,4 +36,6 @@ public interface ItemService {
     public List<Item> orderByCategory();
 
     public void deleteByItemId(Long itemId);
+
+    public void deleteAll();
 }

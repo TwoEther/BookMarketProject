@@ -15,4 +15,6 @@ public interface CategoryRepository {
     public List<Category> findAllCategory();
 
     public List<String> findAllCategory2();
+
+    public void deleteAll();
 }

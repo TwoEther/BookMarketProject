@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
@@ -16,12 +17,14 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ActiveProfiles("test")
 @SpringBootTest
 public class PagingServiceTest {
     @Autowired
     private ItemServiceImpl itemServiceImpl;
 
     @Test
+    @DisplayName("페이징 테스트")
     public void previousPageTest() {
         for (int page = 0; page < 8; page++) {
             PageRequest pageRequest = PageRequest.of(page, 6);

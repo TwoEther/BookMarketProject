@@ -134,5 +134,10 @@ public class ItemServiceImpl implements ItemService{
         itemRepositoryImpl.deleteByItemId(itemId);
     }
 
+    @Override
+    public void deleteAll() {
+        itemRepositoryImpl.deleteAll();
+    }
+
 
 }

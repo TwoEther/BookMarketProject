@@ -1,27 +1,31 @@
 package org.project.shop.service;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.project.shop.domain.Cart;
 import org.project.shop.domain.CartItem;
 import org.project.shop.domain.Item;
 import org.project.shop.domain.Member;
 import org.project.shop.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ActiveProfiles("test")
 @SpringBootTest
 @Transactional
+
 class CartServiceTest {
     @Autowired
     private MemberServiceImpl memberServiceImpl;
@@ -40,7 +44,7 @@ class CartServiceTest {
     @Autowired
     private CartServiceImpl cartServiceImpl;
     @Autowired
-    private CartItemRepositoryImpl cartItemRepositoryImpl;
+    private CartItemServiceImpl cartItemServiceImpl;
 
     @Autowired
     private CartRepositoryImpl cartRepositoryImpl;
@@ -48,62 +52,44 @@ class CartServiceTest {
     @PersistenceContext
     EntityManager em;
 
-
-    public Member createMember() {
-        Member member = new Member("id", "password");
-        memberRepositoryImpl.save(member);
-        return member;
-    }
-
-    public Item createItem() {
-        Item item = new Item();
-        item.setName("테스트책");
-        item.setPrice(20000);
-        item.setStockQuantity(20);
-
-        itemRepositoryImpl.save(item);
-        return item;
-    }
-
-    @Test
-    @DisplayName("단순 장바구니 테스트")
-    public void saveTest() {
-        Member member = createMember();
-        Item item = createItem();
-
-        CartItem cartItem = new CartItem();
-        cartItem.setCount(5);
-        cartItem.setItem(item);
-
-
-
-    }
-
+    @BeforeEach
     public void setUp() {
         Item item1 = new Item("테스트용 책1", 20000, 50);
         Item item2 = new Item("테스트용 책2", 30000, 40);
         itemRepositoryImpl.save(item1);
         itemRepositoryImpl.save(item2);
 
-        Member member = new Member("lee", "pw1");
+        Member member = new Member("id1", "password","name1","010-2903-1292","test@test.com");
         memberRepositoryImpl.save(member);
 
+        Cart cart = new Cart();
+        cart.setMember(member);
+        cartServiceImpl.save(cart);
+
+        CartItem cartItem1 = new CartItem();
+        CartItem cartItem2 = new CartItem();
+
+        cartItem1.setItem(item1);
+        cartItem1.setCart(cart);
+        cartItem1.setCount(3);
+
+        cartItem2.setItem(item2);
+        cartItem1.setCart(cart);
+        cartItem2.setCount(3);
+
+        cartItemServiceImpl.save(cartItem1);
+        cartItemServiceImpl.save(cartItem2);
+
     }
+
 
     @Test
     @DisplayName("장바구니 실제 테스트")
     public void cartSaveTest() {
-        setUp();
-
-        Member member = memberRepositoryImpl.findByUserId("lee");
-
-        // 1. 웹에서 상품에 대한 정보를 받음
-        String inputItemName = "테스트용 책1";
-        int inputValue = 10;
-        String currentUserName = "lee";
+        Member member = memberRepositoryImpl.findByUserId("id1");
 
         Cart cart = cartRepositoryImpl.findByMemberId(member.getId());
-        CartItem saveCartItem = cartItemRepositoryImpl.findByCartIdAndItemId(cart.getId(), member.getId());
+        List<CartItem> byCartId = cartItemServiceImpl.findByCartId(cart.getId());
     }
 
     @Test

@@ -60,5 +60,11 @@ public class CategoryRepositoryImpl implements CategoryRepository{
                 .fetch();
     }
 
+    @Override
+    public void deleteAll() {
+        queryFactory.delete(category)
+                .execute();
+    }
+
 
 }

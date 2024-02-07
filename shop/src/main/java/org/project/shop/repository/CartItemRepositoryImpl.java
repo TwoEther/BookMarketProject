@@ -43,7 +43,6 @@ public class CartItemRepositoryImpl implements CartItemRepository{
 
 
     @Override
-    @Transactional
     public void save(CartItem cartItem) {
         em.persist(cartItem);
     }

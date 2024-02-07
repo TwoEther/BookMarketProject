@@ -30,5 +30,7 @@ public interface MemberService {
     // 회원 삭제
     public void deleteMemberByMemberId(Long memberId);
 
+    public void deleteAll();
+
     // 이메일 인증 <구현체에 있음>
 }

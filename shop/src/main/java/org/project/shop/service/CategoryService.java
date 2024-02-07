@@ -11,4 +11,6 @@ public interface CategoryService {
 
     public List<String> findAllCategory2();
     public List<Category> findAllCategory();
+
+    public void deleteAll();
 }

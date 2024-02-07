@@ -23,4 +23,6 @@ public interface MemberRepository {
 
     // 회원 삭제
     public void deleteMemberByMemberId(Long memberId);
+
+    public void deleteAll();
 }

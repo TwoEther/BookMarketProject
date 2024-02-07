@@ -31,6 +31,7 @@ public interface ItemRepository {
 
     public void deleteByItemId(Long itemId);
 
+    public void deleteAll();
 
     List<Item> findBySortedTotalPurchase();
 }

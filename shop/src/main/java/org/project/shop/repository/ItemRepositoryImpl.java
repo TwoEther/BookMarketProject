@@ -181,6 +181,12 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
+    public void deleteAll() {
+        queryFactory.delete(item)
+                .execute();
+    }
+
+    @Override
     public List<Item> findBySortedTotalPurchase() {
         return queryFactory.selectFrom(item)
                 .orderBy(item.total_purchase.desc(), Expressions.numberTemplate(Double.class, "function('rand')").asc())

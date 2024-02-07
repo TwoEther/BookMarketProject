@@ -108,4 +108,10 @@ public class MemberRepositoryImpl implements MemberRepository{
                 .where(member.id.eq(memberId))
                 .execute();
     }
+
+    @Override
+    public void deleteAll() {
+        queryFactory.delete(member)
+                .execute();
+    }
 }
