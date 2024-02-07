@@ -69,3 +69,7 @@ sourceSets {
 	}
 }
 
+tasks.withType(Tar.class).configureEach {
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
