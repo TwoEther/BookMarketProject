@@ -17,5 +17,7 @@ public interface ReviewRepository {
     public List<Review> findAllReviewByMemberId(Long memberId);
     public List<Review> findAllReview();
 
+    public void deleteAll();
+
     public void deleteReview(Long reviewId);
 }

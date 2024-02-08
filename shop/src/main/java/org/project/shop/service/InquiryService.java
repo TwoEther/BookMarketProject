@@ -15,5 +15,7 @@ public interface InquiryService {
 
     public List<Inquiry> findAllInquiryByGeneralMember();
 
+    public void deleteAll();
+
     public void delete(Long id);
 }

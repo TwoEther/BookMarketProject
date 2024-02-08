@@ -47,6 +47,11 @@ public class ReviewServiceImpl implements ReviewService{
     }
 
     @Override
+    public void deleteAll() {
+        reviewRepositoryImpl.deleteAll();
+    }
+
+    @Override
     public List<Review> findAllReview() {
         return reviewRepositoryImpl.findAllReview();
     }

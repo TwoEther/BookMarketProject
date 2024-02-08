@@ -38,6 +38,11 @@ public class InquiryServiceImpl implements InquiryService{
     }
 
     @Override
+    public void deleteAll() {
+        inquiryRepositoryImpl.deleteAll();
+    }
+
+    @Override
     public void delete(Long id) {
         inquiryRepositoryImpl.delete(id);
     }

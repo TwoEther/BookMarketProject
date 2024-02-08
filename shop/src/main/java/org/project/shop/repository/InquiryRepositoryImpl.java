@@ -69,6 +69,12 @@ public class InquiryRepositoryImpl implements InquiryRepository{
     }
 
     @Override
+    public void deleteAll() {
+        queryFactory.delete(inquiry)
+                .execute();
+    }
+
+    @Override
     public void delete(Long id) {
         queryFactory.delete(inquiry)
                 .where(inquiry.id.eq(id))

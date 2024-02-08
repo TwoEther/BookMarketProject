@@ -1,6 +1,7 @@
 package org.project.shop.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.project.shop.auth.PrincipalDetails;
 import org.project.shop.custom.CustomPageRequest;
 import org.project.shop.domain.*;
 import org.project.shop.service.*;
@@ -44,16 +45,34 @@ public class ItemController {
     private final InquiryServiceImpl inquiryServiceImpl;
 
     @PostMapping(value = "/dbConfig")
-    public String dbConfig(Model model) throws Exception {
+    @Transactional
+    public String dbConfig(Model model,
+                           @AuthenticationPrincipal PrincipalDetails principalDetails) throws Exception {
+        if (principalDetails == null) {
+            return "redirect:/";
+        }
+
+        String username = principalDetails.getUsername();
+        Member findMember = memberServiceImpl.findByUserId(username);
+
+
+        if (findMember.getRole().equals(Role.ROLE_USER.toString())) {
+            return "redirect:/";
+        }
+
         List<List<String>> ret = new ArrayList<List<String>>();
         BufferedReader br = null;
+        String path = System.getProperty("user.dir")+"\\src\\main\\resources\\data.csv";
+        String imagePath = System.getProperty("user.dir")+"\\src\\main\\resources\\images\\";
+
         String path1 = "C:\\lee\\Java\\data.csv";
         String path2 = "C:\\lee\\Project\\Spring\\data.csv";
         String imagePath1 = "C:\\lee\\Java\\bookImages\\";
         String imagePath2 = "C:\\lee\\Project\\Spring\\bookImages\\";
 
+
         try{
-            br = Files.newBufferedReader(Paths.get(path1));
+            br = Files.newBufferedReader(Paths.get(path));
             String line = "";
 
             while((line = br.readLine()) != null){
@@ -77,6 +96,10 @@ public class ItemController {
             }
         }
 
+        inquiryServiceImpl.deleteAll();
+        reviewServiceImpl.deleteAll();
+        itemServiceImpl.deleteAll();
+
         for (List<String> data : ret) {
             String title = data.get(0);
             int price = Integer.parseInt(data.get(1));
@@ -95,7 +118,7 @@ public class ItemController {
             }
             Category findCategory = categoryServiceImpl.findByCategoryName(category1, category2);
 
-            String fileRoot = imagePath1 + fileName+".png";
+            String fileRoot = imagePath + fileName+".png";
             Item item = new Item(title, price, stockQuantity, author, publisher, isbn, page, description);
             item.setCategory(findCategory);
             File imageFile = new File(fileRoot);
@@ -160,6 +183,9 @@ public class ItemController {
         }else if(sort_by.equals("판매량")){
             variable = "total_purchase";
         }else{variable = "";}
+
+        String path = System.getProperty("user.dir");
+        System.out.println("path = " + path);
 
         // 1페이지당 6개의 상품 호출
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(variable).descending());

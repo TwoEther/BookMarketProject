@@ -68,6 +68,12 @@ public class ReviewRepositoryImpl implements ReviewRepository{
     }
 
     @Override
+    public void deleteAll() {
+        queryFactory.delete(review)
+                .execute();
+    }
+
+    @Override
     public void deleteReview(Long reviewId) {
          queryFactory.delete(review)
                 .where(review.id.eq(reviewId))
