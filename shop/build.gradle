@@ -74,8 +74,3 @@ tasks {
 		duplicatesStrategy = org.gradle.api.file.DuplicatesStrategy.INCLUDE
 	}
 }
-=======
-tasks.withType(Tar.class).configureEach {
-	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
