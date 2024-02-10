@@ -118,17 +118,20 @@ public class ItemController {
             }
             Category findCategory = categoryServiceImpl.findByCategoryName(category1, category2);
 
-            String fileRoot = imagePath + fileName+".png";
             Item item = new Item(title, price, stockQuantity, author, publisher, isbn, page, description);
             item.setCategory(findCategory);
+
+            // AWS 비용으로 인한 주석처리
+            /*
+            String fileRoot = imagePath + fileName+".png";
             File imageFile = new File(fileRoot);
             BufferedImage image = ImageIO.read(imageFile);
-
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write( image, "png", baos );
             baos.flush();
             MultipartFile multipartFile = new MockMultipartFile(fileName, baos.toByteArray());
-            itemServiceImpl.saveItem(item, multipartFile);
+             */
+            itemServiceImpl.saveItemNoImage(item);
         }
 
         return "redirect:/";
@@ -287,7 +290,7 @@ public class ItemController {
     @GetMapping(value = "/{itemId}")
     public String showItem(@PathVariable("itemId") Long itemId,
                            @RequestParam(defaultValue = "0", required = false, value = "reviewPage") int reviewPage,
-                           @RequestParam(defaultValue = "0", required = false) int inquiryPage,
+                           @RequestParam(defaultValue = "0", required = false, value = "inquiryPage") int inquiryPage,
                            @AuthenticationPrincipal Member member,
                            Model model) {
         DecimalFormat decFormat = new DecimalFormat("###,###");
@@ -324,10 +327,21 @@ public class ItemController {
         // 리뷰 처리
         // 해당 아이템에 해당하는 리뷰를 페이징 해서 가져옴
         Page<Review> findPageReviewByItemId = reviewServiceImpl.findPageReviewByItemId(PageRequest.of(reviewPage, reviewSize), itemId);
-        List<Review> findAllReviewByItemId = reviewServiceImpl.findAllReviewByItemId(itemId);
+        List<Review> findAllReviewByItemId = reviewServiceImpl.findAllReview();
+
+        // 문의 처리
+        Page<Inquiry> findPageInquiryByItemId = inquiryServiceImpl.findByItemId(PageRequest.of(inquiryPage, inquirySize), itemId);
+        List<Inquiry> findAllInquiryByItemId = inquiryServiceImpl.findAllInquiryByItemId(itemId);
+
         int reviewPageNum = findPageReviewByItemId.getTotalPages();
         int reviewStartPage = Math.max(reviewPage - 1, 0);
         int reviewEndPage = Math.min(reviewPage, reviewPageNum);
+
+        int inquiryPageNum = findPageInquiryByItemId.getTotalPages();
+        int inquiryStartPage = Math.max(inquiryPage - 1, 0);
+        int inquiryEndPage = Math.min(inquiryPage, inquiryPageNum);
+
+
 
         // 카테고리 처리
         List<String> allCategory2 = categoryServiceImpl.findAllCategory2();
@@ -336,20 +350,26 @@ public class ItemController {
         // 평균 점수
         double avgScore = Review.calculateAvgScore(findAllReviewByItemId);
 
-        // 문의 처리
-        Page<Inquiry> allInquiry = inquiryServiceImpl.findByItemId(PageRequest.of(inquiryPage, inquirySize, Sort.by("created_at").descending()), itemId);
+
 
         model.addAttribute("reviewSize", reviewSize);
         model.addAttribute("reviewStartPage", reviewStartPage);
         model.addAttribute("reviewPage", reviewPage);
         model.addAttribute("reviewEndPage", reviewEndPage);
-        model.addAttribute("inquirySize", inquirySize);
-
-        model.addAttribute("allInquiry", allInquiry);
-
-        model.addAttribute("allReview", findAllReviewByItemId);
         model.addAttribute("reviewCount", reviewCountByScore);
+        model.addAttribute("allReview", findAllReviewByItemId);
         model.addAttribute("pageReview", findPageReviewByItemId);
+
+
+        model.addAttribute("inquirySize", inquirySize);
+        model.addAttribute("inquiryStartPage", inquiryStartPage);
+        model.addAttribute("inquiryPage", inquiryPage);
+        model.addAttribute("inquiryEndPage", inquiryEndPage);
+        model.addAttribute("allInquiry", findAllInquiryByItemId);
+        model.addAttribute("pageInquiry", findPageInquiryByItemId);
+
+
+
         model.addAttribute("allCategory2", allCategory2);
 
 

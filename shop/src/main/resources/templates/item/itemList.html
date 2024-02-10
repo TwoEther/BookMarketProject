@@ -115,7 +115,8 @@
                         <h3 class="aside-title">베스트셀러</h3>
                         <div th:each = "item : ${bestseller}" class="product-widget">
                             <div class="product-img">
-                                <img th:src="${item.getFilePath()}" alt="" height="80px;">
+                                <img src="/static/images/book.jpg" alt="">
+<!--                                <img th:src="${item.getFilePath()}" alt="" height="80px;">-->
                             </div>
                             <div class="product-body">
                                 <h3 class="product-name" th:text="${item.name}">22</h3>
@@ -175,7 +176,8 @@
                         <div th:each="item : ${paging}" class="col-md-4 col-xs-6">
                             <div class="product">
                                 <div class="product-img">
-                                    <img th:src="${item.getFilePath()}" alt="">
+                                    <img src="/static/images/book.jpg" alt="">
+<!--                                    <img th:src="${item.getFilePath()}" alt="">-->
                                 </div>
 
                                 <div class="product-body" th:with="avg = ${T(java.lang.Math).floor(item.calculateAvgScore())}">
