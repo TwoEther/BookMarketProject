@@ -50,6 +50,10 @@
         background-color: rgba(0,0,0,0);
     }
 
+    .disabled {
+        visibility: hidden;
+    }
+
     textarea {
         width: 100%;
         height: 100px;
@@ -308,7 +312,8 @@
                 <div class="col-md-6 col-md-push-2">
                     <div id="product-main-img">
                         <div class="product-preview">
-                            <img th:src="${item.getFilePath()}">
+<!--                            <img th:src="${item.getFilePath()}">-->
+                            <img src="/static/images/book.jpg" alt="">
                         </div>
 
                     </div>
@@ -514,7 +519,7 @@
                                         <ul th:unless="${allReview.size()} <= ${reviewSize}" class="reviews-pagination">
                                             <li class="page-item" th:classappend="${!pageReview.hasPrevious} ? 'disabled'">
                                                 <form th:action="@{/item/{param}(param=${item.id})}">
-                                                    <input type="hidden" name="reviewPage" th:value="${reviewPage-1}">
+                                                    <input type="hidden" name="reviewPage" th:value="${reviewPage}-1">
                                                     <input class="page-left" type="submit" value="&#xf359;">
                                                 </form>
                                             </li>
@@ -524,7 +529,7 @@
                                             </li>
                                             <li class="page-item" th:classappend="${!pageReview.hasNext} ? 'disabled'">
                                                 <form th:action="@{/item/{param}(param=${item.id})}">
-                                                    <input type="hidden" name="reviewPage" th:value="${reviewPage+1}">
+                                                    <input type="hidden" name="reviewPage" th:value="${reviewPage}+1">
                                                     <input class="page-right" type="submit" value="&#xf35a;">
                                                 </form>
                                                 <!--                                <a class="page-link"-->
@@ -560,7 +565,8 @@
                                                     <div class="thumbnail-box">
                                                         <div class="row">
                                                             <div class="col-3">
-                                                                <img th:src="${item.getFilePath()}" alt="" style="width:100px;">
+<!--                                                                <img th:src="${item.getFilePath()}" alt="" style="width:100px;">-->
+                                                                <img src="/static/images/book.jpg" alt="">
                                                             </div>
                                                             <div class="col-9" >
                                                                 <form th:action="@{/review/add}" method="post" class="review-form">
@@ -604,7 +610,7 @@
                                         <!-- 모달 영역 -->
                                         <!-- Button Trigger Modal -->
                                         <button type="button" class="btn btn-sm btn-success mt-4" id="inquiryModalBtn"
-                                                data-bs-toggle="modal" data-bs-target="#inquiryModal" style="margin-top:0px;!">
+                                                data-bs-toggle="modal" data-bs-target="#inquiryModal" style="margin-top:0px;">
                                             <i class="fa-solid fa-pencil"></i>
                                             작성 하기
                                         </button>
@@ -695,12 +701,58 @@
                                             <hr>
                                         </ul>
 
-                                        <ul class="reviews-pagination">
+                                        <ul class="reviews-pagination" th:if="${allInquiry.size()} <= ${inquirySize}">
+                                        <ul class="reviews-pagination" th:unless="${allInquiry.size()} <= ${inquirySize}">
+                                            <li class="page-item" th:classappend="${!pageInquiry.hasPrevious} ? 'disabled'">
+                                                <form th:action="@{/item/{param}(param=${item.id})}">
+                                                    <input type="hidden" name="inquiryPage" th:value="${inquiryPage}-1">
+                                                    <input class="page-left" type="submit" value="&#xf359;">
+                                                </form>
+                                            </li>
+                                            <li th:each="page: ${#numbers.sequence(inquiryStartPage, inquiryEndPage)}"
+                                                class="page-item">
+                                                <a th:text="${page}" class="page-link" th:href="@{|?page=${page}}"></a>
+                                            </li>
+                                            <li class="page-item" th:classappend="${!pageInquiry.hasNext} ? 'disabled'">
+                                                <form th:action="@{/item/{param}(param=${item.id})}">
+                                                    <input type="hidden" name="inquiryPage" th:value="${inquiryPage}+1">
+                                                    <input class="page-right" type="submit" value="&#xf35a;">
+                                                </form>
+                                                <!--                                <a class="page-link"-->
+                                                <!--                                   th:href="@{|?paging=${paging.number+1}|}">-->
+                                                <!--                                    <i class="fa fa-angle-right"></i>-->
+                                                <!--                                </a>-->
+                                            </li>
+
                                             <li class="active">1</li>
                                             <li><a href="#">2</a></li>
                                             <li><a href="#">3</a></li>
                                             <li><a href="#">4</a></li>
                                             <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
+                                        </ul>
+
+                                        <ul th:if="${allReview.size()} <= ${reviewSize}"></ul>
+                                        <ul th:unless="${allReview.size()} <= ${reviewSize}" class="reviews-pagination">
+                                            <li class="page-item" th:classappend="${!pageReview.hasPrevious} ? 'disabled'">
+                                                <form th:action="@{/item/{param}(param=${item.id})}">
+                                                    <input type="hidden" name="reviewPage" th:value="${reviewPage}-1">
+                                                    <input class="page-left" type="submit" value="&#xf359;">
+                                                </form>
+                                            </li>
+                                            <li th:each="page: ${#numbers.sequence(reviewStartPage, reviewEndPage)}"
+                                                class="page-item">
+                                                <a th:text="${page}" class="page-link" th:href="@{|?page=${page}}"></a>
+                                            </li>
+                                            <li class="page-item" th:classappend="${!pageReview.hasNext} ? 'disabled'">
+                                                <form th:action="@{/item/{param}(param=${item.id})}">
+                                                    <input type="hidden" name="reviewPage" th:value="${reviewPage}+1">
+                                                    <input class="page-right" type="submit" value="&#xf35a;">
+                                                </form>
+                                                <!--                                <a class="page-link"-->
+                                                <!--                                   th:href="@{|?paging=${paging.number+1}|}">-->
+                                                <!--                                    <i class="fa fa-angle-right"></i>-->
+                                                <!--                                </a>-->
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>

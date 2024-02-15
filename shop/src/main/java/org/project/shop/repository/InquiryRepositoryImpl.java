@@ -44,6 +44,13 @@ public class InquiryRepositoryImpl implements InquiryRepository{
     }
 
     @Override
+    public List<Inquiry> findAllInquiryByItemId(Long itemId) {
+        return queryFactory.selectFrom(inquiry)
+                .where(inquiry.item.id.eq(itemId))
+                .fetch();
+    }
+
+    @Override
     public Page<Inquiry> findByItemId(PageRequest pageRequest, Long id) {
         List<Inquiry> inquiries = queryFactory.selectFrom(inquiry)
                 .where(inquiry.item.id.eq(id).and(
@@ -94,6 +101,8 @@ public class InquiryRepositoryImpl implements InquiryRepository{
                 }
             }
         }
-        return null;
+
+        // 정렬 조건이 없다면
+        return new OrderSpecifier(Order.DESC, inquiry.created_at);
     }
 }

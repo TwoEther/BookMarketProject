@@ -4,6 +4,12 @@
 <link rel="stylesheet" href="/static/css/sideBar.css">
 <link rel="stylesheet" href="/static/css/mypage.css">
 
+<style>
+    .contextArea > div{
+        margin-top : 20px;
+    }
+</style>
+
 <body>
     <div th:replace="fragments/topHeader :: topHeader"/>
     <div th:replace="fragments/mainHeader :: mainHeader" />
@@ -19,7 +25,8 @@
                     <td>
                         <div class="item-area" th:each="orderItem : ${order.orderItems}" style="height:100px">
                             <div class="imgArea" style="float:left; width:100px;">
-                                <img th:src="@{${orderItem.item.getFilePath()}}" width="100px" height="80px;" alt="">
+<!--                                <img th:src="@{${orderItem.item.getFilePath()}}" width="100px" height="80px;" alt="">-->
+                                <img src="/static/images/book.jpg" alt="" width="100px" height="80px;">
                             </div>
                             <div class="itemName-area">
                                 <h4 th:text="${orderItem.item.getName()}"></h4>
@@ -30,7 +37,6 @@
                     </tbody>
                 </table>
             </div>
-
             <div class="cancelArea">
                 <h3>환불 정보를 확인해주세요.</h3>
                 <div>

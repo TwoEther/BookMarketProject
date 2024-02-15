@@ -35,7 +35,8 @@
                         <td>
                             <div class="item-area" th:each="orderItem : ${order.orderItems}" style="height:200px">
                                 <div class="imgArea" style="float:left; width:100px;">
-                                    <img th:src="@{${orderItem.item.getFilePath()}}" width="100px" alt="">
+<!--                                    <img th:src="@{${orderItem.item.getFilePath()}}" width="100px" alt="">-->
+                                    <img src="/static/images/book.jpg" alt="" width="100px">
                                 </div>
                                 <div class="itemName-area">
                                     <h4 th:text="${orderItem.item.getName()}"></h4>
@@ -57,14 +58,5 @@
 
 <!--    <div th:replace="fragments/footer :: footer"/>-->
 </body>
-<script>
-    function cancel(id) {
-        var con = "orderList";
-        var form = document.createElement("form");
-        form.setAttribute("method", "post");
-        form.setAttribute("action", "/orders/" + id + "/cancel");
-        document.body.appendChild(form);
-        form.submit();
-    }
-</script>
+
 </html>

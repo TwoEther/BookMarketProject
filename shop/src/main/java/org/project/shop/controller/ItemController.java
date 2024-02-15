@@ -44,6 +44,90 @@ public class ItemController {
     private final ReviewServiceImpl reviewServiceImpl;
     private final InquiryServiceImpl inquiryServiceImpl;
 
+    @GetMapping(value = "/config")
+    @Transactional
+    public String config() {
+        List<List<String>> ret = new ArrayList<List<String>>();
+        BufferedReader br = null;
+//        String path = System.getProperty("user.dir")+"\\src\\main\\resources\\data.csv";
+        String path = System.getProperty("user.dir") + "\\data.csv";
+        String imagePath = System.getProperty("user.dir") + "\\src\\main\\resources\\images\\";
+
+        String path1 = "C:\\lee\\Java\\data.csv";
+        String path2 = "C:\\lee\\Project\\Spring\\data.csv";
+        String imagePath1 = "C:\\lee\\Java\\bookImages\\";
+        String imagePath2 = "C:\\lee\\Project\\Spring\\bookImages\\";
+
+
+        try {
+            br = Files.newBufferedReader(Paths.get(path));
+            String line = "";
+
+            while ((line = br.readLine()) != null) {
+                List<String> tmpList = new ArrayList<String>();
+                String array[] = line.split(",");
+                tmpList = Arrays.asList(array);
+//                System.out.println(tmpList);
+                ret.add(tmpList);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        inquiryServiceImpl.deleteAll();
+        reviewServiceImpl.deleteAll();
+        itemServiceImpl.deleteAll();
+
+        boolean isFirst = false;
+        for (List<String> data : ret) {
+            if(!isFirst) {
+                isFirst = true;
+                continue;
+            }
+            String title = data.get(0);
+            int price = Integer.parseInt(data.get(1));
+            int stockQuantity = Integer.parseInt(data.get(2));
+            String author = data.get(3);
+            String publisher = data.get(4);
+            int isbn = Integer.parseInt(data.get(5));
+            int page = Integer.parseInt(data.get(6));
+            String description = data.get(7);
+            String category1 = data.get(8);
+            String category2 = data.get(9);
+
+            if (categoryServiceImpl.findByCategoryName(category1, category2) == null) {
+                categoryServiceImpl.save(new Category(category1, category2));
+            }
+            Category findCategory = categoryServiceImpl.findByCategoryName(category1, category2);
+
+            Item item = new Item(title, price, stockQuantity, author, publisher, isbn, page, description);
+            item.setCategory(findCategory);
+
+            // AWS 비용으로 인한 주석처리
+            /*
+            String fileRoot = imagePath + fileName+".png";
+            File imageFile = new File(fileRoot);
+            BufferedImage image = ImageIO.read(imageFile);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write( image, "png", baos );
+            baos.flush();
+            MultipartFile multipartFile = new MockMultipartFile(fileName, baos.toByteArray());
+             */
+            itemServiceImpl.saveItemNoImage(item);
+        }
+        return "redirect:/";
+    }
+
     @PostMapping(value = "/dbConfig")
     @Transactional
     public String dbConfig(Model model,
@@ -62,7 +146,8 @@ public class ItemController {
 
         List<List<String>> ret = new ArrayList<List<String>>();
         BufferedReader br = null;
-        String path = System.getProperty("user.dir")+"\\src\\main\\resources\\data.csv";
+//        String path = System.getProperty("user.dir")+"\\src\\main\\resources\\data.csv";
+        String path = System.getProperty("user.dir")+"\\data.csv";
         String imagePath = System.getProperty("user.dir")+"\\src\\main\\resources\\images\\";
 
         String path1 = "C:\\lee\\Java\\data.csv";
@@ -109,26 +194,28 @@ public class ItemController {
             int isbn = Integer.parseInt(data.get(5));
             int page = Integer.parseInt(data.get(6));
             String description = data.get(7);
-            String fileName = data.get(8);
-            String category1 = data.get(9);
-            String category2 = data.get(10);
+            String category1 = data.get(8);
+            String category2 = data.get(9);
 
             if (categoryServiceImpl.findByCategoryName(category1, category2) == null) {
                 categoryServiceImpl.save(new Category(category1, category2));
             }
             Category findCategory = categoryServiceImpl.findByCategoryName(category1, category2);
 
-            String fileRoot = imagePath + fileName+".png";
             Item item = new Item(title, price, stockQuantity, author, publisher, isbn, page, description);
             item.setCategory(findCategory);
+
+            // AWS 비용으로 인한 주석처리
+            /*
+            String fileRoot = imagePath + fileName+".png";
             File imageFile = new File(fileRoot);
             BufferedImage image = ImageIO.read(imageFile);
-
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write( image, "png", baos );
             baos.flush();
             MultipartFile multipartFile = new MockMultipartFile(fileName, baos.toByteArray());
-            itemServiceImpl.saveItem(item, multipartFile);
+             */
+            itemServiceImpl.saveItemNoImage(item);
         }
 
         return "redirect:/";
@@ -232,6 +319,7 @@ public class ItemController {
         Long totalElement = findAllItem.getTotalElements();
 
         int pageNum = Math.floorDiv(allItemNum, size) - 1;
+        page = Math.min(page, pageNum);
         int startPage = Math.max(page - 1, 0);
         int endPage = Math.min(page, pageNum);
 
@@ -287,11 +375,13 @@ public class ItemController {
     @GetMapping(value = "/{itemId}")
     public String showItem(@PathVariable("itemId") Long itemId,
                            @RequestParam(defaultValue = "0", required = false, value = "reviewPage") int reviewPage,
-                           @RequestParam(defaultValue = "0", required = false) int inquiryPage,
-                           @AuthenticationPrincipal Member member,
+                           @RequestParam(defaultValue = "0", required = false, value = "inquiryPage") int inquiryPage,
+                           @AuthenticationPrincipal PrincipalDetails principalDetails,
                            Model model) {
+
         DecimalFormat decFormat = new DecimalFormat("###,###");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
 
         if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -324,10 +414,26 @@ public class ItemController {
         // 리뷰 처리
         // 해당 아이템에 해당하는 리뷰를 페이징 해서 가져옴
         Page<Review> findPageReviewByItemId = reviewServiceImpl.findPageReviewByItemId(PageRequest.of(reviewPage, reviewSize), itemId);
-        List<Review> findAllReviewByItemId = reviewServiceImpl.findAllReviewByItemId(itemId);
+        List<Review> findAllReviewByItemId = reviewServiceImpl.findAllReview();
+
+        // 문의 처리
+        Page<Inquiry> findPageInquiryByItemId = inquiryServiceImpl.findByItemId(PageRequest.of(inquiryPage, inquirySize), itemId);
+        List<Inquiry> findAllInquiryByItemId = inquiryServiceImpl.findAllInquiryByItemId(itemId);
+
+
         int reviewPageNum = findPageReviewByItemId.getTotalPages();
+        reviewPage = Math.min(reviewPage, reviewPageNum);
+
         int reviewStartPage = Math.max(reviewPage - 1, 0);
         int reviewEndPage = Math.min(reviewPage, reviewPageNum);
+
+        int inquiryPageNum = findPageInquiryByItemId.getTotalPages();
+        inquiryPage = Math.min(inquiryPage, inquiryPageNum);
+
+        int inquiryStartPage = Math.max(inquiryPage - 1, 0);
+        int inquiryEndPage = Math.min(inquiryPage, inquiryPageNum);
+
+
 
         // 카테고리 처리
         List<String> allCategory2 = categoryServiceImpl.findAllCategory2();
@@ -336,20 +442,26 @@ public class ItemController {
         // 평균 점수
         double avgScore = Review.calculateAvgScore(findAllReviewByItemId);
 
-        // 문의 처리
-        Page<Inquiry> allInquiry = inquiryServiceImpl.findByItemId(PageRequest.of(inquiryPage, inquirySize, Sort.by("created_at").descending()), itemId);
+
 
         model.addAttribute("reviewSize", reviewSize);
         model.addAttribute("reviewStartPage", reviewStartPage);
         model.addAttribute("reviewPage", reviewPage);
         model.addAttribute("reviewEndPage", reviewEndPage);
-        model.addAttribute("inquirySize", inquirySize);
-
-        model.addAttribute("allInquiry", allInquiry);
-
-        model.addAttribute("allReview", findAllReviewByItemId);
         model.addAttribute("reviewCount", reviewCountByScore);
+        model.addAttribute("allReview", findAllReviewByItemId);
         model.addAttribute("pageReview", findPageReviewByItemId);
+
+
+        model.addAttribute("inquirySize", inquirySize);
+        model.addAttribute("inquiryStartPage", inquiryStartPage);
+        model.addAttribute("inquiryPage", inquiryPage);
+        model.addAttribute("inquiryEndPage", inquiryEndPage);
+        model.addAttribute("allInquiry", findAllInquiryByItemId);
+        model.addAttribute("pageInquiry", findPageInquiryByItemId);
+
+
+
         model.addAttribute("allCategory2", allCategory2);
 
 

@@ -84,7 +84,8 @@
                         </thead>
                         <tbody>
                         <tr th:each ="orderItem : ${order.orderItems}">
-                            <td class="img-area"><img th:src="${orderItem.item.getFilePath()}" alt=""></td>
+<!--                            <td class="img-area"><img th:src="${orderItem.item.getFilePath()}" alt=""></td>-->
+                            <td class="img-area"><img src="/static/images/book.jpg" alt=""></td>
                             <td th:text="${orderItem.item.name}"></td>
                             <th th:text="${orderItem.count}+'개'"></th>
                             <th th:text="${orderItem.getTotalPrice()}"></th>

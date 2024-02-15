@@ -127,7 +127,8 @@
                             </thead>
                             <tbody>
                             <tr th:each ="item :${allItem}">
-                                <td><img th:src="${item.getFilePath()}" style="width:80px;" alt="" srcset=""></td>
+<!--                                <td><img th:src="${item.getFilePath()}" style="width:80px;" alt="" srcset=""></td>-->
+                                <td><img src="/static/images/book.jpg" alt="" style="width:80px;"></td>
                                 <td th:text="${item.name}"></td>
                                 <td th:text="${item.category.category1}+'/'+${item.category.category2}"></td>
                                 <td th:text="${item.stockQuantity}"></td>

@@ -28,6 +28,11 @@ public class InquiryServiceImpl implements InquiryService{
     }
 
     @Override
+    public List<Inquiry> findAllInquiryByItemId(Long itemId) {
+        return inquiryRepositoryImpl.findAllInquiryByItemId(itemId);
+    }
+
+    @Override
     public Page<Inquiry> findByItemId(PageRequest pageRequest, Long id) {
         return inquiryRepositoryImpl.findByItemId(pageRequest, id);
     }

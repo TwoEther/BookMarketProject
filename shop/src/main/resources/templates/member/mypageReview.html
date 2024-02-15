@@ -28,7 +28,8 @@
                     <td>
                         <div class="item-area" th:each="orderItem : ${order.orderItems}" style="height:200px">
                             <div class="imgArea" style="float:left; width:100px;">
-                                <img th:src="@{${orderItem.item.getFilePath()}}" width="100px" alt="">
+<!--                                <img th:src="@{${orderItem.item.getFilePath()}}" width="100px" alt="">-->
+                                <img src="/static/images/book.jpg" alt="">
                             </div>
                             <div class="itemName-area">
                                 <h4 th:text="${orderItem.item.getName()}"></h4>

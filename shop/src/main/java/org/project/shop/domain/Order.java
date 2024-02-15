@@ -20,9 +20,6 @@ public class Order {
     @Column(unique = true)
     private String tid;
 
-
-
-
     // 지연 로딩 사용
     // N:1 (Order : Member)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

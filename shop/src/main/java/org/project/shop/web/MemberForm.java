@@ -12,7 +12,7 @@ public class MemberForm {
     @NotEmpty(message = "비밀번호를 입력하세요")
     private String password1;
 
-    private String roles;
+//    private String roles;
 
 
     @NotEmpty(message = "이름을 입력하세요")

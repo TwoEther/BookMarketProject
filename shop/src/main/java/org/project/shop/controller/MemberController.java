@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +41,7 @@ public class MemberController {
     private final OrderServiceImpl orderServiceImpl;
     private final MailService mailService;
     private final RedisService redisService;
+    private final PasswordEncoder passwordEncoder;
     
     @GetMapping(value = "/new")
     public String createForm(@RequestParam(value = "error", required = false) String error,
@@ -55,7 +57,8 @@ public class MemberController {
     }
 
     @PostMapping(value = "/new")
-    public String signUp(HttpServletResponse response, @Valid MemberForm form, BindingResult result) throws IOException {
+    @Transactional
+    public String signUp(HttpServletResponse response, @Valid MemberForm form, BindingResult result) throws Exception {
         if (result.hasErrors()) {
             return "/member/createMemberForm";
         }
@@ -65,10 +68,10 @@ public class MemberController {
         String name = form.getName();
         String phoneNum = form.getPhoneNum();
         String email = form.getEmail();
-        String roles = form.getRoles();
+//        String roles = form.getRoles();
         String email_check_num = form.getEmail_Check_number();
 
-//        mailService.sendEmail();
+        mailService.sendSimpleMessage(email);
 
         if (memberServiceImpl.findByUserId(id) != null) {
             ScriptUtils.alert(response, "아이디가 존재합니다");
@@ -81,13 +84,15 @@ public class MemberController {
             return "/member/createMemberForm";
         } else {
             Member member = new Member(id, password, name, phoneNum, email);
-            if (roles.equals(Role.ROLE_ADMIN.toString())) {
-                member.setRole(Role.ROLE_ADMIN.toString());
-            } else if (roles.equals(Role.ROLE_ANONYMOUS)) {
-                member.setRole(Role.ROLE_ANONYMOUS.toString());
-            } else {
-                member.setRole(Role.ROLE_USER.toString());
-            }
+
+//            if (roles.equals(Role.ROLE_ADMIN.toString())) {
+//                member.setRole(Role.ROLE_ADMIN.toString());
+//            } else if (roles.equals(Role.ROLE_ANONYMOUS)) {
+//                member.setRole(Role.ROLE_ANONYMOUS.toString());
+//            } else {
+//                member.setRole(Role.ROLE_USER.toString());
+//            }
+            member.setRole(Role.ROLE_USER.getDescription());
 
             if (memberServiceImpl.checkReqexId(id) && memberServiceImpl.checkReqexPw(password)) {
                 result.reject("signupFailed", "아이디나 패스워드가 올바르지 않습니다");
@@ -123,7 +128,6 @@ public class MemberController {
     public boolean pwCheck(@RequestParam String pw) throws Exception {
         return memberServiceImpl.checkReqexPw(pw);
     }
-
 
     @GetMapping(value = "/login")
     public String createLoginForm(@RequestParam(value = "error", required = false) String error,
@@ -249,13 +253,22 @@ public class MemberController {
     public String deleteMemberGeneral(HttpServletRequest request,
                                     HttpServletResponse response,
                                     @AuthenticationPrincipal PrincipalDetails principalDetails,
-                                    @RequestParam String password1,
-                                    @RequestParam String password2) throws IOException {
+                                    @RequestParam(value = "password1", required = false, defaultValue = "") String password1,
+                                    @RequestParam(value = "password2", required = false, defaultValue = "")  String password2) throws IOException {
         String username = principalDetails.getUsername();
         String msg = "";
         Member findMember = memberServiceImpl.findByUserId(username);
-        if (!password1.equals(password2)) {
-            msg = "비밀 번호가 다릅니다";
+
+        if (password1.isEmpty() || password2.isEmpty()) {
+            msg = "비밀번호를 입력해주세요";
+        }
+
+        else if (!password1.equals(password2)) {
+            msg = "비밀 번호가 서로 다릅니다";
+        }
+
+        else if (passwordEncoder.matches(findMember.getPassword(), password1)) {
+            msg = "입력하신 비밀 번호가 다릅니다";
         } else {
             msg = "삭제 되었습니다";
             new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
@@ -267,7 +280,8 @@ public class MemberController {
     @DeleteMapping(value = "/delete/{memberNum}")
     @Transactional
     @ResponseBody
-    public void deleteMemberAdmin(@RequestParam String memberNum) {
+    public void deleteMemberAdmin(@RequestParam String memberNum,
+                                  @AuthenticationPrincipal PrincipalDetails principalDetails) {
         memberServiceImpl.deleteMemberByMemberId(Long.valueOf(memberNum));
     }
 
