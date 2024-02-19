@@ -1,4 +1,4 @@
-[submodule "shop/config"]
-	path = shop/config
+[submodule "config"]
+	path = config
 	url = https://github.com/TwoEther/application.config
 	branch = master
