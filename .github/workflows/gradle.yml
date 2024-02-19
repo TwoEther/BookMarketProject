@@ -58,18 +58,19 @@ jobs:
          aws-region: ap-northeast-2
 
     - name: Upload to S3
-      run: aws s3 cp --region ap-northeast-2 ./coinTalk.zip s3://shop-bucket-1/
+      run: aws s3 cp --region ap-northeast-2 ./shopApp.zip s3://shop-bucket-1/
 
-    # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
-    # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
-    #
-    # - name: Setup Gradle
-    #   uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
-    #   with:
-    #     gradle-version: '8.5'
-    #
-    # - name: Build with Gradle 8.5
-    #   run: gradle build
+    - name: Deploy
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: |
+        aws deploy create-deployment \
+        --application-name coinTalk[shopApp] \
+        --deployment-group-name coinTalk-group[shopApp-group] \
+        --file-exists-behavior OVERWRITE \
+        --s3-location bucket=shopApp-deploy[shop-bucket-1],bundleType=zip,key=shopApp.zip[shopApp] \ 
+        --region ap-northeast-2
 
   dependency-submission:
 
