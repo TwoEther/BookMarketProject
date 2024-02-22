@@ -43,6 +43,9 @@ jobs:
       - name: Permission Permit
         run : chmod +x ./gradlew
 
+      - name: ls -al
+        run: ls -al
+
       - name: Build with Gradle Wrapper
         run: ./gradlew build -x test
 
