@@ -44,7 +44,7 @@ jobs:
         run : chmod +x ./gradlew
 
       - name: ls -al
-        run: ls -al
+        run: ls src/main/resources -al
 
       - name: Build with Gradle Wrapper
         run: ./gradlew build -x test
