@@ -59,6 +59,14 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+processResources.dependsOn('copySecret')
+
+tasks.register('copySecret', Copy) {
+	from "config/"
+	include "application*.properties"  //
+	into 'src/main/resources'  \
+}
+
 ext.profile = (!project.hasProperty('profile') || !profile) ? 'dev' : profile
 
 sourceSets {
