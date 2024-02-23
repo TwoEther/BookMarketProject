@@ -62,9 +62,9 @@ tasks.named('test') {
 processResources.dependsOn('copySecret')
 
 tasks.register('copySecret', Copy) {
-	from "config/"
+	from "./application.config"
 	include "application*.properties"  //
-	into 'src/main/resources'  \
+	into './src/main/resources'  \
 }
 
 ext.profile = (!project.hasProperty('profile') || !profile) ? 'dev' : profile
