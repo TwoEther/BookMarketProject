@@ -50,7 +50,7 @@ public class ItemController {
         List<List<String>> ret = new ArrayList<List<String>>();
         BufferedReader br = null;
 //        String path = System.getProperty("user.dir")+"\\src\\main\\resources\\data.csv";
-        String path = System.getProperty("user.dir") + "\\data.csv";
+        String path = "//home//ubuntu//shop//data.csv";
         String imagePath = System.getProperty("user.dir") + "\\src\\main\\resources\\images\\";
 
         String path1 = "C:\\lee\\Java\\data.csv";
@@ -105,6 +105,8 @@ public class ItemController {
             String category1 = data.get(8);
             String category2 = data.get(9);
 
+            System.out.println("title = " + title);
+            System.out.println("category2 = " + category2);
             if (categoryServiceImpl.findByCategoryName(category1, category2) == null) {
                 categoryServiceImpl.save(new Category(category1, category2));
             }
