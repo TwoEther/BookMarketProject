@@ -58,7 +58,7 @@ public class ItemController {
         String imagePath1 = "C:\\lee\\Java\\bookImages\\";
         String imagePath2 = "C:\\lee\\Project\\Spring\\bookImages\\";
 
-
+        System.out.println("path = " + path);
         try {
             br = Files.newBufferedReader(Paths.get(path));
             String line = "";
