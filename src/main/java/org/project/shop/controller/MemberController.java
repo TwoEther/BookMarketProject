@@ -48,7 +48,7 @@ public class MemberController {
                              @RequestParam(value = "exception", required = false) String exception,
                              Model model) {
         model.addAttribute("memberForm", new MemberForm());
-        return "/member/createMemberForm";
+        return "member/createMemberForm";
     }
 
     @ModelAttribute("roles")
@@ -60,7 +60,7 @@ public class MemberController {
     @Transactional
     public String signUp(HttpServletResponse response, @Valid MemberForm form, BindingResult result) throws Exception {
         if (result.hasErrors()) {
-            return "/member/createMemberForm";
+            return "member/createMemberForm";
         }
 
         String id = form.getUserId();
@@ -75,13 +75,13 @@ public class MemberController {
 
         if (memberServiceImpl.findByUserId(id) != null) {
             ScriptUtils.alert(response, "아이디가 존재합니다");
-            return "/member/createMemberForm";
+            return "member/createMemberForm";
         } else if (email_check_num.isEmpty()) {
             ScriptUtils.alert(response, "이메일 인증후 회원가입 가능합니다");
-            return "/member/createMemberForm";
+            return "member/createMemberForm";
         } else if (!redisService.getRedisTemplateValue(email).equals(email_check_num)) {
             ScriptUtils.alert(response, "인증번호가 일치 하지 않습니다");
-            return "/member/createMemberForm";
+            return "member/createMemberForm";
         } else {
             Member member = new Member(id, password, name, phoneNum, email);
 
@@ -96,7 +96,7 @@ public class MemberController {
 
             if (memberServiceImpl.checkReqexId(id) && memberServiceImpl.checkReqexPw(password)) {
                 result.reject("signupFailed", "아이디나 패스워드가 올바르지 않습니다");
-                return "/member/createMemberForm";
+                return "member/createMemberForm";
             }
 
             try {
@@ -104,14 +104,14 @@ public class MemberController {
             } catch (DataIntegrityViolationException e) {
                 e.printStackTrace();
                 result.reject("signupFailed", "이미 등록된 사용자입니다.");
-                return "/member/createMemberForm";
+                return "member/createMemberForm";
             } catch (Exception e) {
                 e.printStackTrace();
                 result.reject("signupFailed", e.getMessage());
-                return "/member/createMemberForm";
+                return "member/createMemberForm";
             }
             ScriptUtils.alert(response, "회원가입이 완료 되었습니다.");
-            return "/home";
+            return "home";
         }
 
 
@@ -136,13 +136,13 @@ public class MemberController {
         model.addAttribute("error", error);
         model.addAttribute("exception", exception);
         model.addAttribute("loginForm", new LoginForm());
-        return "/member/loginForm";
+        return "member/loginForm";
     }
 
     @PostMapping(value = "/login")
     public String login(@Valid LoginForm form, BindingResult result) {
         if (result.hasErrors()) {
-            return "/member/loginForm";
+            return "member/loginForm";
         }
 
         return "redirect:/";
@@ -151,7 +151,7 @@ public class MemberController {
     @GetMapping("/findId")
     public String findId(Model model) {
         model.addAttribute("findIDForm", new findIDForm());
-        return "/member/findUserId";
+        return "member/findUserId";
     }
     @PostMapping("/findId")
     public String findIdPost(HttpServletResponse response, @RequestParam String phoneNum, @RequestParam String email, Model model) throws IOException {
@@ -159,10 +159,10 @@ public class MemberController {
 
         if (findMemberID != null) {
             model.addAttribute("userId", findMemberID);
-            return "/member/resultId";
+            return "member/resultId";
         }else{
             ScriptUtils.alert(response, "핸드폰 번호 또는 이메일이 다릅니다");
-            return "/member/findUserId";
+            return "member/findUserId";
         }
 
     }
@@ -177,7 +177,7 @@ public class MemberController {
     public String memberList(Model model) {
         List<Member> allMember = memberServiceImpl.findAllMember();
         model.addAttribute("members", allMember);
-        return "/member/memberList";
+        return "member/memberList";
     }
 
     @GetMapping(value = "/address")
@@ -236,7 +236,7 @@ public class MemberController {
         model.addAttribute("orderItems", orderItems);
 //        model.addAttribute("items", paymentItems);
 
-        return "/member/myPageReview";
+        return "member/myPageReview";
     }
 
     @GetMapping(value = "/cancel")
@@ -244,7 +244,7 @@ public class MemberController {
         if (principalDetails == null) {
             return "redirect:/";
         }
-        return "/member/cancel";
+        return "member/cancel";
     }
 
     @DeleteMapping(value = "/cancel")

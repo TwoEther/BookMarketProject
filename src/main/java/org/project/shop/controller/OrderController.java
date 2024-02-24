@@ -89,7 +89,7 @@ public class OrderController {
             Order findOrder = orderServiceImpl.findByMemberIdAfterPaymentOneOrder(orderId, findMember.getId());
 
             model.addAttribute("order", findOrder);
-            return "/order/orderCancel";
+            return "order/orderCancel";
         }
         return "/home";
 
@@ -114,7 +114,7 @@ public class OrderController {
             orderServiceImpl.deleteOrder(orderId);
 
         }
-        return "/home";
+        return "home";
 
     }
 
