@@ -80,6 +80,10 @@ public class KakaoPayController {
     public String afterPayRequest(@RequestParam("pg_token") String pgToken,
                                   @AuthenticationPrincipal PrincipalDetails principalDetails,
                                   Model model) {
+        if(principalDetails == null){
+            return "home";
+        }
+
         KakaoApproveResponse kakaoApprove = kakaoPayService.ApproveResponse(pgToken);
 
         String username = principalDetails.getUsername();

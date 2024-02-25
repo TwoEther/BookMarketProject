@@ -2,6 +2,7 @@ package org.project.shop.service;
 
 import org.project.shop.kakaopay.KakaoApproveResponse;
 import org.project.shop.kakaopay.KakaoReadyResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -18,6 +19,8 @@ public class KakaoPayService {
     static final String cid = "TC0ONETIME";         // 가맹점 테스트 코드
     static final String admin_key = "5d54c247fe0d2e2db5c6e48c58e924ca";
 
+    @Value("${kakaoPay.url}")
+    private String payUrl;
     private KakaoReadyResponse kakaoReady;
 
     public KakaoReadyResponse kakaoPayReady(String itemName, String count, String total_price) {
@@ -31,9 +34,9 @@ public class KakaoPayService {
         parameters.add("quantity", count);
         parameters.add("total_amount", total_price);
         parameters.add("tax_free_amount", "0");
-        parameters.add("approval_url", "http://localhost:8080/kakaopay/paySuccess"); // 성공 시 redirect url
-        parameters.add("cancel_url", "http://localhost:8080/kakaopay/payCancel"); // 취소 시 redirect url
-        parameters.add("fail_url", "http://localhost:8080/kakaopay/payFail"); // 실패 시 redirect url
+        parameters.add("approval_url", payUrl+"/kakaopay/paySuccess"); // 성공 시 redirect url
+        parameters.add("cancel_url", payUrl+"/kakaopay/payCancel"); // 취소 시 redirect url
+        parameters.add("fail_url", payUrl+"/kakaopay/payFail"); // 실패 시 redirect url
         // 파라미터, 헤더
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
         // 외부에 보낼 url
@@ -53,9 +56,9 @@ public class KakaoPayService {
         parameters.add("tid", tid);
         parameters.add("cancel_amount", Integer.toString(cancel_amount));
         parameters.add("cancel_tax_free_amount", "0");
-        parameters.add("approval_url", "http://localhost:8080/order/orderList"); // 성공 시 redirect url
-        parameters.add("cancel_url", "http://localhost:8080/order/orderList"); // 취소 시 redirect url
-        parameters.add("fail_url", "http://localhost:8080/order/orderList"); // 실패 시 redirect url
+        parameters.add("approval_url", payUrl+"/order/orderList"); // 성공 시 redirect url
+        parameters.add("cancel_url", payUrl+"/order/orderList"); // 취소 시 redirect url
+        parameters.add("fail_url", payUrl+"/order/orderList"); // 실패 시 redirect url
         // 파라미터, 헤더
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
         // 외부에 보낼 url
