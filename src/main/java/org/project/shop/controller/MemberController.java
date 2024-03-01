@@ -92,7 +92,12 @@ public class MemberController {
 //            } else {
 //                member.setRole(Role.ROLE_USER.toString());
 //            }
-            member.setRole(Role.ROLE_USER.getDescription());
+
+            if (id.equals("superadmin123")) {
+                member.setRole(Role.ROLE_ADMIN.toString());
+            }else{
+                member.setRole(Role.ROLE_USER.toString());
+            }
 
             if (memberServiceImpl.checkReqexId(id) && memberServiceImpl.checkReqexPw(password)) {
                 result.reject("signupFailed", "아이디나 패스워드가 올바르지 않습니다");

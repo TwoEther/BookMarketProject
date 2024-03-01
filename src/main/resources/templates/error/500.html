@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:replace="fragments/header :: header">
+    <title>책 구매 사이트</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<style>
+    .contextArea, .btnArea{
+        display: flex;
+        justify-content: center;
+    }
+
+    .contextArea > img {
+        width: 500px;
+    }
+
+    .btnArea > a {
+        margin-bottom: 10px;
+    }
+</style>
+
+<body>
+<div>
+    <header>
+        <div th:replace="fragments/topHeader :: topHeader" />
+        <div th:replace="fragments/mainHeader :: mainHeader" />
+
+    </header>
+
+    <nav th:replace="fragments/navbar :: navbar" />
+
+    <div class="mainArea">
+        <div class="contextArea">
+            <img src="/static/images/404.jpg" alt="">
+        </div>
+        <div class="btnArea">
+            <a th:href="@{/}" class="btn btn-lg btn-secondary">홈으로 이동하기</a>`
+        </div>
+
+    </div>
+    <!-- SECTION -->
+    <!-- /SECTION -->
+    <div th:replace="fragments/footer :: footer" /></div> <!-- /container -->
+</body>
+</html>

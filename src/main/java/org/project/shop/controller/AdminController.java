@@ -44,6 +44,13 @@ public class AdminController {
         List<Inquiry> allInquiryByGeneralMember = inquiryServiceImpl.findAllInquiryByGeneralMember();
         List<Review> allReview = reviewServiceImpl.findAllReview();
 
+        String username = principalDetails.getUsername();
+        Member findMember = memberServiceImpl.findByUserId(username);
+        if (findMember.getRole().equals(Role.ROLE_USER.toString())) {
+            return "home";
+        }
+
+
         // 가져올 개수
         int memberSize = Math.min(memberList.size(), 2);
         int orderSize = Math.min(allOrder.size(), 2);

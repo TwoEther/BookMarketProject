@@ -65,7 +65,7 @@
                         <th>주문 일자</th>
                         <td th:text="${order.orderDate}"></td>
                         <th>결제 금액</th>
-                        <td th:text="${order.getTotalPrice()}"></td>
+                        <td th:text="${#numbers.formatInteger(order.getTotalPrice(), 3,'COMMA')}"></td>
                     </tr>
                     </tbody>
                 </table>

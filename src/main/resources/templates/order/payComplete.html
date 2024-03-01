@@ -1,14 +1,19 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header"/>
+<link rel="stylesheet" href="/static/css/table.css">
 <body>
 <style>
+    .btnArea {
+        margin-right:20px;
+    }
+
 </style>
 
 <body>
     <div th:replace="fragments/topHeader :: topHeader"/>
     <div th:replace="fragments/mainHeader :: mainHeader"/>
-    <div class="container">
+    <div>
         <div class="header1">
             <h3>주문완료</h3>
         </div>
