@@ -8,12 +8,17 @@
         margin-right:20px;
     }
 
+    table, tr, td {
+        text-align: center;
+    }
+
+
 </style>
 
 <body>
     <div th:replace="fragments/topHeader :: topHeader"/>
     <div th:replace="fragments/mainHeader :: mainHeader"/>
-    <div>
+    <div class="container">
         <div class="header1">
             <h3>주문완료</h3>
         </div>
@@ -26,12 +31,12 @@
             <div class="row">
                 <div class="col-6">
                     <h5>상품 정보</h5>
-                    <table>
+                    <table class="board-table">
                         <thead>
                         <tr>
-                            <th>상품 이미지</th>
-                            <th>상품 명</th>
-                            <th>주문금액</th>
+                            <th class="th-title">상품 이미지</th>
+                            <th class="th-title">상품 명</th>
+                            <th class="th-title">주문금액</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -47,7 +52,7 @@
 
                 <div class="col-6">
                     <h5>배송 및 결제 정보</h5>
-                    <table>
+                    <table class="board-table">
                         <tr>
                             <td>받는 사람</td>
                             <td th:text="${member.name}"></td>
