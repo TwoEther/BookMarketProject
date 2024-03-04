@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.project.shop.domain.QReview.review;
 
@@ -59,6 +60,15 @@ public class ReviewRepositoryImpl implements ReviewRepository{
         return queryFactory.selectFrom(review)
                 .where(review.member.id.eq(memberId))
                 .fetch();
+    }
+
+    @Override
+    public Optional<Review> findOneReviewByItemIdAndMemberId(Long itemId, Long memberId) {
+        return Optional.ofNullable(queryFactory.selectFrom(review)
+                .where(review.item.id.eq(itemId).and(
+                        review.member.id.eq(memberId))
+                )
+                .fetchOne());
     }
 
     @Override

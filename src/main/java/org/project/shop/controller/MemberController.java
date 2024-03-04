@@ -39,6 +39,8 @@ import java.util.Map;
 public class MemberController {
     private final MemberServiceImpl memberServiceImpl;
     private final OrderServiceImpl orderServiceImpl;
+    private final ReviewServiceImpl reviewServiceImpl;
+    private final InquiryServiceImpl inquiryServiceImpl;
     private final MailService mailService;
     private final RedisService redisService;
     private final PasswordEncoder passwordEncoder;
@@ -227,21 +229,31 @@ public class MemberController {
     public String getReviewPage(@AuthenticationPrincipal PrincipalDetails principalDetails
                                 ,Model model) {
         if (principalDetails == null) {
-            return "/home";
+            return "home";
         }
         String username = principalDetails.getUsername();
         Member findMember = memberServiceImpl.findByUserId(username);
-        List<Order> byMemberIdAfterPaymentOrder = orderServiceImpl.findByMemberIdAfterPayment(findMember.getId());
-        List<OrderItem> orderItems = new ArrayList<>();
-        List<Item> paymentItems = new ArrayList<>();
 
-        byMemberIdAfterPaymentOrder.forEach(order -> orderItems.addAll(order.getOrderItems()));
-//        orderItems.forEach(orderItem -> paymentItems.add(orderItem.getItem()));
-        model.addAttribute("allOrder", byMemberIdAfterPaymentOrder);
-        model.addAttribute("orderItems", orderItems);
-//        model.addAttribute("items", paymentItems);
+        List<Review> allReviewByMemberId = reviewServiceImpl.findAllReviewByMemberId(findMember.getId());
 
+        model.addAttribute("reviews", allReviewByMemberId);
         return "member/myPageReview";
+    }
+
+    @GetMapping(value = "/inquiry")
+    public String getInquiryPage(@AuthenticationPrincipal PrincipalDetails principalDetails
+            ,Model model) {
+        if (principalDetails == null) {
+            return "home";
+        }
+        String username = principalDetails.getUsername();
+        Member findMember = memberServiceImpl.findByUserId(username);
+
+        List<Inquiry> allInquiryByMemberId = inquiryServiceImpl.findAllInquiryByMemberId(findMember.getId());
+
+        
+        model.addAttribute("inquires", allInquiryByMemberId);
+        return "member/myPageInquiry";
     }
 
     @GetMapping(value = "/cancel")

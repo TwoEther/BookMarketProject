@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ReviewRepository {
     public void save(Review review);
@@ -15,6 +16,8 @@ public interface ReviewRepository {
 
     public Page<Review> findPageReviewByItemId(PageRequest pageRequest, Long itemId);
     public List<Review> findAllReviewByMemberId(Long memberId);
+
+    public Optional<Review> findOneReviewByItemIdAndMemberId(Long itemId, Long memberId);
     public List<Review> findAllReview();
 
     public void deleteAll();

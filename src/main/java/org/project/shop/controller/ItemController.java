@@ -49,8 +49,8 @@ public class ItemController {
     public String config() {
         List<List<String>> ret = new ArrayList<List<String>>();
         BufferedReader br = null;
-//        String path = System.getProperty("user.dir")+"\\src\\main\\resources\\data.csv";
-        String path = "//home//ubuntu//shop//data.csv";
+        String path = System.getProperty("user.dir")+"\\data.csv";
+//        String path = "//home//ubuntu//shop//data.csv";
         String imagePath = System.getProperty("user.dir") + "\\src\\main\\resources\\images\\";
 
         String path1 = "C:\\lee\\Java\\data.csv";
@@ -416,7 +416,7 @@ public class ItemController {
         // 리뷰 처리
         // 해당 아이템에 해당하는 리뷰를 페이징 해서 가져옴
         Page<Review> findPageReviewByItemId = reviewServiceImpl.findPageReviewByItemId(PageRequest.of(reviewPage, reviewSize), itemId);
-        List<Review> findAllReviewByItemId = reviewServiceImpl.findAllReview();
+        List<Review> findAllReviewByItemId = reviewServiceImpl.findAllReviewByItemId(itemId);
 
         // 문의 처리
         Page<Inquiry> findPageInquiryByItemId = inquiryServiceImpl.findByItemId(PageRequest.of(inquiryPage, inquirySize), itemId);

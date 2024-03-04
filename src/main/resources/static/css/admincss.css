@@ -11243,3 +11243,6 @@ body {
   border-radius: 0.375rem !important;
 }
 
+.item-image {
+  width:100px;
+}

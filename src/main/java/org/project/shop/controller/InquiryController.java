@@ -7,18 +7,17 @@ import org.project.shop.config.ScriptUtils;
 import org.project.shop.domain.Inquiry;
 import org.project.shop.domain.Item;
 import org.project.shop.domain.Member;
+import org.project.shop.domain.Review;
 import org.project.shop.service.InquiryServiceImpl;
 import org.project.shop.service.ItemServiceImpl;
 import org.project.shop.service.MemberServiceImpl;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -41,6 +40,7 @@ public class InquiryController {
             String username = principalDetails.getUsername();
             Member findMember = memberServiceImpl.findByUserId(username);
             Item findItem = itemServiceImpl.findOneItem(id);
+
             Inquiry inquiry = new Inquiry(inquiry_text);
 
             inquiry.setMember(findMember);
@@ -65,6 +65,7 @@ public class InquiryController {
         } else {
             String username = principalDetails.getUsername();
             Member findMember = memberServiceImpl.findByUserId(username);
+
             Inquiry inquiry = new Inquiry(inquiry_text);
             inquiry.setMember(findMember);
             inquiry.setParent(findInquiry);
@@ -72,6 +73,26 @@ public class InquiryController {
 
             inquiryServiceImpl.save(inquiry);
             ScriptUtils.alertAndBackPage(response, "문의가 저장되었습니다");
+        }
+    }
+
+    @DeleteMapping(value = "/delete/{inquiryId}")
+    @ResponseBody
+    @Transactional
+    public boolean deleteInquiry(@PathVariable Long inquiryId, HttpServletResponse response,
+                                 PrincipalDetails principalDetails) {
+        if (principalDetails == null) {
+            return false;
+        }else{
+            Inquiry findInquiry = inquiryServiceImpl.findById(inquiryId);
+
+            if (!findInquiry.getChild().isEmpty()) {
+                List<Inquiry> child = findInquiry.getChild();
+                child.forEach(inquiry -> inquiryServiceImpl.delete(inquiry.getId()));
+            }
+
+            inquiryServiceImpl.delete(inquiryId);
+            return true;
         }
     }
 }

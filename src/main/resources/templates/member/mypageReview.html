@@ -4,6 +4,12 @@
 <link rel="stylesheet" href="/static/css/sideBar.css">
 <link rel="stylesheet" href="/static/css/mypage.css">
 
+<style>
+    #contextArea {
+        width: 800px;
+    }
+</style>
+
 <body>
 <div th:replace="fragments/topHeader :: topHeader"/>
 <div th:replace="fragments/mainHeader :: mainHeader" />
@@ -11,35 +17,106 @@
     <div th:replace="fragments/sideBar :: sideBar"/>
     <div class="contextArea" id="contextArea">
         <h2>리뷰 관리</h2><hr>
-        <div class="row">
-            <div class="col-6">리뷰 작성</div>
-            <div class="col-6">작성한 리뷰</div>
-        </div>
-        <div th:each = "order : ${allOrder}"  class="itemArea">
-            <div class="headerArea">
-                <h2 th:text="${order.orderDate}"></h2>
-            </div>
+        <div th:each = "review : ${reviews}"  class="review-area">
+            <div class="headerArea" style="margin-bottom: 30px">
+                <h2 th:text="${#temporals.format(review.created_at, 'yyyy-MM-dd')}" style="float:left;"></h2>
+                <button type="button" class="btn btn-sm btn-success mt-4" th:id="${review.id}" onclick="deleteReview(id)"  style="float:right;">
+                    <i class="fa-solid fa-pencil"></i>
+                    리뷰 삭제하기
+                </button>
 
-            <div>
-                <table>
-                    <tbody>
-                    <tr>
-                    </tr>
-                    <td>
-                        <div class="item-area" th:each="orderItem : ${order.orderItems}" style="height:200px">
-                            <div class="imgArea" style="float:left; width:100px;">
-<!--                                <img th:src="@{${orderItem.item.getFilePath()}}" width="100px" alt="">-->
-                                <img src="/static/images/book.jpg" alt="">
+                <button type="button" class="btn btn-sm btn-success mt-4"
+                        data-bs-toggle="modal" data-bs-target="#myModal" style="margin-top:0px; float:right;">
+                    <i class="fa-solid fa-pencil"></i>
+                    리뷰 수정하기
+                </button>
+
+                <!-- The Modal -->
+                <div id="myModal" class="modal fade" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    리뷰 수정
+                                </h5>
+                                <button type="button" class="btn-close"
+                                        data-bs-dismiss="modal">
+                                </button>
                             </div>
-                            <div class="itemName-area">
-                                <h4 th:text="${orderItem.item.getName()}"></h4>
-                                <p th:text="${orderItem.getTotalPrice()} +'원' +','+${orderItem.getCount()}+'건'"></p>
+                            <div class="modal-body">
+                                <div class="thumbnail-box">
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <!--                                                                <img th:src="${item.getFilePath()}" alt="" style="width:100px;">-->
+                                            <img class="item-image" src="/static/images/book.jpg" alt="" style="width: 100px;">
+                                        </div>
+                                        <div class="col-9" >
+                                            <form th:action="@{/review/add}" method="post" class="review-form">
+                                                <div class="input-rating">
+                                                    <div class="stars">
+                                                        <p><strong><span th:text="${review.item.name}"></span></strong></p>
+                                                        <input id="star5" name="rating" value="5" type="radio"><label for="star5"></label>
+                                                        <input id="star4" name="rating" value="4" type="radio"><label for="star4"></label>
+                                                        <input id="star3" name="rating" value="3" type="radio"><label for="star3"></label>
+                                                        <input id="star2" name="rating" value="2" type="radio"><label for="star2"></label>
+                                                        <input id="star1" name="rating" value="1" type="radio"><label for="star1"></label>
+                                                    </div>
+                                                    <input type="hidden" th:value="${review.item.id}" name="itemId">
+                                                    <textarea class="review_box" name="review" placeholder="내용을 10자 이상 입력해 주세요. 주제와 무관한 댓글, 악플, 배송 문의 등의 글은 임의로 삭제될 수 있습니다."></textarea>
+                                                </div>
+                                                <button type="submit" class="btn btn-danger"
+                                                        data-bs-dismiss="modal">
+                                                    작성 하기
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div id="item_btn">
-                                <a th:href="@{/order/detail/{orderId}(orderId=${order.id})}">구매 상세 내역</a>
+                            <div class="modal-footer">
+
                             </div>
                         </div>
-                    </td>
+                    </div>
+                </div>
+
+
+                <script th:inline="javascript">
+                    function deleteReview(id) {
+                        var token = $("meta[name='_csrf']").attr("content");
+                        var header = $("meta[name='_csrf_header']").attr("content");
+
+                        $.ajax({
+                            type: "DELETE",
+                            url: "/review/delete/"+id,
+                            beforeSend : function(xhr){
+                                xhr.setRequestHeader(header, token);
+                            },
+                            data : {"reviewId": id},
+                            success: function (flag) {
+                                if(flag) alert("삭제에 성공했습니다");
+                                else{alert("삭제에 실패했습니다");}
+                                location.reload();
+                            },
+                            error:function(request, status, error){
+                                alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error); }
+                        });
+                    }
+                </script>
+            </div>
+
+            <div style="margin-top: 10px">
+                <table class="board-table">
+                    <tbody>
+                    <tr>
+                        <th>상품명</th>
+                        <th>리뷰 내용</th>
+                        <th>리뷰 별점</th>
+                    </tr>
+
+                    <td th:text="${review.item.name}"></td>
+                    <td th:text="${review.text}"></td>
+                    <td th:text="${review.score}"></td>
                     </tbody>
                 </table>
             </div>

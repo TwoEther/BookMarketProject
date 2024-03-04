@@ -94,6 +94,17 @@ public class Review {
         this.type = type;
     }
 
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setLikeNum(int likeNum) {
+        this.likeNum = likeNum;
+    }
 
     public Review(int score, String text) {
         this.likeNum = 0;

@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -55,25 +56,34 @@ public class ReviewController {
             ScriptUtils.alertAndBackPage(response,"로그인한 유저만 리뷰를 작성할 수 있습니다");
         }
         String username = principalDetails.getUsername();
+        Member findMember = memberServiceImpl.findByUserId(username);
 
         String review_detail = httpServletRequest.getParameter("review");
         String fscore = httpServletRequest.getParameter("rating");
-        String fitemId = httpServletRequest.getParameter("itemId");
+        Long itemId = Long.parseLong(httpServletRequest.getParameter("itemId"));
+
+        Item findItem = itemServiceImpl.findOneItem(itemId);
+        Optional<Review> findReview = reviewServiceImpl.findOneReviewByItemIdAndMemberId(itemId, findMember.getId());
 
         String msg = " 입력되지 않았습니다";
         if(review_detail == null ){ScriptUtils.alertAndBackPage(response, "리뷰가"+msg);}
         if(fscore == null ){ScriptUtils.alertAndBackPage(response, "별점이"+msg);}
-
         int score = Integer.parseInt(fscore);
-        Long itemId = Long.parseLong(fitemId);
 
-        Review review = new Review(score, review_detail);
-        Member findMember = memberServiceImpl.findByUserId(username);
+        // 중복 검사 (중복된다면 수정)
+        if (findReview.isPresent()) {
+            Review review = findReview.get();
+            review.setText(review_detail);
+            review.setScore(score);
+            review.setLikeNum(score);
+        }else{
+            Review review = new Review(score, review_detail);
+            review.setItem(findItem);
+            review.setMember(findMember);
+            reviewServiceImpl.save(review);
+        }
 
-        Item findItem = itemServiceImpl.findOneItem(itemId);
-        review.setItem(findItem);
-        review.setMember(findMember);
-
+        /* 아이템 구매에 따른 로직 분기 <추후 처리>
         List<Order> orderByMember = orderServiceImpl.findOrderByMemberId(findMember.getId());
         List<Item> paymentItems = new ArrayList<>();
         for (Order order : orderByMember) {
@@ -85,8 +95,9 @@ public class ReviewController {
 
         if (paymentItems.contains(findItem)){review.setType("구매자");}
         else {review.setType("비구매자");}
+         */
 
-        reviewServiceImpl.save(review);
+
         ScriptUtils.alertAndBackPage(response, "리뷰가 작성 되었습니다");
 
     }

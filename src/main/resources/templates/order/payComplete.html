@@ -7,9 +7,13 @@
     .btnArea {
         margin-right:20px;
     }
+    .btnArea > form {
+        margin: 10px 10px 10px 10px;
+    }
 
     table, tr, td {
         text-align: center;
+        text-decoration: none;
     }
 
 
@@ -19,7 +23,7 @@
     <div th:replace="fragments/topHeader :: topHeader"/>
     <div th:replace="fragments/mainHeader :: mainHeader"/>
     <div class="container">
-        <div class="header1">
+        <div class="header1" style="margin-top: 10px;">
             <h3>주문완료</h3>
         </div>
 
@@ -73,8 +77,14 @@
         </div>
 
         <div class="btnArea" style="display:flex;justify-content:center;">
-            <a class="btn btn-lg btn-primary" th:href="@{/}">홈으로 가기</a>
-            <a class="btn btn-lg btn-secondary" th:href="@{/order/orderList}">주문 목록으로 가기</a>
+            <form th:action="@{/}">
+                <button class="btn-primary" type="submit">홈으로 가기</button>
+            </form>
+
+            <form th:action="@{/order/orderList}">
+                <button class="btn-secondary" type="submit">주문 목록으로 가기</button>
+            </form>
+
         </div>
     </div>
 

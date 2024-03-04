@@ -8,7 +8,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +41,11 @@ public class ReviewServiceImpl implements ReviewService{
     @Override
     public List<Review> findAllReviewByMemberId(Long memberId) {
         return reviewRepositoryImpl.findAllReviewByMemberId(memberId);
+    }
+
+    @Override
+    public Optional<Review> findOneReviewByItemIdAndMemberId(Long itemId, Long memberId) {
+        return reviewRepositoryImpl.findOneReviewByItemIdAndMemberId(itemId, memberId);
     }
 
     @Override

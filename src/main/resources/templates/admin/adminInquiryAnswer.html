@@ -99,10 +99,10 @@
                         <tbody>
                         <tr>
 <!--                            <td><img th:src="${inquiry.item.getFilePath()}" alt="" width="70px;"></td>-->
-                            <td><img src="/static/images/book.jpg" alt=""></td>
+                            <td><img src="/static/images/book.jpg" class="item-image"alt=""></td>
                             <td th:text="${inquiry.item.name}"></td>
                             <td th:text="${inquiry.content}"></td>
-                            <td th:text="${inquiry.created_at}"></td>
+                            <td th:text="${#temporals.format(inquiry.created_at, 'yyyy.MM.dd HH:mm')}"></td>
                             <form th:action="@{/admin/inquiry/answer/{param}(param=${inquiry.id})}" method="post">
                                 <td>
                                     <textarea name="answer">

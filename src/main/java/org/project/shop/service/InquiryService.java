@@ -12,6 +12,9 @@ public interface InquiryService {
     public Inquiry findById(Long id);
 
     public List<Inquiry> findAllInquiryByItemId(Long itemId);
+    public List<Inquiry> findAllInquiryByMemberId(Long memberId);
+
+
     public Page<Inquiry> findByItemId(PageRequest pageRequest, Long id);
 
     public List<Inquiry> findAllInquiryByGeneralMember();
