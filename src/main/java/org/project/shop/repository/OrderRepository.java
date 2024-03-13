@@ -20,6 +20,8 @@ public interface OrderRepository {
 
     public List<Order> findOrderByMemberId(Long memberId);
 
+    public void deleteAllOrder();
+
     public void deleteOrder(Long orderId);
 
 

@@ -76,6 +76,12 @@ public class OrderRepositoryImpl implements OrderRepository{
     }
 
     @Override
+    public void deleteAllOrder() {
+        queryFactory.delete(order)
+                .execute();
+    }
+
+    @Override
     public void deleteOrder(Long orderId) {
         queryFactory.delete(order)
                 .where(order.id.eq(orderId))

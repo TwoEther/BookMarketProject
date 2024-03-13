@@ -54,10 +54,9 @@ public class ItemServiceTest {
         categories.add("과학");
 
         for (String country : countries) {
-            for (String category : categories) {
-                Category newCategory = new Category(country, category);
-                categoryServiceImpl.save(newCategory);
-            }
+            categories.forEach(category -> {
+                categoryServiceImpl.save(new Category(country, category));
+            });
         }
     }
 
@@ -67,13 +66,14 @@ public class ItemServiceTest {
         categoryServiceImpl.deleteAll();
     }
 
-    
+
     @DisplayName("GroupByCategory 테스트")
     @Test
     public void groupByCategoryTest() {
         List<Item> savedItems = itemServiceImpl.findAllItem();
         List<Category> savedCategory = categoryServiceImpl.findAllCategory();
         List<Item> findAllItems = itemServiceImpl.orderByCategory();
+    }
 
-    } 
+
 }

@@ -17,5 +17,6 @@ public interface OrderItemService {
     public List<OrderItem> findByOrderAndItemAfterPayment(Long orderId, Long itemId);
     public List<OrderItem> findAllOrderItem();
 
+    public void deleteAllOrderItem();
     public void deleteOrderItem(Long orderId);
 }

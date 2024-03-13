@@ -17,5 +17,6 @@ public interface OrderItemRepository {
 
     public List<OrderItem> findAllOrderItem();
 
+    public void deleteAllOrderItem();
     public void deleteOrderItem(Long orderId);
 }

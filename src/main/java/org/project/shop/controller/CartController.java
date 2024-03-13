@@ -72,8 +72,6 @@ public class CartController {
             }
         }
 
-        System.out.println("quantity = " + quantity);
-        System.out.println("return_code = " + return_code);
         return return_code;
     }
 

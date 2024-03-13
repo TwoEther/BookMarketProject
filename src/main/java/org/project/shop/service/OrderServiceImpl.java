@@ -80,6 +80,11 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
+    public void deleteAllOrder() {
+        orderRepositoryImpl.deleteAllOrder();
+    }
+
+    @Override
     public void deleteOrder(Long orderId) {
         orderRepositoryImpl.deleteOrder(orderId);
     }

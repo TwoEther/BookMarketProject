@@ -2,6 +2,7 @@ package org.project.shop.domain;
 
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -32,7 +33,7 @@ public class Review {
     // ?
     private String type;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reviews")
     private Member member;
 
@@ -106,6 +107,7 @@ public class Review {
         this.likeNum = likeNum;
     }
 
+    @Builder
     public Review(int score, String text) {
         this.likeNum = 0;
         this.score = score;
