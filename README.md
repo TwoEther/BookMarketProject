@@ -97,7 +97,7 @@
         <ul>
             <li>로그인 한 회원에 대해서만 작성 가능</li>
             <img src="https://github.com/TwoEther/ShoppingMall_Project/assets/101616106/60def024-5f28-4670-9565-5637768f1ae3" alt="">
-            <img src="https://github.com/TwoEther/ShoppingMall_Project/assets/101616106/c6bea20a-6497-462e-9009-65d48b53952b" alt="">
+            <img src="https://github.com/TwoEther/ShoppingMall_Project/assets/101616106/d2691cbf-6d9b-4ab8-8b50-b6eec18010af" alt="">
         </ul>
     </li>
     <li><strong>관리자페이지</strong>
