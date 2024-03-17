@@ -9,6 +9,7 @@ public interface CartRepository {
     public Cart findById(Long id);
 
     public Cart findByMemberId(Long memberId);
+    public void deleteAll();
 
     public void clear();
 }

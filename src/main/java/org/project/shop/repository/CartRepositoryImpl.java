@@ -51,6 +51,12 @@ public class CartRepositoryImpl implements CartRepository{
     }
 
     @Override
+    public void deleteAll() {
+        queryFactory.delete(cart)
+                .execute();
+    }
+
+    @Override
     public void clear() {
         queryFactory.delete(cart).execute();
     }

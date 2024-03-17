@@ -31,6 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -38,6 +39,7 @@ import java.util.*;
 public class ItemController {
     private final MemberServiceImpl memberServiceImpl;
     private final ItemServiceImpl itemServiceImpl;
+    private final OrderItemServiceImpl orderItemServiceImpl;
     private final CategoryServiceImpl categoryServiceImpl;
     private final CartServiceImpl cartServiceImpl;
     private final CartItemServiceImpl cartItemServiceImpl;
@@ -65,7 +67,8 @@ public class ItemController {
 
             while ((line = br.readLine()) != null) {
                 List<String> tmpList = new ArrayList<String>();
-                String array[] = line.split(",");
+                String newLine = line.replaceAll("@*", "@");
+                String array[] = newLine.split("@");
                 tmpList = Arrays.asList(array);
 //                System.out.println(tmpList);
                 ret.add(tmpList);
@@ -94,6 +97,7 @@ public class ItemController {
                 isFirst = true;
                 continue;
             }
+            System.out.println("data = " + data);
             String title = data.get(0);
             int price = Integer.parseInt(data.get(1));
             int stockQuantity = Integer.parseInt(data.get(2));
@@ -129,7 +133,94 @@ public class ItemController {
         }
         return "redirect:/";
     }
+    @GetMapping(value = "/addItem")
+    @Transactional
+    public String addItemTest(Model model) {
+        String path = System.getProperty("user.dir")+"\\data.csv";
 
+        List<List<String>> books = new ArrayList<List<String>>();
+        BufferedReader br = null;
+        try{
+            br = Files.newBufferedReader(Paths.get(path));
+            int idx = 0;
+            while((br.readLine()) != null){
+                String sb = br.readLine();
+                String[] tmp = sb.split("@");
+                List<String> list = Arrays.stream(tmp).toList();
+                idx += 1;
+                // 10만개 데이터 제한
+                if(idx >= 3000)break;
+                books.add(list);
+            }
+        }catch(FileNotFoundException e){
+            e.printStackTrace();
+        }catch(IOException e){
+            e.printStackTrace();
+        }finally{
+            try{
+                if(br != null){
+                    br.close();
+                }
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+        }
+        cartItemServiceImpl.deleteAll();
+        orderItemServiceImpl.deleteAllOrderItem();
+        inquiryServiceImpl.deleteAll();
+        reviewServiceImpl.deleteAll();
+        itemServiceImpl.deleteAll();
+        categoryServiceImpl.deleteAll();
+
+        // 카테고리 초기화 로직
+        List<String> category = new ArrayList<>();
+        String[] category1 = {"국내 도서", "외국 도서"};
+        String[] category2 = {"소설", "시/에세이","인문","가정/육아","요리","건강","취미/실용/스포츠",
+                "경제/경영","자기계발","정치/사회","역사/문화","종교","예술/대중문화","과학","여행"};
+
+        for (String cat1 : category1) {
+            for (String cat2 : category2) {
+                if(categoryServiceImpl.findByCategoryName(cat1, cat2)!= null) continue;
+                categoryServiceImpl.save(new Category(cat1, cat2));
+            }
+        }
+        List<Category> categories = categoryServiceImpl.findAllCategory();
+        int idx = -1;
+        for (List<String> data : books) {
+            idx += 1;
+
+            if(idx == 0) continue;
+            // isbn 전처리
+            int isbn = Integer.parseInt(data.get(1).substring(4));
+            String name = data.get(3).split("-")[0];
+            String author = data.get(4);
+            String publisher = data.get(5);
+            int price = Integer.parseInt(data.get(8).split("\\.")[0]);
+            String imagePath = data.get(9);
+
+            String description = data.get(10).substring(0, Math.min(data.get(10).length(), 100));
+
+//
+            Item item = new Item(name, price, 30, author, publisher, isbn, 250, description, imagePath);
+
+            Category findCategory = categories.get(idx % categories.size());
+            item.setCategory(findCategory);
+
+            // AWS 비용으로 인한 주석처리
+            /*
+            String fileRoot = imagePath + fileName+".png";
+            File imageFile = new File(fileRoot);
+            BufferedImage image = ImageIO.read(imageFile);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write( image, "png", baos );
+            baos.flush();
+            MultipartFile multipartFile = new MockMultipartFile(fileName, baos.toByteArray());
+             */
+            itemServiceImpl.saveItemNoImage(item);
+        }
+        return "redirect:/";
+        
+    }
     @PostMapping(value = "/dbConfig")
     @Transactional
     public String dbConfig(Model model,
@@ -274,7 +365,6 @@ public class ItemController {
         }else{variable = "";}
 
         String path = System.getProperty("user.dir");
-        System.out.println("path = " + path);
 
         // 1페이지당 6개의 상품 호출
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(variable).descending());
@@ -321,7 +411,6 @@ public class ItemController {
         Long totalElement = findAllItem.getTotalElements();
 
         int pageNum = Math.floorDiv(allItemNum, size) - 1;
-        page = Math.min(page, pageNum);
         int startPage = Math.max(page - 1, 0);
         int endPage = Math.min(page, pageNum);
 

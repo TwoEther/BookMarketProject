@@ -49,38 +49,30 @@ public class CartController {
 
         long itemId = Long.parseLong((String) params.get("itemId"));
         int quantity = Integer.parseInt((String) params.get("quantity"));
-        String return_code;
-        
-        if(quantity == 0) return_code = "zero_quantity";
-        else{
-            if (principalDetails == null) {
-                return_code = "user_none";
+
+        if(quantity == 0) return "zero_quantity";
+        if (principalDetails == null) {
+            return "user_none";
+        } else {
+            String username = principalDetails.getUsername();
+            Member findMember = memberServiceImpl.findByUserId(username);
+
+            if (findMember != null) {
+                Item findItem = itemServiceImpl.findOneItem(itemId);
+
+                quantity = Math.min(quantity, findItem.getStockQuantity());
+                Long id = cartServiceImpl.addCart(findMember, findItem, quantity);
+                return "success";
             } else {
-                String username = principalDetails.getUsername();
-
-                Member findMember = memberServiceImpl.findByUserId(username);
-                if (findMember != null) {
-                    Item findItem = itemServiceImpl.findOneItem(itemId);
-
-                    quantity = Math.min(quantity, findItem.getStockQuantity());
-                    Long id = cartServiceImpl.addCart(findMember, findItem, quantity);
-                    return_code = "success";
-                } else {
-                    Long id = null;
-                    return_code = "exception";
-                }
+                return "exception";
             }
         }
-
-        return return_code;
     }
 
     @GetMapping(value = "/list")
-    public String cartList(final Model model) {
-        Object principal;
-        principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserDetails userDetails = (UserDetails) principal;
-        String username = ((UserDetails) principal).getUsername();
+    public String cartList(Model model,
+                           @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        String username = principalDetails.getUsername();
 
         Member findMember = memberServiceImpl.findByUserId(username);
         Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());

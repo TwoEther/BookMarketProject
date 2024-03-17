@@ -56,8 +56,8 @@
                         <div class="cart-dropdown">
                             <div th:each = "cartItem : ${cartItems}" class="product-widget">
                                 <div class="product-img">
-<!--                                    <img th:src="${cartItem.item.getFilePath()}" alt="">-->
-                                    <img src="/static/images/book.jpg" alt="">
+                                    <img th:src="${cartItem.item.getFilePath()}" alt="">
+<!--                                    <img src="/static/images/book.jpg" alt="">-->
                                 </div>
                                 <div class="product-body">
                                     <h3 class="product-name"><a href="#"><span th:text="${cartItem.item.name}"></span></a></h3>

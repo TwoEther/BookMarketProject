@@ -49,15 +49,18 @@
 
 <h5>✔ 개발 과정에서 했던 고민들</h5><hr>
 <ul>
-    <li><a href="">👔 카카오 페이 결제 API 적용기</a></li>
+    <li><a href="./markdown/kakaopay.md">👔 카카오 페이 결제 API 적용기</a></li>
     <li><a href="">✨ 이메일 인증 로직에 대해서</a></li>
     <li><a href="">🎎 회원에 대한 인증은 어떻게 구현할까?</a></li>
     <li><a href="">🎇 QueryDSL 로 구현하는 동적 정렬 방법은?</a></li>
     <li><a href="">👔 HTTP Status Code 에 따른 에러 처리 과정</a></li>
 </ul>
 
-<h5>✔ 이미지</h5><hr>
-<p>AWS S3 상에서 이미지를 저장하는 비용이 많이 들어 임시 이미지로 대체 하였습니다</p>
+<h5>✔ 데이터셋</h5><hr>
+<p>문화 빅데이터 플랫폼 페이지의 국립중앙도서관 도서별 상세정보 CSV를 사용했습니다.<span><a href="https://www.bigdata-culture.kr/bigdata/user/data_market/detail.do?id=63513d7b-9b87-4ec1-a398-0a18ecc45411">
+링크</a></span></p>
+
+<h5>✔ 서비스</h5><hr>
 
 <ul>
     <li><strong>메인페이지</strong>

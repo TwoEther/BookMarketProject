@@ -105,6 +105,21 @@ public class Item {
         this.saleStatus = true;
     }
 
+    public Item(String name, int price, int stockQuantity, String author, String publisher, int isbn, int pages, String description, String filePath) {
+        this.name = name;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
+        this.author = author;
+        this.publisher = publisher;
+        this.isbn = isbn;
+        this.pages = pages;
+        this.description = description;
+        this.createDate = LocalDateTime.now();
+        this.total_purchase = 0;
+        this.saleStatus = true;
+        this.filePath = filePath;
+    }
+
     public Item() {
 
     }

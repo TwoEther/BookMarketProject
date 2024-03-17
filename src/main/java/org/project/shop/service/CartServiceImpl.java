@@ -77,6 +77,11 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    public void deleteAll() {
+        cartRepository.deleteAll();
+    }
+
+    @Override
     public void save(Cart cart) {
         cartRepository.save(cart);
     }

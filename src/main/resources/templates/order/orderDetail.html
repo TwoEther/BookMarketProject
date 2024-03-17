@@ -84,8 +84,8 @@
                     </thead>
                     <tbody>
                     <tr th:each="orderItem : ${order.orderItems}">
-<!--                        <td><img class="item-image" th:src="${orderItem.item.getFilePath()}"></td>-->
-                        <td><img class="item-image" src="/static/images/book.jpg" alt=""></td>
+                        <td><img class="item-image" th:src="${orderItem.item.getFilePath()}"></td>
+<!--                        <td><img class="item-image" src="/static/images/book.jpg" alt=""></td>-->
                         <td th:text="${orderItem.item.name}"></td>
                         <td th:text="${#numbers.formatInteger(orderItem.getTotalPrice(), 3,'COMMA')}"></td>
                         <td th:text="${orderItem.deliveryStatus}"></td>

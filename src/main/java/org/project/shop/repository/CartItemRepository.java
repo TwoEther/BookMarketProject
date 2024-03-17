@@ -23,7 +23,7 @@ public interface CartItemRepository{
 
     public List<Tuple> findItemIdByCartId(Long cartId);
 
-
+    public void deleteAll();
     public void deleteById(Long id);
 
 }
