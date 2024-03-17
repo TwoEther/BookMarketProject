@@ -9,23 +9,11 @@
 
 <script>
     function addToCart(id){
-        var token = $("meta[name='_csrf']").attr("content");
-        var header = $("meta[name='_csrf_header']").attr("content");
-        $(function() {
-            $(document).ajaxSend(function(e, xhr, options) {
-                xhr.setRequestHeader(header, token);
-            });
-        });
         var quantity = 1;
-        var token = $("meta[name='_csrf']").attr("content");
-	    var header = $("meta[name='_csrf_header']").attr("content");
 
        $.ajax({
             type: "POST",
             url: "/cart/add",
-            beforeSend : function(xhr){
-				xhr.setRequestHeader(header, token);
-            },
             data : {"itemId": id,
                     "quantity": quantity},
             success: function (code) {

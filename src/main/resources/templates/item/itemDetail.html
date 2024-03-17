@@ -143,17 +143,12 @@
 
     function addToCart(){
         var quantity = Number($('#quantity').val());
-        var token = $("meta[name='_csrf']").attr("content");
-	    var header = $("meta[name='_csrf_header']").attr("content");
 		var name = $("#userName").val();
 
 
        $.ajax({
             type: "POST",
             url: "/cart/add",
-            beforeSend : function(xhr){
-				xhr.setRequestHeader(header, token);
-            },
             data : {"itemId": [[${item.id}]],
                     "quantity": quantity},
             success: function (code) {
@@ -183,15 +178,10 @@
 
     function deleteReview(temp){
         var reviewId = temp.split('-')[1];
-        var token = $("meta[name='_csrf']").attr("content");
-        var header = $("meta[name='_csrf_header']").attr("content");
            $.ajax({
                 type: "DELETE",
                 url: "/review/delete/"+reviewId,
                 data : {"reviewId": reviewId},
-                beforeSend: function (xhr) {
-                      xhr.setRequestHeader(header, token);
-                    },
                 success: function (flag) {
                     if(!flag){alert("접근 권한이 없습니다");}
                     else{alert("삭제 되었습니다");}
@@ -203,16 +193,11 @@
 
     function addLikeReview(id){
         var reviewId = id;
-        var token = $("meta[name='_csrf']").attr("content");
-        var header = $("meta[name='_csrf_header']").attr("content");
 
         $.ajax({
             type: "POST",
             url: "/review/like/"+reviewId,
             data : {"reviewId": reviewId},
-            beforeSend: function (xhr) {
-                  xhr.setRequestHeader(header, token);
-                },
             success: function (data) {
                 if(data == 0){
                     alert("로그인 후 이용가능 합니다");

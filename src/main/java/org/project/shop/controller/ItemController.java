@@ -133,7 +133,7 @@ public class ItemController {
         }
         return "redirect:/";
     }
-    @GetMapping(value = "/addItem")
+    @PostMapping(value = "/dbConfig")
     @Transactional
     public String addItemTest(Model model) {
         String path = System.getProperty("user.dir")+"\\data.csv";
@@ -218,99 +218,6 @@ public class ItemController {
              */
             itemServiceImpl.saveItemNoImage(item);
         }
-        return "redirect:/";
-        
-    }
-    @PostMapping(value = "/dbConfig")
-    @Transactional
-    public String dbConfig(Model model,
-                           @AuthenticationPrincipal PrincipalDetails principalDetails) throws Exception {
-        if (principalDetails == null) {
-            return "redirect:/";
-        }
-
-        String username = principalDetails.getUsername();
-        Member findMember = memberServiceImpl.findByUserId(username);
-
-
-        if (findMember.getRole().equals(Role.ROLE_USER.toString())) {
-            return "redirect:/";
-        }
-
-        List<List<String>> ret = new ArrayList<List<String>>();
-        BufferedReader br = null;
-//        String path = System.getProperty("user.dir")+"\\src\\main\\resources\\data.csv";
-        String path = System.getProperty("user.dir")+"\\data.csv";
-        String imagePath = System.getProperty("user.dir")+"\\src\\main\\resources\\images\\";
-
-        String path1 = "C:\\lee\\Java\\data.csv";
-        String path2 = "C:\\lee\\Project\\Spring\\data.csv";
-        String imagePath1 = "C:\\lee\\Java\\bookImages\\";
-        String imagePath2 = "C:\\lee\\Project\\Spring\\bookImages\\";
-
-
-        try{
-            br = Files.newBufferedReader(Paths.get(path));
-            String line = "";
-
-            while((line = br.readLine()) != null){
-                List<String> tmpList = new ArrayList<String>();
-                String array[] = line.split(",");
-                tmpList = Arrays.asList(array);
-//                System.out.println(tmpList);
-                ret.add(tmpList);
-            }
-        }catch(FileNotFoundException e){
-            e.printStackTrace();
-        }catch(IOException e){
-            e.printStackTrace();
-        }finally{
-            try{
-                if(br != null){
-                    br.close();
-                }
-            }catch(IOException e){
-                e.printStackTrace();
-            }
-        }
-
-        inquiryServiceImpl.deleteAll();
-        reviewServiceImpl.deleteAll();
-        itemServiceImpl.deleteAll();
-
-        for (List<String> data : ret) {
-            String title = data.get(0);
-            int price = Integer.parseInt(data.get(1));
-            int stockQuantity = Integer.parseInt(data.get(2));
-            String author = data.get(3);
-            String publisher = data.get(4);
-            int isbn = Integer.parseInt(data.get(5));
-            int page = Integer.parseInt(data.get(6));
-            String description = data.get(7);
-            String category1 = data.get(8);
-            String category2 = data.get(9);
-
-            if (categoryServiceImpl.findByCategoryName(category1, category2) == null) {
-                categoryServiceImpl.save(new Category(category1, category2));
-            }
-            Category findCategory = categoryServiceImpl.findByCategoryName(category1, category2);
-
-            Item item = new Item(title, price, stockQuantity, author, publisher, isbn, page, description);
-            item.setCategory(findCategory);
-
-            // AWS 비용으로 인한 주석처리
-            /*
-            String fileRoot = imagePath + fileName+".png";
-            File imageFile = new File(fileRoot);
-            BufferedImage image = ImageIO.read(imageFile);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write( image, "png", baos );
-            baos.flush();
-            MultipartFile multipartFile = new MockMultipartFile(fileName, baos.toByteArray());
-             */
-            itemServiceImpl.saveItemNoImage(item);
-        }
-
         return "redirect:/";
     }
     @GetMapping(value = "/new")

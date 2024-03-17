@@ -22,6 +22,8 @@ public interface OrderRepository {
 
     public void deleteAllOrder();
 
+    public void deleteByMemberId(Long memberId);
+
     public void deleteOrder(Long orderId);
 
 

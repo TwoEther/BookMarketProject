@@ -21,6 +21,9 @@ public interface OrderService {
     public List<Order> findOrderByMemberId(Long memberId);
 
     public void deleteAllOrder();
+
+    public void deleteByMemberId(Long memberId);
+
     public void deleteOrder(Long orderId);
 
     public void save(Order order);

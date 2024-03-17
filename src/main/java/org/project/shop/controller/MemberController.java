@@ -39,6 +39,7 @@ import java.util.Map;
 public class MemberController {
     private final MemberServiceImpl memberServiceImpl;
     private final OrderServiceImpl orderServiceImpl;
+    private final OrderItemServiceImpl orderItemServiceImpl;
     private final ReviewServiceImpl reviewServiceImpl;
     private final InquiryServiceImpl inquiryServiceImpl;
     private final MailService mailService;
@@ -289,6 +290,8 @@ public class MemberController {
         } else {
             msg = "삭제 되었습니다";
             new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+            orderServiceImpl.findByMemberIdAfterPayment(findMember.getId()).forEach(order -> orderItemServiceImpl.deleteOrderItem(order.getId()));
+            orderServiceImpl.deleteByMemberId(findMember.getId());
             memberServiceImpl.deleteMemberByMemberId(findMember.getId());
         }
         return msg;
