@@ -68,7 +68,7 @@
             <li>검색 및 카테고리별 조회 가능</li>
             <li>판매량 및 최신순 정렬 가능</li>
             <li>하단 페이징 버튼</li>
-            <img src="https://github.com/TwoEther/ShoppingMall_Project/assets/101616106/ab8b139e-cbb2-4294-9ae8-038810b7e8a6" alt="">
+            <img src="https://github.com/TwoEther/ShoppingMall_Project/assets/101616106/7d19ff9a-3170-402d-8074-3e73dcd4dbb7" alt="">
         </ul>
     </li>
     <li><strong>회원가입</strong>
@@ -89,8 +89,8 @@
     <li><strong>마이페이지</strong>
         <ul>
             <li>회원 탈퇴 및 주문 상세보기 기능</li>
-            <img src="https://github.com/TwoEther/ShoppingMall_Project/assets/101616106/081cff0f-a94b-4b43-8139-cae3a0d233df" alt="">
-            <img src="https://github.com/TwoEther/ShoppingMall_Project/assets/101616106/0adc30d6-028c-4854-9d72-31d1dfce0f64" alt="">
+            <img src="https://github.com/TwoEther/ShoppingMall_Project/assets/101616106/58fe7327-7925-40bd-919e-1b531ac41b72" alt="">
+            <img src="https://github.com/TwoEther/ShoppingMall_Project/assets/101616106/539498dd-350d-4dbd-977f-9d9c3c8bb2f1" alt="">
         </ul>
     </li>
     <li><strong>리뷰 및 문의</strong>
@@ -103,7 +103,7 @@
     <li><strong>관리자페이지</strong>
         <ul>
             <li>주문, 상품, 리뷰, 문의에 대해 관리</li>
-            <img src="https://github.com/TwoEther/ShoppingMall_Project/assets/101616106/72bd53af-14ef-432b-b799-b481b267b526" alt="">
+            <img src="https://github.com/TwoEther/ShoppingMall_Project/assets/101616106/532d0c56-a9cb-4734-a0bc-fef3442568bb" alt="">
             <img src="https://github.com/TwoEther/ShoppingMall_Project/assets/101616106/89196502-d2dd-4dd8-8b6e-4fdd9b71e6c9" alt="">
             <img src="https://github.com/TwoEther/ShoppingMall_Project/assets/101616106/d2aa19b9-9a7e-4a97-9a83-a71930233f1d" alt="">
             <img src="https://github.com/TwoEther/ShoppingMall_Project/assets/101616106/468e14cd-b757-4ab2-b213-efbef3502184" alt="">
