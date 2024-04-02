@@ -95,7 +95,7 @@
                         <tr th:each="order : ${allOrder}">
                             <td th:text="${order.tid}"></td>
                             <td th:text="${order.orderDate}"></td>
-                            <th th:text="${order.member.name}"></th>
+                            <th th:text="${order.member.nickName}"></th>
                             <th th:text="${order.getTotalPrice()}"></th>
                             <th>
                                 <form th:action="@{/admin/order/{param}(param=${order.id})}" method="GET">
