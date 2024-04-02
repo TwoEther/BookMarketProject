@@ -1,5 +1,6 @@
 package org.project.shop.repository;
 
+import com.querydsl.core.Tuple;
 import org.project.shop.domain.Member;
 
 import java.util.List;
@@ -25,4 +26,6 @@ public interface MemberRepository {
     public void deleteMemberByMemberId(Long memberId);
 
     public void deleteAll();
+
+    public List<Tuple> findAllMemberByOrderRank();
 }

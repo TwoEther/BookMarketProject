@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +21,9 @@ public class Order {
 
     @Column(unique = true)
     private String tid;
+
+    @Column(unique = true)
+    private String orderNumber;
 
     // 지연 로딩 사용
     // N:1 (Order : Member)
@@ -71,11 +76,18 @@ public class Order {
         this.tid = tid;
     }
 
+
+
     public static Order createOrder(Member member){
+        String data = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSSSS"));
+        String orderNumber = "";
+        for (String s : data.split("-")) orderNumber += (s);
+
+
         Order order = new Order();
         order.setMember(member);
         order.setStatus(OrderStatus.READY);
-        order.setTid("");
+        order.setOrderNumber(orderNumber);
         order.setOrderDate(LocalDate.now());
         return order;
     }

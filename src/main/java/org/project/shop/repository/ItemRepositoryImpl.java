@@ -202,10 +202,10 @@ public class ItemRepositoryImpl implements ItemRepository {
 
                 switch (order.getProperty()) {
                     case "createDate" -> {
-                        return new OrderSpecifier(direction, item.createDate);
+                        return new OrderSpecifier<>(direction, item.createDate);
                     }
                     case "total_purchase" -> {
-                        return new OrderSpecifier(direction, item.total_purchase);
+                        return new OrderSpecifier<>(direction, item.total_purchase);
                     }
                 }
             }

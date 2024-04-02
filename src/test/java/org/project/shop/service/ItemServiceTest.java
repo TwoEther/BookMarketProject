@@ -75,5 +75,4 @@ public class ItemServiceTest {
         List<Item> findAllItems = itemServiceImpl.orderByCategory();
     }
 
-
 }

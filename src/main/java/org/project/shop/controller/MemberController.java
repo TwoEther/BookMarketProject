@@ -66,9 +66,9 @@ public class MemberController {
             return "member/createMemberForm";
         }
 
-        String id = form.getUserId();
+        String userId = form.getUserId();
         String password = form.getPassword1();
-        String name = form.getName();
+        String nickName = form.getNickName();
         String phoneNum = form.getPhoneNum();
         String email = form.getEmail();
 //        String roles = form.getRoles();
@@ -76,7 +76,7 @@ public class MemberController {
 
         mailService.sendSimpleMessage(email);
 
-        if (memberServiceImpl.findByUserId(id) != null) {
+        if (memberServiceImpl.findByUserId(userId) != null) {
             ScriptUtils.alert(response, "아이디가 존재합니다");
             return "member/createMemberForm";
         } else if (email_check_num.isEmpty()) {
@@ -86,7 +86,7 @@ public class MemberController {
             ScriptUtils.alert(response, "인증번호가 일치 하지 않습니다");
             return "member/createMemberForm";
         } else {
-            Member member = new Member(id, password, name, phoneNum, email);
+            Member member = new Member(userId, password, nickName, phoneNum, email);
 
 //            if (roles.equals(Role.ROLE_ADMIN.toString())) {
 //                member.setRole(Role.ROLE_ADMIN.toString());
@@ -96,13 +96,13 @@ public class MemberController {
 //                member.setRole(Role.ROLE_USER.toString());
 //            }
 
-            if (id.equals("superadmin123")) {
+            if (userId.equals("superadmin123")) {
                 member.setRole(Role.ROLE_ADMIN.toString());
             }else{
                 member.setRole(Role.ROLE_USER.toString());
             }
 
-            if (memberServiceImpl.checkReqexId(id) && memberServiceImpl.checkReqexPw(password)) {
+            if (memberServiceImpl.checkReqexId(userId) && memberServiceImpl.checkReqexPw(password)) {
                 result.reject("signupFailed", "아이디나 패스워드가 올바르지 않습니다");
                 return "member/createMemberForm";
             }

@@ -96,7 +96,7 @@ class CartServiceTest {
     @DisplayName("중복된 아이템이 들어왔을때 처리")
     public void duplicatedAddItemTest() {
         Member member1 = new Member("id1", "pw1");
-        member1.setName("id1");
+        member1.setUserId("id1");
         memberRepositoryImpl.save(member1);
 
         Member member2 = new Member("id2", "pw2");

@@ -1,13 +1,12 @@
 package org.project.shop.service;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.project.shop.domain.*;
+import org.project.shop.domain.Order;
 import org.project.shop.repository.CartItemRepositoryImpl;
 import org.project.shop.repository.OrderRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +15,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.project.shop.domain.QCartItem.cartItem;
+import static org.project.shop.domain.QMember.member;
+import static org.project.shop.domain.QOrder.order;
 import static org.project.shop.domain.QOrderItem.orderItem;
 
 @ActiveProfiles("test")
@@ -30,6 +34,8 @@ import static org.project.shop.domain.QOrderItem.orderItem;
 public class OrderServiceTest {
     @PersistenceContext
     EntityManager em;
+    @Autowired
+    JPAQueryFactory queryFactory;
     @Autowired
     MemberServiceImpl memberServiceImpl;
     @Autowired
@@ -44,7 +50,7 @@ public class OrderServiceTest {
 
     @Autowired
     CartServiceImpl cartServiceImpl;
-    
+
     @Autowired
     CartItemServiceImpl cartItemServiceImpl;
     @Autowired
@@ -52,86 +58,132 @@ public class OrderServiceTest {
 
     @BeforeEach
     public void setUp() {
-        Member member1 = new Member("id1", "pw1", "user1", "010-2394-5911", "user1@test.com");
-        Member member2 = new Member("id2", "pw2", "user2","010-3952-1860", "user2@test.com");
-        memberServiceImpl.save(member1);
-        memberServiceImpl.save(member2);
+        List<Member> memberList = new ArrayList<>();
+        List<Item> itemList = new ArrayList<>();
 
-        Item item1 = new Item("book1", 20000, 30);
-        Item item2 = new Item("book2", 30000, 40);
-        Item item3 = new Item("book3", 26000, 10);
-        itemServiceImpl.saveItemNoImage(item1);
-        itemServiceImpl.saveItemNoImage(item2);
-        itemServiceImpl.saveItemNoImage(item3);
+        int memberSize = 500;
+        int itemSize = 1000;
 
-        Cart cart1 = new Cart();
-        Cart cart2 = new Cart();
-        cart1.setMember(member1);
-        cart2.setMember(member2);
-        cartServiceImpl.save(cart1);
-        cartServiceImpl.save(cart2);
+        for (int i = 1; i <= memberSize; i++) {
+            Member member = Member.builder().
+                    userId("id" + i).
+                    password("pw" + i).
+                    nickName("nickname" + i).
+                    phoneNum("010-010-" + i).
+                    email("email" + i).
+                    build();
+            memberList.add(member);
 
-        CartItem cartItemA1 = CartItem.createCartItem(cart1, item1, 3);
-        CartItem cartItemA2 = CartItem.createCartItem(cart1, item2, 5);
-        cartItemServiceImpl.save(cartItemA1);
-        cartItemServiceImpl.save(cartItemA2);
-        
-        CartItem cartItemB1 = CartItem.createCartItem(cart2, item2, 4);
-        CartItem cartItemB2 = CartItem.createCartItem(cart2, item3, 1);
-        cartItemServiceImpl.save(cartItemB1);
-        cartItemServiceImpl.save(cartItemB2);
-        
-        
+            em.persist(member);
+        }
+
+        for (int i = 1; i <= itemSize; i++) {
+            Item item = Item.builder().
+                    name("item" + i).
+                    stockQuantity(1001).
+                    price((int) (Math.random() * 10000)).build();
+            itemList.add(item);
+            itemServiceImpl.saveItemNoImage(item);
+        }
+        List<Member> allMember = memberServiceImpl.findAllMember();
+
+
+        for (Member member : allMember) {
+            Random random = new Random(System.currentTimeMillis());
+
+            int n1 = random.nextInt(itemSize);
+            int n2 = random.nextInt(itemSize);
+            int n3 = random.nextInt(itemSize);
+
+            Item item1 = itemList.get(n1);
+            Item item2 = itemList.get(n2);
+            Item item3 = itemList.get(n3);
+
+            Order order = Order.createOrder(member);
+            order.setTid(member.getPhoneNum());
+            orderServiceImpl.save(order);
+
+            OrderItem orderItem1 = OrderItem.createOrderItem(item1, item1.getPrice(), 2);
+            OrderItem orderItem2 = OrderItem.createOrderItem(item2, item2.getPrice(), 2);
+            OrderItem orderItem3 = OrderItem.createOrderItem(item3, item3.getPrice(), 2);
+
+            orderItemServiceImpl.save(orderItem1);
+            orderItemServiceImpl.save(orderItem2);
+            orderItemServiceImpl.save(orderItem3);
+
+            if (n1 % 2 == 0) {
+                Order extendOrder = Order.createOrder(member);
+                extendOrder.setTid(member.getPhoneNum() + "extend");
+                orderServiceImpl.save(extendOrder);
+
+                OrderItem orderItem4 = OrderItem.createOrderItem(item1, item1.getPrice(), 2);
+                OrderItem orderItem5 = OrderItem.createOrderItem(item2, item2.getPrice(), 2);
+                OrderItem orderItem6 = OrderItem.createOrderItem(item3, item3.getPrice(), 2);
+
+                orderItemServiceImpl.save(orderItem4);
+                orderItemServiceImpl.save(orderItem5);
+                orderItemServiceImpl.save(orderItem6);
+
+                orderItem4.setOrder(extendOrder);
+                orderItem5.setOrder(extendOrder);
+                orderItem6.setOrder(extendOrder);
+            }
+
+            orderItem1.setOrder(order);
+            orderItem2.setOrder(order);
+            orderItem3.setOrder(order);
+
+        }
     }
+
+    @AfterEach
+    public void cleanUp() {
+        orderItemServiceImpl.deleteAllOrderItem();
+        orderServiceImpl.deleteAllOrder();
+        itemServiceImpl.deleteAll();
+        memberServiceImpl.deleteAll();
+    }
+
 
     @DisplayName("구매 테스트")
     @Test
     public void cartItemToOrderItemTest() {
-        /*
-            ★ 시나리오
-                ※ 두명의 맴버가 각각 상품을 장바 구니에 담고 주문을 하려고 한다
-                   이때 A는 item1과 2를 주문, B는 item2와 item3를 장바 구니에 담은 상황
-                   나머지 주문에 대한 로직 작성
-         */
-        Member memberA = memberServiceImpl.findByUserId("id1");
-        Member memberB = memberServiceImpl.findByUserId("id2");
+        int memberSize = 500;
+        List<Member> allMember = memberServiceImpl.findAllMember();
+        assertThat(allMember.size()).isEqualTo(memberSize);
 
-        Order orderA = new Order();
-        Order orderB = new Order();
-        orderA.setMember(memberA);
-        orderB.setMember(memberB);
-        orderServiceImpl.save(orderA);
-        orderServiceImpl.save(orderB);
-
-        Cart cartA = cartServiceImpl.findByMemberId(memberA.getId());
-        Cart cartB = cartServiceImpl.findByMemberId(memberB.getId());
-
-        List<CartItem> cartItemA = cartItemServiceImpl.findByCartId(cartA.getId());
-        List<CartItem> cartItemB = cartItemServiceImpl.findByCartId(cartB.getId());
-
-        for (CartItem cartItem : cartItemA) {
-            Item item = cartItem.getItem();
-            int count = cartItem.getCount();
-            int orderPrice = item.getPrice();
-            OrderItem orderItem = OrderItem.createOrderItem(item, orderPrice, count);
-            orderItem.setOrder(orderA);
-            orderItemServiceImpl.save(orderItem);
-        }
-
-        for (CartItem cartItem : cartItemB) {
-            Item item = cartItem.getItem();
-            int count = cartItem.getCount();
-            int orderPrice = item.getPrice();
-            OrderItem orderItem = OrderItem.createOrderItem(item, orderPrice, count);
-            orderItem.setOrder(orderB);
-            orderItemServiceImpl.save(orderItem);
-        }
-
-        List<OrderItem> findOrderItemByMemberA = orderItemServiceImpl.findOrderItemByOrderId(orderA.getId());
-        List<OrderItem> findOrderItemByMemberB = orderItemServiceImpl.findOrderItemByOrderId(orderB.getId());
-
-        assertThat(findOrderItemByMemberA.size()).isEqualTo(2);
-        assertThat(findOrderItemByMemberB.size()).isEqualTo(2);
-
+        List<Tuple> allMemberByOrderRank = memberServiceImpl.findAllMemberByOrderRank();
     }
+    @DisplayName("fetchJoin 성능테스트")
+    @Test
+    public void fetchJoinPerformTest() {
+        Member member3 = memberServiceImpl.findByUserId("id3");
+        System.out.println("========================");
+        long start1 = System.currentTimeMillis();
+        List<Order> ordersByFetchJoin = queryFactory.select(order)
+                .from(order)
+                .leftJoin(order.member, member)
+                .fetchJoin()
+                .distinct()
+                .fetch();
+        System.out.println("========================");
+
+        long diff1 = (System.currentTimeMillis() - start1);
+        System.out.println("diff_fetch(s) = " + diff1);
+    }
+
+    @DisplayName("No_fetchJoin 성능테스트")
+    @Test
+    public void fetchNoJoinPerformTest() {
+        long start2 = System.currentTimeMillis();
+        System.out.println("========================");
+        List<Order> ordersNoFetchJoin = queryFactory.select(order)
+                .from(order)
+                .leftJoin(order.member, member)
+                .fetch();
+        long diff2 = (System.currentTimeMillis() - start2);
+        System.out.println("========================");
+        System.out.println("diff_no_fetch(s) = " + diff2);
+    }
+
 }

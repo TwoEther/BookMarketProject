@@ -30,7 +30,6 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
                 .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
                         .requestMatchers(new AntPathRequestMatcher("/admin")).hasAuthority(Role.ROLE_ADMIN.toString())
                         .requestMatchers(new AntPathRequestMatcher("/admin/**")).hasAuthority(Role.ROLE_ADMIN.toString())
@@ -52,6 +51,7 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/")
                         .invalidateHttpSession(true))
                 .csrf().disable();
+
 
         return http.build();
     }

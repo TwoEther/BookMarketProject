@@ -1,5 +1,6 @@
 package org.project.shop.service;
 
+import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import org.project.shop.exception.BusinessLogicException;
 import org.project.shop.exception.ExceptionCode;
@@ -73,6 +74,11 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void deleteAll() {
         memberRepositoryImpl.deleteAll();
+    }
+
+    @Override
+    public List<Tuple> findAllMemberByOrderRank() {
+        return memberRepositoryImpl.findAllMemberByOrderRank();
     }
 
     @Override

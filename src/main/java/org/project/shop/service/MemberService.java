@@ -1,5 +1,6 @@
 package org.project.shop.service;
 
+import com.querydsl.core.Tuple;
 import org.project.shop.domain.Member;
 
 import java.util.List;
@@ -32,5 +33,8 @@ public interface MemberService {
 
     public void deleteAll();
 
+
+    // 주문 횟수에 따른 맴버 순위 구하기
+    public List<Tuple> findAllMemberByOrderRank();
     // 이메일 인증 <구현체에 있음>
 }

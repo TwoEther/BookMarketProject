@@ -1,5 +1,6 @@
 package org.project.shop.controller;
 
+import com.querydsl.core.Tuple;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.project.shop.auth.PrincipalDetails;
@@ -46,10 +47,11 @@ public class AdminController {
 
         String username = principalDetails.getUsername();
         Member findMember = memberServiceImpl.findByUserId(username);
+
+        // 관리자 권한이 없으면
         if (findMember.getRole().equals(Role.ROLE_USER.toString())) {
             return "home";
         }
-
 
         // 가져올 개수
         int memberSize = Math.min(memberList.size(), 2);
@@ -57,6 +59,11 @@ public class AdminController {
         int inquirySize = Math.min(allInquiryByGeneralMember.size(), 2);
         int reviewSize = Math.min(allReview.size(), 2);
 
+        // 주문 개수별 랭킹 상위 10등
+        List<Tuple> allMemberByOrderRank = memberServiceImpl.findAllMemberByOrderRank();
+        int orderRank = Math.min(10, allMemberByOrderRank.size());
+
+        model.addAttribute("rank", allMemberByOrderRank.subList(0, orderRank));
         model.addAttribute("type", "member");
         model.addAttribute("memberList", memberList.subList(0, memberSize));
         model.addAttribute("orderList", allOrder.subList(0, orderSize));
@@ -237,7 +244,10 @@ public class AdminController {
 
     @GetMapping(value = "/order")
     public String adminMemberOrderList(Model model) {
+        long start = System.currentTimeMillis();
         List<Order> allOrder = orderServiceImpl.findAllOrder();
+        long diff = System.currentTimeMillis() - start;
+
         model.addAttribute("allOrder", allOrder);
         return "/admin/adminOrder";
     }

@@ -1,5 +1,7 @@
 package org.project.shop.service;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,12 +18,17 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.project.shop.domain.QItem.item;
 
 @ActiveProfiles("test")
 @SpringBootTest
 public class PagingServiceTest {
     @Autowired
     private ItemServiceImpl itemServiceImpl;
+    @Autowired
+    EntityManager em;
+    @Autowired
+    private JPAQueryFactory queryFactory;
 
     @Test
     @DisplayName("페이징 테스트")
@@ -33,6 +40,10 @@ public class PagingServiceTest {
             System.out.println("pageItems.hasNext() = " + pageItems.hasNext());
             System.out.println("pageItems.getContent() = " + pageItems.getContent());
         }
+    }
+    @Test
+    @DisplayName("페이징 함수 동작원리 테스트")
+    public void pagingStructureTest() {
     }
 
 

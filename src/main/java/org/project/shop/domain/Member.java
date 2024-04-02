@@ -26,8 +26,8 @@ public class Member {
     @NotBlank(message = "비밀번호는 필수 값 입니다.")
     private String password;
 
-    @NotBlank(message = "이름은 필수 값 입니다.")
-    private String name;
+    @NotBlank(message = "닉네임은 필수 값 입니다.")
+    private String nickName;
 
     //    @NotBlank(message = "닉네임은 필수 값 입니다.")
 //    private String nickname;
@@ -94,8 +94,8 @@ public class Member {
         this.password = password;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
     public Member(String userId, String password) {
@@ -105,27 +105,22 @@ public class Member {
 
     }
 
-    @Builder
-    public Member(String userId, String password, String name) {
+    public Member(String userId, String password, String nickName) {
         this.userId = userId;
         this.password = password;
-        this.name = name;
+        this.nickName = nickName;
         this.created_at = LocalDateTime.now();
 
     }
 
-
-    public Member(String userId, String password, String name, String phoneNum, String email) {
+    @Builder
+    public Member(String userId, String password, String nickName, String phoneNum, String email) {
         this.userId = userId;
         this.password = password;
-        this.name = name;
+        this.nickName = nickName;
         this.phoneNum = phoneNum;
         this.email = email;
         this.created_at = LocalDateTime.now();
-    }
-
-    public Member(String name) {
-        this.name = name;
     }
 
     public void setRole(String description) {
@@ -146,7 +141,7 @@ public class Member {
                 "id=" + id +
                 ", userId='" + userId + '\'' +
                 ", password='" + password + '\'' +
-                ", name='" + name + '\'' +
+                ", nickName='" + nickName + '\'' +
                 ", phoneNum='" + phoneNum + '\'' +
                 ", email='" + email + '\'' +
                 ", role=" + role +

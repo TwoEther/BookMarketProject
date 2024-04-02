@@ -95,7 +95,6 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    @Transactional
     public void save(Order order) {
         orderRepositoryImpl.save(order);
     }

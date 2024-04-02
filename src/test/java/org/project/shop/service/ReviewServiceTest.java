@@ -43,7 +43,6 @@ public class ReviewServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @BeforeEach
-    @Transactional
     public void setUp() {
         Review review1 = new Review(4, "읽기 쉬워요");
         Review review2 = new Review(5, "정말 자세한 내용 입니다");
@@ -93,7 +92,6 @@ public class ReviewServiceTest {
     }
 
     @AfterEach
-    @Transactional
     public void after() {
         reviewServiceImpl.deleteAll();
         itemServiceImpl.deleteAll();
@@ -105,6 +103,7 @@ public class ReviewServiceTest {
 
     @DisplayName("특정 아이템에 리뷰가 적용되는지 테스트")
     @Test
+    @Transactional
     public void reviewItemTest() {
         PageRequest pageRequest = CustomPageRequest.customPageRequest();
         List<Member> allMember = memberServiceImpl.findAllMember();

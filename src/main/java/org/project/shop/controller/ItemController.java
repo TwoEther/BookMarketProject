@@ -253,8 +253,9 @@ public class ItemController {
 
 
     @GetMapping(value = "")
-    public String listByKeyWord(Model model, @RequestParam(value = "page", defaultValue = "0") int page,
-                                @RequestParam(value = "type", required = false) String type,
+    public String listByKeyWord(Model model, @AuthenticationPrincipal PrincipalDetails principalDetails,
+                                @RequestParam(value = "page", defaultValue = "0") int page,
+                                @RequestParam(value = "type", required = false, defaultValue = "0") String type,
                                 @RequestParam(required = false, defaultValue = "판매량") String sort_by,
                                 @RequestParam(value = "keyword", required = false) String keyword) {
         // 3자리 콤마를 위한 format
@@ -263,27 +264,22 @@ public class ItemController {
         int size = 6;
         // 전체 상품 개수
         int allItemNum = itemServiceImpl.getAllItemNum();
-        String variable;
-        //
-        if (sort_by.equals("최신")) {
-            variable = "createDate";
-        }else if(sort_by.equals("판매량")){
-            variable = "total_purchase";
-        }else{variable = "";}
-
         String path = System.getProperty("user.dir");
 
-        // 1페이지당 6개의 상품 호출
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(variable).descending());
-        PageRequest pageRequest2 = PageRequest.of(page, size, Sort.by("createDate").descending());
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String variable = switch (sort_by) {
+            case "최신" -> "createDate";
+            case "판매량" -> "total_purchase";
+            default -> "";
+        };
 
-        // 로그인이 되어있는 경우
-        if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
-            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            UserDetails userDetails = (UserDetails) principal;
-            String username = ((UserDetails) principal).getUsername();
+        String country = switch (Integer.parseInt(type)) {
+            case 1 -> "국내 도서";
+            case 2 -> "외국 도서";
+            default -> "";
+        };
 
+        if (principalDetails != null) {
+            String username = principalDetails.getUsername();
             Member findMember = memberServiceImpl.findByUserId(username);
 
             // 장바구니에 상품을 담지 않았다면
@@ -301,16 +297,9 @@ public class ItemController {
             }
         }
 
-        String country;
-        int num = 0;
-        // 0 : 전체, 1 : 국내, 2 : 외국
-        if (type != null) {
-            num = Integer.parseInt(type);
-        }
+        // 1페이지당 6개의 상품 호출
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(variable).descending());
 
-        if (num == 0) country = "";
-        else if(num == 1) country = "국내 도서";
-        else country = "외국 도서";
 
 
         Page<Item> findAllItem = itemServiceImpl.findByKeyword(pageRequest, keyword, country);
@@ -322,7 +311,6 @@ public class ItemController {
         int endPage = Math.min(page, pageNum);
 
         List<String> allCategory2 = categoryServiceImpl.findAllCategory2();
-
 
         // 국내 도서
         Page<Item> koreanList = itemServiceImpl.findByKeyword(pageRequest, "국내");

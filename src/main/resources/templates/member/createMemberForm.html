@@ -108,13 +108,13 @@ fieldError' : 'form-control'">
         </div>
 
         <div class="form-group">
-            <label th:for="name">이름</label>
-            <input type="text" th:field="*{name}" class="form-control"
-                   placeholder="이름을 입력하세요" id="name"
-                   th:class="${#fields.hasErrors('name')}? 'form-control
+            <label th:for="nickName">닉네임</label>
+            <input type="text" th:field="*{nickName}" class="form-control"
+                   placeholder="닉네임을 입력하세요" id="nickName"
+                   th:class="${#fields.hasErrors('nickName')}? 'form-control
     fieldError' : 'form-control'">
-            <p th:if="${#fields.hasErrors('name')}"
-               th:errors="*{name}">Incorrect date</p>
+            <p th:if="${#fields.hasErrors('nickName')}"
+               th:errors="*{nickName}">Incorrect date</p>
         </div>
 
         <div class="form-group">

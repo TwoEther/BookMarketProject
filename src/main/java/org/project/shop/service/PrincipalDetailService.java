@@ -22,7 +22,7 @@ public class PrincipalDetailService implements UserDetailsService {
         if (findMember == null) {
             throw new UsernameNotFoundException("아이디를 찾을수 없습니다");
         }
-        findMember.setName(findMember.getUserId());
+        findMember.setUserId(findMember.getUserId());
         return new PrincipalDetails(findMember);
     }
 }

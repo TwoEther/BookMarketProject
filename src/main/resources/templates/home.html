@@ -3,9 +3,14 @@
 <head th:replace="fragments/header :: header">
     <title>책 구매 사이트</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-
-
 </head>
+
+<style>
+    .item-image {
+        width: 250px;
+        height: 350px;
+    }
+</style>
 
 <script>
     function addToCart(id){
@@ -132,7 +137,7 @@
                                     <div th:each = "item : ${bestSeller}" class="product">
                                         <div class="product-img">
 <!--                                            <img src="/static/images/book.jpg" alt="">-->
-                                            <img th:src="${item.getFilePath()}" alt="">
+                                            <img class="item-image" th:src="${item.getFilePath()}" alt="">
 <!--                                            <div class="product-label">-->
 <!--                                                <span class="sale">-30%</span>-->
 <!--                                                <span class="new">NEW</span>-->

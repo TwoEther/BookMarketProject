@@ -77,6 +77,7 @@ public class KakaoPayController {
 
 
     @GetMapping("/paySuccess")
+    @Transactional
     public String afterPayRequest(@RequestParam("pg_token") String pgToken,
                                   @AuthenticationPrincipal PrincipalDetails principalDetails,
                                   Model model) {
@@ -100,6 +101,8 @@ public class KakaoPayController {
 
         paymentOrder.setAddress(findMember.getAddress());
         paymentOrder.setStatus(OrderStatus.SUCCESS);
+
+        // 주문번호
         paymentOrder.setTid(kakaoApprove.getTid());
         orderServiceImpl.save(paymentOrder);
 

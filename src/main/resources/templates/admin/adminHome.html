@@ -69,15 +69,10 @@
                                 <thead>
                                 <th>아이디</th>
                                 <th>이메일</th>
-                                <th>핸드폰 번호</th>
-                                <th>가입일</th>
                                 </thead>
                                 <tbody>
-                                <tr th:each = "member : ${memberList}">
-                                    <td th:text="${member.userId}"></td>
-                                    <td th:text="${member.email}"></td>
-                                    <td th:text="${member.phoneNum}"></td>
-                                    <td th:text="${#temporals.format(member.created_at, 'yyyy.MM.dd HH:mm')}"></td>
+                                <tr th:each = "member : ${rank}">
+                                    <td th:text="${member}"></td>
                                 </tr>
                                 </tbody>
                             </table>

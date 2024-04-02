@@ -1,10 +1,11 @@
 package org.project.shop.repository;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import org.project.shop.domain.Member;
+import org.project.shop.domain.QOrderItem;
 import org.project.shop.domain.Role;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.project.shop.domain.QMember.member;
+import static org.project.shop.domain.QOrder.order;
+import static org.project.shop.domain.QOrderItem.orderItem;
 
 @Repository
 public class MemberRepositoryImpl implements MemberRepository{
@@ -113,5 +116,19 @@ public class MemberRepositoryImpl implements MemberRepository{
     public void deleteAll() {
         queryFactory.delete(member)
                 .execute();
+    }
+
+    @Override
+    public List<Tuple> findAllMemberByOrderRank() {
+        return queryFactory.select(member.nickName, orderItem.count.sum())
+                .from(member)
+                .innerJoin(member.orders, order)
+                .innerJoin(order.orderItems, orderItem)
+                .distinct()
+                .groupBy(member.nickName)
+                .orderBy(orderItem.count.sum().desc())
+                .fetch();
+
+
     }
 }
