@@ -63,6 +63,7 @@ public class MemberController {
     @Transactional
     public String signUp(HttpServletResponse response, @Valid MemberForm form, BindingResult result) throws Exception {
         if (result.hasErrors()) {
+            ScriptUtils.alert(response, "값이 올바르지 않습니다, 다시 입력해주세요");
             return "member/createMemberForm";
         }
 
@@ -71,10 +72,7 @@ public class MemberController {
         String nickName = form.getNickName();
         String phoneNum = form.getPhoneNum();
         String email = form.getEmail();
-//        String roles = form.getRoles();
         String email_check_num = form.getEmail_Check_number();
-
-        mailService.sendSimpleMessage(email);
 
         if (memberServiceImpl.findByUserId(userId) != null) {
             ScriptUtils.alert(response, "아이디가 존재합니다");
@@ -82,46 +80,38 @@ public class MemberController {
         } else if (email_check_num.isEmpty()) {
             ScriptUtils.alert(response, "이메일 인증후 회원가입 가능합니다");
             return "member/createMemberForm";
-        } else if (!redisService.getRedisTemplateValue(email).equals(email_check_num)) {
+        } // 이메일 인증 검증 부분
+        else if (!redisService.getRedisTemplateValue(email).equals(email_check_num)) {
             ScriptUtils.alert(response, "인증번호가 일치 하지 않습니다");
             return "member/createMemberForm";
-        } else {
-            Member member = new Member(userId, password, nickName, phoneNum, email);
-
-//            if (roles.equals(Role.ROLE_ADMIN.toString())) {
-//                member.setRole(Role.ROLE_ADMIN.toString());
-//            } else if (roles.equals(Role.ROLE_ANONYMOUS)) {
-//                member.setRole(Role.ROLE_ANONYMOUS.toString());
-//            } else {
-//                member.setRole(Role.ROLE_USER.toString());
-//            }
-
-            if (userId.equals("superadmin123")) {
-                member.setRole(Role.ROLE_ADMIN.toString());
-            }else{
-                member.setRole(Role.ROLE_USER.toString());
-            }
-
-            if (memberServiceImpl.checkReqexId(userId) && memberServiceImpl.checkReqexPw(password)) {
-                result.reject("signupFailed", "아이디나 패스워드가 올바르지 않습니다");
-                return "member/createMemberForm";
-            }
-
-            try {
-                memberServiceImpl.save(member);
-            } catch (DataIntegrityViolationException e) {
-                e.printStackTrace();
-                result.reject("signupFailed", "이미 등록된 사용자입니다.");
-                return "member/createMemberForm";
-            } catch (Exception e) {
-                e.printStackTrace();
-                result.reject("signupFailed", e.getMessage());
-                return "member/createMemberForm";
-            }
-            ScriptUtils.alert(response, "회원가입이 완료 되었습니다.");
-            return "home";
         }
 
+        if (memberServiceImpl.checkReqexId(userId) && memberServiceImpl.checkReqexPw(password)) {
+            result.reject("signupFailed", "아이디나 패스워드가 올바르지 않습니다");
+            return "member/createMemberForm";
+        }
+
+        Member member = new Member(userId, password, nickName, phoneNum, email);
+        member.setRole(Role.ROLE_USER.toString());
+        memberServiceImpl.save(member);
+
+        if (userId.equals("superadmin123")) {
+            member.setRole(Role.ROLE_ADMIN.toString());
+        }
+
+        try {
+            memberServiceImpl.save(member);
+        } catch (DataIntegrityViolationException e) {
+            e.printStackTrace();
+            result.reject("signupFailed", "이미 등록된 사용자입니다.");
+            return "member/createMemberForm";
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.reject("signupFailed", e.getMessage());
+            return "member/createMemberForm";
+        }
+        ScriptUtils.alert(response, "회원가입이 완료 되었습니다.");
+        return "home";
 
     }
 
@@ -318,4 +308,5 @@ public class MemberController {
 
     private void checkDuplicatedEmail(String email) {
     }
+
 }

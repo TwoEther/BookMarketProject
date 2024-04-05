@@ -60,7 +60,6 @@ public class ItemController {
         String imagePath1 = "C:\\lee\\Java\\bookImages\\";
         String imagePath2 = "C:\\lee\\Project\\Spring\\bookImages\\";
 
-        System.out.println("path = " + path);
         try {
             br = Files.newBufferedReader(Paths.get(path));
             String line = "";
@@ -97,7 +96,6 @@ public class ItemController {
                 isFirst = true;
                 continue;
             }
-            System.out.println("data = " + data);
             String title = data.get(0);
             int price = Integer.parseInt(data.get(1));
             int stockQuantity = Integer.parseInt(data.get(2));
@@ -109,8 +107,6 @@ public class ItemController {
             String category1 = data.get(8);
             String category2 = data.get(9);
 
-            System.out.println("title = " + title);
-            System.out.println("category2 = " + category2);
             if (categoryServiceImpl.findByCategoryName(category1, category2) == null) {
                 categoryServiceImpl.save(new Category(category1, category2));
             }

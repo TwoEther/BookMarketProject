@@ -41,10 +41,9 @@ public class KakaoPayController {
     @ResponseBody
     @Transactional
     public KakaoReadyResponse beforePayRequest(@RequestParam HashMap<String, Object> params) {
-        String type = (String) params.get("type");
         String total_price = (String) params.get("total_price");
         String total_count = (String) params.get("total_count");
-        String itemName = (String) params.get("itemName")+" 포함 "+total_count+"건";
+        String itemName = params.get("itemName")+" 포함 "+total_count+"건";
 
         return kakaoPayService.kakaoPayReady(itemName, total_count, total_price);
     }

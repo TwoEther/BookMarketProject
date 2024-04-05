@@ -59,7 +59,6 @@ public class Review {
         int[] countArray = new int[6];
         for (Review review : reviews) {
             int score = review.score;
-            System.out.println("score = " + score);
             countArray[score] += 1;
         }
         return countArray;
