@@ -152,7 +152,6 @@ public class OrderServiceTest {
         List<Member> allMember = memberServiceImpl.findAllMember();
         assertThat(allMember.size()).isEqualTo(memberSize);
 
-        List<Tuple> allMemberByOrderRank = memberServiceImpl.findAllMemberByOrderRank();
     }
     @DisplayName("fetchJoin 성능테스트")
     @Test

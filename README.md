@@ -6,7 +6,15 @@
 <ul>
     <li>Java, Spring Boot, Spring Security</li>
     <li>JPA, QueryDSL</li>
-    <li>MySQL</li>
+    <li>MySQL, Redis</li>
+    <li>Bootstrap, JavaScript, CSS, HTML</li>
+</ul>
+
+<h5>✔ 오픈 소스 및 API</h5><hr>
+<ul>
+    <li>카카오 맵 API</li>
+    <li>카카오 페이 API</li>
+    <li>국립중앙도서관 도서별 상세정보 CSV</li>
 </ul>
 
 <h5>✔ 배포 환경</h5><hr>
@@ -59,6 +67,18 @@
 <h5>✔ 데이터셋</h5><hr>
 <p>문화 빅데이터 플랫폼 페이지의 국립중앙도서관 도서별 상세정보 CSV를 사용했습니다.<span><a href="https://www.bigdata-culture.kr/bigdata/user/data_market/detail.do?id=63513d7b-9b87-4ec1-a398-0a18ecc45411">
 링크</a></span></p>
+
+<h5>✔ 개발 관련</h5><hr>
+<img src="https://github.com/TwoEther/ShoppingMall_Project/assets/101616106/f45eed8d-b4d1-4ec8-a392-92dc7fbed63e" alt="">
+<p>Spring Security를 사용하여 사용자의 정보에 대해 보안을 높였으며, 비밀번호에 대해 Bcrypt 기반의 암호를 사용해 보안에 높은 노력을 기했습니다.</p><br>
+
+<img src="https://github.com/TwoEther/ShoppingMall_Project/assets/101616106/1c406c1b-dcce-4b9e-9caf-20a140ea7e5f" alt="">
+<p>카카오페이 단건결제 API를 사용하여 사이트 이용자에게 결제 방법을 제공하였으며 HTTP Status Code 및 REST API에 대한 이해를 높였습니다.</p><br>
+
+<img src="https://github.com/TwoEther/ShoppingMall_Project/assets/101616106/8ba39b46-6e4b-4544-af8e-bd622988d522" alt="">
+<p>주문 정보를 확인 할 수 있는 마이 페이지 입니다, 주문 조회 및 관리, 배송지 설정, 리뷰 및 문의 관리를 통해 사용자에게 최적의 UX를 제공하기 위해 노력하였습니다.</p><br>
+
+
 
 <h5>✔ 서비스</h5><hr>
 
