@@ -93,7 +93,6 @@ public class MemberController {
 
         Member member = new Member(userId, password, nickName, phoneNum, email);
         member.setRole(Role.ROLE_USER.toString());
-        memberServiceImpl.save(member);
 
         if (userId.equals("superadmin123")) {
             member.setRole(Role.ROLE_ADMIN.toString());
