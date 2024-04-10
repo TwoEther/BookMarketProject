@@ -15,7 +15,7 @@ import java.util.Properties;
 @SpringBootApplication
 public class ShopApplication {
 	public static void main(String[] args) {
-		System.setProperty("spring.profiles.default", "prod");
+		System.setProperty("spring.profiles.default", "dev");
 		Properties p = System.getProperties();
 		Enumeration keys = p.keys();
 		while (keys.hasMoreElements()) {
