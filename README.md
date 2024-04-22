@@ -61,7 +61,6 @@
     <li><a href="./markdown/redis.md">✨ Redis 이메일 인증 로직에 대해서</a></li>
     <li><a href="./markdown/security.md">🎎 회원에 대한 인증은 어떻게 구현할까?</a></li>
     <li><a href="./markdown/querydsl.md">🎇 QueryDSL 로 구현하는 동적 정렬 방법은?</a></li>
-    <li><a href="./markdown">👔 갑자기 발생한 DB 해킹?</a></li>
 </ul>
 
 <h5>✔ 데이터셋</h5><hr>
