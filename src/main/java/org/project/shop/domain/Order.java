@@ -9,11 +9,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Entity
 // MySQL에서 order는 예약어 이므로 orders로 이름 변경
 @Table(name = "orders")
-@Getter @Setter
+@Getter
 public class Order {
     @Id @GeneratedValue
     @Column(name = "order_id")
@@ -76,18 +78,40 @@ public class Order {
         this.tid = tid;
     }
 
+    public void setStatus(OrderStatus status) {
+        this.status = status;
+    }
 
+    public void setOrderDate(LocalDate orderDate) {
+        this.orderDate = orderDate;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public static String createOrderNumber() {
+        String data = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSSSS"));
+        StringBuilder orderNumber = new StringBuilder();
+
+        // 0 ~ 99 사이의 난수
+        int random = (int)((Math.random() * 99));
+        String salt = random >= 10 ? Integer.toString(random) : "0"+random;
+
+        for (String s : data.split("-")) orderNumber.append(s);
+
+        return orderNumber.append(salt).toString();
+    }
 
     public static Order createOrder(Member member){
-        String data = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSSSS"));
-        String orderNumber = "";
-        for (String s : data.split("-")) orderNumber += (s);
-
-
         Order order = new Order();
         order.setMember(member);
         order.setStatus(OrderStatus.READY);
-        order.setOrderNumber(orderNumber);
+//        order.setOrderNumber(createOrderNumber());
         order.setOrderDate(LocalDate.now());
         return order;
     }

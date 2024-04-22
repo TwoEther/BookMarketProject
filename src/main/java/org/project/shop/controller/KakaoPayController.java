@@ -4,6 +4,7 @@ package org.project.shop.controller;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.project.shop.auth.PrincipalDetails;
+import org.project.shop.auth.SnowflakeGenerator;
 import org.project.shop.config.ScriptUtils;
 import org.project.shop.domain.*;
 import org.project.shop.kakaopay.KakaoApproveResponse;
@@ -22,9 +23,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
+import java.text.DateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Controller
 @RequestMapping("/kakaopay")
@@ -36,11 +41,13 @@ public class KakaoPayController {
     private final OrderItemServiceImpl orderItemServiceImpl;
     private final OrderServiceImpl orderServiceImpl;
     private final KakaoPayService kakaoPayService;
+    private final SnowflakeGenerator snowflakeGenerator;
+
 
     @PostMapping(value = "/ready")
     @ResponseBody
     @Transactional
-    public KakaoReadyResponse beforePayRequest(@RequestParam HashMap<String, Object> params) {
+    public KakaoReadyResponse readyPayRequest(@RequestParam HashMap<String, Object> params) {
         String total_price = (String) params.get("total_price");
         String total_count = (String) params.get("total_count");
         String itemName = params.get("itemName")+" 포함 "+total_count+"건";
@@ -51,7 +58,7 @@ public class KakaoPayController {
     @PostMapping(value = "/payCancel")
     @Transactional
     @ResponseBody
-    public KakaoReadyResponse beforeCancelRequest(@RequestParam Long orderId,
+    public KakaoReadyResponse readyCancelRequest(@RequestParam Long orderId,
                                                   @AuthenticationPrincipal PrincipalDetails principalDetails) {
         String username = principalDetails.getUsername();
         Member findMember = memberServiceImpl.findByUserId(username);
@@ -77,16 +84,17 @@ public class KakaoPayController {
 
     @GetMapping("/paySuccess")
     @Transactional
-    public String afterPayRequest(@RequestParam("pg_token") String pgToken,
+    public String successPayRequest(@RequestParam("pg_token") String pgToken,
                                   @AuthenticationPrincipal PrincipalDetails principalDetails,
                                   Model model) {
         if(principalDetails == null){
             return "home";
         }
 
+        String username = principalDetails.getUsername();
+
         KakaoApproveResponse kakaoApprove = kakaoPayService.ApproveResponse(pgToken);
 
-        String username = principalDetails.getUsername();
         int total_price = 0;
 
         Member findMember = memberServiceImpl.findByUserId(username);
@@ -96,6 +104,10 @@ public class KakaoPayController {
 
         // 완료된 주문 건에 대해 주문을 저장
         Order paymentOrder = Order.createOrder(findMember);
+        String nowTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String orderNumber = String.valueOf(snowflakeGenerator.nextId());
+        paymentOrder.setOrderNumber(nowTime+orderNumber);
+
         List<Item> orderItemList = paymentOrder.findOrderItemList();
 
         paymentOrder.setAddress(findMember.getAddress());

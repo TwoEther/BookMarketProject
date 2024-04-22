@@ -127,36 +127,33 @@ public class OrderController {
 //            ScriptUtils.alert(response, "로그인 후 이용 가능 합니다.");
             return "redirect:/";
         }
-
-        // 로그인이 되어있는 경우
-        else {
-            String username = principalDetails.getUsername();
-
-            Member findMember = memberServiceImpl.findByUserId(username);
-
-            // 장바구니에 상품을 담지 않았다면
-            if (cartServiceImpl.findByMemberId(findMember.getId()) == null) {
-                model.addAttribute("NOP", 0);
-                model.addAttribute("totalPrice", 0);
-            } else {
-                Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
-                List<CartItem> findCartItems = cartItemServiceImpl.findByCartId(findCart.getId());
-
-                String totalPrice = decFormat.format(CartItem.getTotalPrice(findCartItems));
-                model.addAttribute("NOP", findCartItems.size());
-                model.addAttribute("cartItems", findCartItems);
-                model.addAttribute("totalPrice", totalPrice);
-            }
-        }
-
         String username = principalDetails.getUsername();
+        Member findMember = memberServiceImpl.findByUserId(username);
+
         if (username.isEmpty()) {
 //            ScriptUtils.alert(response, "로그인 후 이용 가능 합니다.");
             return "redirect:/";
         }
 
 
-        Member findMember = memberServiceImpl.findByUserId(username);
+        // 장바구니에 상품을 담지 않았다면
+        if (cartServiceImpl.findByMemberId(findMember.getId()) == null) {
+            model.addAttribute("NOP", 0);
+            model.addAttribute("totalPrice", 0);
+        } else {
+            Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
+            List<CartItem> findCartItems = cartItemServiceImpl.findByCartId(findCart.getId());
+
+            String totalPrice = decFormat.format(CartItem.getTotalPrice(findCartItems));
+            model.addAttribute("NOP", findCartItems.size());
+            model.addAttribute("cartItems", findCartItems);
+            model.addAttribute("totalPrice", totalPrice);
+        }
+
+
+
+
+
         List<Order> findAllOrder = orderServiceImpl.findByMemberIdAfterPayment(findMember.getId());
         if (findAllOrder.isEmpty()) {
             model.addAttribute("allOrder", findAllOrder);

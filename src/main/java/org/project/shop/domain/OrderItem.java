@@ -78,10 +78,11 @@ public class OrderItem {
     // 주문 아이템 조회
     public static List<Item> findAllItem(List<OrderItem> orderItems) {
         List<Item> findAllItem = new ArrayList<>();
-        for (OrderItem orderItem : orderItems) {
-            Item item = orderItem.getItem();
-            findAllItem.add(item);
-        }
+        orderItems.forEach(orderItem -> findAllItem.add(orderItem.getItem()));
+//        for (OrderItem orderItem : orderItems) {
+//            Item item = orderItem.getItem();
+//            findAllItem.add(item);
+//        }
         return findAllItem;
     }
     // 주문상품 가격 조회

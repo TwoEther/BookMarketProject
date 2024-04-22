@@ -83,16 +83,17 @@ public class InquiryController {
                                  PrincipalDetails principalDetails) {
         if (principalDetails == null) {
             return false;
-        }else{
-            Inquiry findInquiry = inquiryServiceImpl.findById(inquiryId);
-
-            if (!findInquiry.getChild().isEmpty()) {
-                List<Inquiry> child = findInquiry.getChild();
-                child.forEach(inquiry -> inquiryServiceImpl.delete(inquiry.getId()));
-            }
-
-            inquiryServiceImpl.delete(inquiryId);
-            return true;
         }
+
+        Inquiry findInquiry = inquiryServiceImpl.findById(inquiryId);
+
+        if (!findInquiry.getChild().isEmpty()) {
+            List<Inquiry> child = findInquiry.getChild();
+            child.forEach(inquiry -> inquiryServiceImpl.delete(inquiry.getId()));
+        }
+
+        inquiryServiceImpl.delete(inquiryId);
+        return true;
+
     }
 }

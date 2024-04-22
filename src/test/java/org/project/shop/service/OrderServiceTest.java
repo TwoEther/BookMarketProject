@@ -15,9 +15,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -56,13 +56,18 @@ public class OrderServiceTest {
     @Autowired
     CartItemRepositoryImpl cartItemRepository;
 
+    // 동시에 여러 스레드에서 안전하게 시퀀스 번호를 관리하기 위한 AtomicInteger
+    private static final AtomicInteger sequenceNumber = new AtomicInteger(0);
+    // 마지막으로 ID를 생성한 시간을 저장하는 변수
+    private static long lastTimeStamp = -1;
+
     @BeforeEach
     public void setUp() {
         List<Member> memberList = new ArrayList<>();
         List<Item> itemList = new ArrayList<>();
 
-        int memberSize = 500;
-        int itemSize = 1000;
+        int memberSize = 10;
+        int itemSize = 10;
 
         for (int i = 1; i <= memberSize; i++) {
             Member member = Member.builder().
@@ -100,6 +105,10 @@ public class OrderServiceTest {
             Item item3 = itemList.get(n3);
 
             Order order = Order.createOrder(member);
+
+            System.out.println("order.getOrderNumber() = " + order.getOrderNumber());
+
+
             order.setTid(member.getPhoneNum());
             orderServiceImpl.save(order);
 
@@ -132,7 +141,6 @@ public class OrderServiceTest {
             orderItem1.setOrder(order);
             orderItem2.setOrder(order);
             orderItem3.setOrder(order);
-
         }
     }
 
@@ -148,7 +156,7 @@ public class OrderServiceTest {
     @DisplayName("구매 테스트")
     @Test
     public void cartItemToOrderItemTest() {
-        int memberSize = 500;
+        int memberSize = 10;
         List<Member> allMember = memberServiceImpl.findAllMember();
         assertThat(allMember.size()).isEqualTo(memberSize);
 
@@ -185,4 +193,68 @@ public class OrderServiceTest {
         System.out.println("diff_no_fetch(s) = " + diff2);
     }
 
+    public static synchronized String generateNumber() {
+        long id = 0L;
+
+        // 현재 시간에서 시작 시간을 뺀 값을 계산
+        long timestamp = System.currentTimeMillis() - 1288834974657L;
+
+        // 동일 밀리초에 여러건이 호출될 경우의 처리
+        if (timestamp == lastTimeStamp) {
+            int currentSequence = sequenceNumber.incrementAndGet();
+            // 4095를 초과하면 다음 밀리초까지 기다림
+            if (currentSequence > 4095) {
+                while (timestamp <= lastTimeStamp) {
+                    timestamp = System.currentTimeMillis() - 1288834974657L;
+                }
+                // 초기화
+                sequenceNumber.set(0);
+            }
+        } else {
+            sequenceNumber.set(0);
+        }
+        lastTimeStamp = timestamp;
+
+        id |= (timestamp << 22);
+
+        // region 코드와 서버 위치 값을 합쳐 할당
+        int regionCode = 3;
+        int serverPosition = 5;
+        long serverInfo = (regionCode << 7) | serverPosition;
+        id |= (serverInfo << 12);
+
+        // 시퀀스 번호 할당
+        id |= sequenceNumber.get();
+        return String.valueOf(id);
+    }
+
+
+    @Test
+    public void generateOrderNumberInTwitterSnowflake() throws InterruptedException, ExecutionException {
+        int numberOfThreads = 10000;
+        ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
+
+        Set<Object> orderNumbers = Collections.synchronizedSet(new HashSet<>());
+        List<Callable<Void>> tasks = new ArrayList<>();
+
+        for (int i = 0; i < numberOfThreads; i++) {
+            tasks.add(() -> {
+                String orderNumber = generateNumber();
+                orderNumbers.add(orderNumber);
+                return null;
+            });
+        }
+
+        List<Future<Void>> futures = executorService.invokeAll(tasks);
+
+        // 모든 작업이 완료될 때까지 대기
+        for (Future<Void> future : futures) {
+            future.get();
+        }
+
+        assertThat(numberOfThreads).isEqualTo(orderNumbers.size());
+
+        executorService.shutdown();
+        orderNumbers.forEach(System.out::println);
+    }
 }
