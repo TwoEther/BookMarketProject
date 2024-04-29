@@ -4,10 +4,10 @@
 
 <h5>✔ 사용한 기술스택</h5><hr>
 <ul>
-    <li>Java, Spring Boot, Spring Security</li>
-    <li>JPA, QueryDSL</li>
-    <li>MySQL, Redis</li>
+    <li>Java, Spring Boot, Spring Security, Spring Data JPA</li>
+    <li>MySQL, Redis, QueryDSL</li>
     <li>Bootstrap, JavaScript, CSS, HTML</li>
+    <li>AWS EC2, S3, RDS, Codedeploy</li>
 </ul>
 
 <h5>✔ 오픈 소스 및 API</h5><hr>
@@ -26,7 +26,7 @@
 
 <h5>✔ 개발 기간</h5><hr>
 <ul>
-    <li>2023.08 ~ 2024.02 (6개월)</li>
+    <li>2023.08 ~ 2024.03 (배포후 리펙토링 진행중)</li>
 </ul>
 
 <h5>✔ 구현기능</h5><hr>
@@ -61,6 +61,7 @@
     <li><a href="./markdown/redis.md">✨ Redis 이메일 인증 로직에 대해서</a></li>
     <li><a href="./markdown/security.md">🎎 회원에 대한 인증은 어떻게 구현할까?</a></li>
     <li><a href="./markdown/querydsl.md">🎇 QueryDSL 로 구현하는 동적 정렬 방법은?</a></li>
+    <li><a href="./markdown/orderNum.md">🚘 겹치지 않는 주문번호 생성 방법</a></li>
 </ul>
 
 <h5>✔ 데이터셋</h5><hr>
