@@ -128,11 +128,7 @@ public class AdminController {
     public void adminMemberItemStatusEdit(HttpServletResponse response, @PathVariable String itemId, @RequestParam Boolean status) throws IOException {
         Long id = Long.parseLong(itemId);
         Item findItem = itemServiceImpl.findOneItem(id);
-        if (status) {
-            findItem.setSaleStatus(true);
-        } else {
-            findItem.setSaleStatus(false);
-        }
+        findItem.setSaleStatus(status);
 
         ScriptUtils.alertAndBackPage(response, "수정 되었습니다");
     }
@@ -143,14 +139,12 @@ public class AdminController {
                                             @RequestParam String delivery_status) throws IOException {
         Long orderItem_Id = Long.parseLong(orderItemId);
         OrderItem findOrderItem = orderItemServiceImpl.findOrderItemById(orderItem_Id);
-        if (delivery_status.equals("ready")) {
-            findOrderItem.setDeliveryStatus(DeliveryStatus.READY);
-        } else if (delivery_status.equals("going")) {
-            findOrderItem.setDeliveryStatus(DeliveryStatus.GOING);
-        } else if (delivery_status.equals("complete")) {
-            findOrderItem.setDeliveryStatus(DeliveryStatus.COMPLETE);
-        } else {
-            findOrderItem.setDeliveryStatus(DeliveryStatus.NOTFOUND);
+
+        switch (delivery_status) {
+            case "ready" -> findOrderItem.setDeliveryStatus(DeliveryStatus.READY);
+            case "going" -> findOrderItem.setDeliveryStatus(DeliveryStatus.GOING);
+            case "complete" -> findOrderItem.setDeliveryStatus(DeliveryStatus.COMPLETE);
+            default -> findOrderItem.setDeliveryStatus(DeliveryStatus.NOTFOUND);
         }
 
         ScriptUtils.alertAndBackPage(response, "수정 되었습니다");

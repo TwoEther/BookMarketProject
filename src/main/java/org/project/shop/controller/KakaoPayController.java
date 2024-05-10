@@ -50,7 +50,7 @@ public class KakaoPayController {
     public KakaoReadyResponse readyPayRequest(@RequestParam HashMap<String, Object> params) {
         String total_price = (String) params.get("total_price");
         String total_count = (String) params.get("total_count");
-        String itemName = params.get("itemName")+" 포함 "+total_count+"건";
+        String itemName = params.get("itemName") + " 포함 " + total_count + "건";
 
         return kakaoPayService.kakaoPayReady(itemName, total_count, total_price);
     }
@@ -59,7 +59,7 @@ public class KakaoPayController {
     @Transactional
     @ResponseBody
     public KakaoReadyResponse readyCancelRequest(@RequestParam Long orderId,
-                                                  @AuthenticationPrincipal PrincipalDetails principalDetails) {
+                                                 @AuthenticationPrincipal PrincipalDetails principalDetails) {
         String username = principalDetails.getUsername();
         Member findMember = memberServiceImpl.findByUserId(username);
 
@@ -69,33 +69,31 @@ public class KakaoPayController {
         int totalPrice = findOrder.getTotalPrice();
 
         List<OrderItem> orderItemByOrderId = orderItemServiceImpl.findOrderItemByOrderId(findOrder.getId());
-        for (OrderItem orderItem : orderItemByOrderId) {
-            Item item = orderItem.getItem();
-            item.cancelTotalPurchase(orderItem.getCount());
-        }
-        orderItemByOrderId.forEach(orderItem -> orderItemServiceImpl.deleteOrderItem(orderItem.getId()));
+        orderItemByOrderId
+                .forEach(orderItem -> {
+                    Item item = orderItem.getItem();
+                    item.cancelTotalPurchase(orderItem.getCount());
+                    orderItemServiceImpl.deleteOrderItem(orderItem.getId());
+                });
+
         orderServiceImpl.deleteOrder(orderId);
 
         return kakaoPayService.kakaoPayCancelReady(tid, totalPrice);
     }
 
 
-
-
     @GetMapping("/paySuccess")
     @Transactional
     public String successPayRequest(@RequestParam("pg_token") String pgToken,
-                                  @AuthenticationPrincipal PrincipalDetails principalDetails,
-                                  Model model) {
-        if(principalDetails == null){
+                                    @AuthenticationPrincipal PrincipalDetails principalDetails,
+                                    Model model) {
+        if (principalDetails == null) {
             return "home";
         }
 
         String username = principalDetails.getUsername();
 
         KakaoApproveResponse kakaoApprove = kakaoPayService.ApproveResponse(pgToken);
-
-        int total_price = 0;
 
         Member findMember = memberServiceImpl.findByUserId(username);
         Cart findCart = cartServiceImpl.findByMemberId(findMember.getId());
@@ -106,9 +104,7 @@ public class KakaoPayController {
         Order paymentOrder = Order.createOrder(findMember);
         String nowTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String orderNumber = String.valueOf(snowflakeGenerator.nextId());
-        paymentOrder.setOrderNumber(nowTime+orderNumber);
-
-        List<Item> orderItemList = paymentOrder.findOrderItemList();
+        paymentOrder.setOrderNumber(nowTime + orderNumber);
 
         paymentOrder.setAddress(findMember.getAddress());
         paymentOrder.setStatus(OrderStatus.SUCCESS);
@@ -117,27 +113,21 @@ public class KakaoPayController {
         paymentOrder.setTid(kakaoApprove.getTid());
         orderServiceImpl.save(paymentOrder);
 
-        // 장바구니에 있는 상품들을 OrderItem에 넣음
-        for (CartItem cartItem : findCartItems) {
+        // 구매 총 가격을 구하는 로직
+        int total_price = findCartItems.stream().mapToInt(cartItem -> {
             Item item = cartItem.getItem();
             int count = cartItem.getCount();
-            // 구매 처리
-            OrderItem orderItem = OrderItem.createOrderItem(item, item != null ? item.getPrice() : 0, count);
+
+            OrderItem orderItem = OrderItem.createOrderItem(item, item.getPrice(), count);
             orderItem.setOrder(paymentOrder);
             orderItem.setDeliveryStatus(DeliveryStatus.READY);
 
-            total_price += (item == null ? 0 : item.getPrice()) * count;
             paymentsItemList.add(orderItem);
             orderItemServiceImpl.save(orderItem);
-
-            // 아이템 판매개수 증가
-            if (item != null) {
-                item.addTotalPurchase(count);
-            }
-
-            // 장바구니 에서 삭제
             cartItemServiceImpl.deleteById(cartItem.getId());
-        }
+            return count * item.getPrice();
+        }).sum();
+
 
         model.addAttribute("kakaoApprove", kakaoApprove);
         model.addAttribute("order", paymentOrder);
@@ -147,3 +137,5 @@ public class KakaoPayController {
         return "order/payComplete";
     }
 }
+
+

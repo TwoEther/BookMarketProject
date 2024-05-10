@@ -80,7 +80,9 @@ public class CartController {
 
         if (findCart != null) {
             List<CartItem> findCartItem = cartItemServiceImpl.findByCartId(findCart.getId());
-            for (CartItem cartItem : findCartItem) price += cartItem.getItem().getPrice() * cartItem.getCount();
+            price = findCartItem.stream()
+                    .mapToInt(cartItem -> cartItem.getItem().getPrice() * cartItem.getCount()).sum();
+
             model.addAttribute("cartItems", findCartItem);
 
         }else{

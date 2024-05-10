@@ -26,6 +26,7 @@ import java.net.http.HttpResponse;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 
 @Controller
@@ -106,11 +107,19 @@ public class OrderController {
 
             Order findOrder = orderServiceImpl.findByMemberIdAfterPaymentOneOrder(orderId, findMember.getId());
             List<OrderItem> orderItemByOrderId = orderItemServiceImpl.findOrderItemByOrderId(findOrder.getId());
+
+            orderItemByOrderId.forEach(orderItem -> {
+                    Item item = orderItem.getItem();
+                    item.cancelTotalPurchase(orderItem.getCount());
+                    orderItemServiceImpl.deleteOrderItem(orderItem.getId());
+                });
+            /*
             for (OrderItem orderItem : orderItemByOrderId) {
                 Item item = orderItem.getItem();
                 item.cancelTotalPurchase(orderItem.getCount());
             }
             orderItemByOrderId.forEach(orderItem -> orderItemServiceImpl.deleteOrderItem(orderItem.getId()));
+            */
             orderServiceImpl.deleteOrder(orderId);
 
         }

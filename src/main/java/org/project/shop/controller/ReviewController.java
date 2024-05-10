@@ -151,7 +151,6 @@ public class ReviewController {
             return 1;
 
         } else{
-            System.out.println("findLikeReview.toString() = " + findLikeReview.toString());
             findLikeReview.setStatus(false);
             findReview.cancelLike();
             likeReviewServiceImpl.deleteLikeReview(findLikeReview.getId());
@@ -205,11 +204,7 @@ public class ReviewController {
             }
 
         }
-        System.out.println("afterPaymentOrderItem = " + afterPaymentOrderItem);
-        System.out.println("orderItemByOrderAndItem = " + orderItemByOrderAndItem);
         afterPaymentOrderItem.removeAll(orderItemByOrderAndItem);
-
-        System.out.println("afterPaymentOrderItem = " + afterPaymentOrderItem);
 
         model.addAttribute("orderItems", afterPaymentOrderItem);
         return "review/notWritten";
