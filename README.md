@@ -1,5 +1,9 @@
 <h1>책 구매 사이트 구축 프로젝트</h1><hr>
+
+<h1>★ 현재 비용문제로 인한 배포 중단(AWS 프리티어)</h1>
+
 <p>쇼핑몰 개인 프로젝트 입니다.</p>
+
 <p>주소 : <a href="http://booktravel24.com">http://booktravel24.com</a></p>
 
 <h5>✔ 사용한 기술스택</h5><hr>
